@@ -1,6 +1,15 @@
 <template>
   <div>
     <form @submit.prevent="handleSignup" class="flex flex-col space-y-4">
+      <!-- Username Input -->
+      <input 
+        type="text" 
+        v-model="username" 
+        placeholder="Username" 
+        required 
+        class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+      />
+      <!-- Email Input -->
       <input 
         type="email" 
         v-model="email" 
@@ -8,6 +17,7 @@
         required 
         class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
       />
+      <!-- Password Input -->
       <input 
         type="password" 
         v-model="password" 
@@ -15,6 +25,7 @@
         required 
         class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
       />
+      <!-- Signup Button -->
       <button type="submit" class="p-3 bg-indigo-500 text-white rounded hover:bg-indigo-600">
         Sign Up
       </button>
@@ -32,6 +43,7 @@ export default {
   name: 'UserSignup',
   data() {
     return {
+      username: '',
       email: '',
       password: '',
       errorMessage: null,
@@ -40,7 +52,7 @@ export default {
   },
   methods: {
     async handleSignup() {
-      const error = await signup(this.email, this.password);
+      const error = await signup(this.username, this.email, this.password);
       if (error) {
         this.errorMessage = error.message;
       } else {

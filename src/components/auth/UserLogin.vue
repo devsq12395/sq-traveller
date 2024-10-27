@@ -1,24 +1,29 @@
 <template>
-  <form @submit.prevent="handleLogin" class="flex flex-col space-y-4">
-    <input 
-      type="email" 
-      v-model="email" 
-      placeholder="Email" 
-      required 
-      class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
-    />
-    <input 
-      type="password" 
-      v-model="password" 
-      placeholder="Password" 
-      required 
-      class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
-    />
-    <button type="submit" class="p-3 bg-indigo-500 text-white rounded hover:bg-indigo-600">
-      Login
-    </button>
-    <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
-  </form>
+  <div>
+    <form @submit.prevent="handleLogin" class="flex flex-col space-y-4">
+      <!-- Email Input -->
+      <input 
+        type="email" 
+        v-model="email" 
+        placeholder="Email" 
+        required 
+        class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+      />
+      <!-- Password Input -->
+      <input 
+        type="password" 
+        v-model="password" 
+        placeholder="Password" 
+        required 
+        class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+      />
+      <!-- Login Button -->
+      <button type="submit" class="p-3 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+        Login
+      </button>
+      <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -46,3 +51,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Additional styles if needed */
+</style>
