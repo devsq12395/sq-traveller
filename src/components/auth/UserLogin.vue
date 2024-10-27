@@ -45,7 +45,7 @@ export default {
         this.errorMessage = error.message;
       } else {
         this.errorMessage = null;
-        this.$router.push('/home'); // Redirect to homepage on successful login
+        this.$router.push('/dashboard');
       }
     },
   },

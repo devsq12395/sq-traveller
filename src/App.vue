@@ -3,9 +3,15 @@
 </template>
 
 <script>
+import { provide } from 'vue';
+import { useUser } from './context/UserContext';
+
 export default {
-  name: 'App'
-}
+  setup() {
+    // Provide user state globally
+    provide('user', useUser());
+  },
+};
 </script>
 
 <style>
