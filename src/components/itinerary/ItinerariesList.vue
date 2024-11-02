@@ -21,7 +21,7 @@
       <ItineraryEntry
         v-for="itinerary in itineraries"
         :key="itinerary.id"
-        :id="itinerary.id" <!-- Pass the itinerary ID here -->
+        :id="itinerary.id"
         :name="itinerary.name"
         :description="itinerary.description"
         :time_start="itinerary.time_start"
@@ -36,7 +36,7 @@ import { ref, onMounted } from 'vue';
 import ItineraryEntry from './ItineraryEntry.vue';
 import CreateItineraryPopup from '../popups/CreateItineraryPopup.vue';
 import { useUser } from '../../context/UserContext';
-import { fetchItineraries } from '../../helpers/itinerary';
+import { fetchItineraries } from '../../helpers/itinerary'; // Ensure correct path and named import
 
 export default {
   name: 'ItinerariesList',
