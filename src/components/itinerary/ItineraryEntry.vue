@@ -4,7 +4,7 @@
     class="flex items-start bg-white shadow-md rounded-lg p-4 mb-4 cursor-pointer hover:bg-gray-100"
   >
     <img
-      src="https://via.placeholder.com/150"
+      :src="img_url || 'https://via.placeholder.com/150'"
       alt="Itinerary Thumbnail"
       class="w-24 h-24 rounded-md mr-4"
     />
@@ -43,10 +43,17 @@ export default {
       type: String,
       required: true,
     },
+    img_url: {
+      type: String,
+      required: false,
+      default: 'https://via.placeholder.com/150', // Default placeholder
+    },
   },
   methods: {
     formatDate(date) {
-      return new Date(date).toLocaleString();
+      if (!date) return 'Invalid Date';
+      const parsedDate = new Date(date);
+      return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleString();
     },
     goToItinerary() {
       this.$router.push(`/itinerary/${this.id}`);

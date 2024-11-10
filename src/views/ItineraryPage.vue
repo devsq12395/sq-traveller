@@ -28,8 +28,14 @@
 
       <!-- Scrollable Events List Section -->
       <div class="flex-1 overflow-y-auto p-4">
-        <div v-for="(dayEvents, index) in daysWithEvents" :key="index" class="mb-6 bg-white rounded-lg shadow p-4">
-          <h2 class="text-xl font-bold mb-2 text-center">{{ `Day ${index + 1}` }}</h2>
+        <div
+          v-for="(dayEvents, index) in eventsGroupedByDay"
+          :key="index"
+          class="mb-6 bg-white rounded-lg shadow p-4"
+        >
+          <h2 class="text-xl font-bold mb-2 text-center">
+            Day {{ index + 1 }} - {{ formatDate(dayEvents[0].time_start) }}
+          </h2>
           <div v-for="event in dayEvents" :key="event.id" class="mb-2">
             <EventEntry
               :location="event.location"
@@ -67,7 +73,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchItineraryEvents } from '../helpers/itinerary';
 import EventEntry from '../components/events/EventEntry.vue';
@@ -115,16 +121,28 @@ export default {
       router.push('/dashboard');
     };
 
-    // Group events by day (this is a placeholder grouping method)
-    const daysWithEvents = computed(() => {
-      const groupedEvents = {};
-      events.value.forEach(event => {
-        const day = new Date(event.time_start).toDateString();
-        if (!groupedEvents[day]) groupedEvents[day] = [];
-        groupedEvents[day].push(event);
-      });
-      return Object.values(groupedEvents);
+    // Group events by day, sorted by start date
+    const eventsGroupedByDay = computed(() => {
+      const grouped = events.value.reduce((acc, event) => {
+        const dateKey = new Date(event.time_start).toDateString();
+        if (!acc[dateKey]) acc[dateKey] = [];
+        acc[dateKey].push(event);
+        return acc;
+      }, {});
+
+      // Sort the groups by date
+      return Object.values(grouped).sort(
+        (a, b) => new Date(a[0].time_start) - new Date(b[0].time_start)
+      );
     });
+
+    // Format the date for the day header
+    const formatDate = (date) => {
+      return new Date(date).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+      });
+    };
 
     const selectedEvent = computed(() =>
       events.value.find((event) => event.id === selectedEventId.value)
@@ -135,7 +153,7 @@ export default {
     return {
       itineraryId,
       itineraryName,
-      events,
+      eventsGroupedByDay,
       selectedEventId,
       showCreateEventPopup,
       loadEvents,
@@ -143,7 +161,7 @@ export default {
       selectEvent,
       selectedEvent,
       goToDashboard,
-      daysWithEvents,
+      formatDate,
     };
   },
 };
