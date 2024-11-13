@@ -51,9 +51,7 @@
 
       <!-- Fixed Footer Section -->
       <div class="p-4 border-t border-gray-300">
-        <button class="p-3 w-full bg-green-500 text-white rounded hover:bg-green-600">
-          Export to PDF
-        </button>
+        
       </div>
     </div>
 

@@ -34,6 +34,34 @@ export async function fetchItineraries(user_id) {
   return { data: adjustedData };
 }
 
+// Fetch a single itinerary by ID
+export async function fetchItinerary(itineraryId) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to fetch the itinerary.' };
+  }
+
+  // Fetch the itinerary and join with the itinerary_img table
+  const { data, error } = await supabase
+    .from('itinerary')
+    .select(`
+      id, name, description, time_start, time_end,
+      itinerary_img (img_url)
+    `)
+    .eq('id', itineraryId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching itinerary:', error.message);
+    return { error };
+  }
+
+  // Access the first img_url from the itinerary_img or use the placeholder
+  const img_url = data.itinerary_img?.length ? data.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
+  const adjustedData = { ...data, img_url };
+
+  return { data: adjustedData };
+}
 
 // Create a new event for a specific itinerary
 export async function createEvent(itinerary_id, { location, description, time_start, time_end }) {
@@ -56,8 +84,10 @@ export async function createEvent(itinerary_id, { location, description, time_st
 export async function createItinerary(userId, name, description, timeStart, timeEnd) {
   try {
     // Extract only the time portion from the provided ISO strings
-    const startTime = new Date(timeStart).toLocaleTimeString('en-US', { hour12: false });
-    const endTime = new Date(timeEnd).toLocaleTimeString('en-US', { hour12: false });
+    const startTime = new Date(timeStart).toISOString();
+    const endTime = new Date(timeEnd).toISOString();
+
+    console.log (`${startTime}, ${endTime}`);
 
     const { data, error } = await supabase
       .from('itinerary')
@@ -67,7 +97,8 @@ export async function createItinerary(userId, name, description, timeStart, time
         description,
         time_start: startTime,
         time_end: endTime,
-      }).select();
+      })
+      .select();
 
     if (error) {
       console.error('Error creating itinerary in Supabase:', error.message);
