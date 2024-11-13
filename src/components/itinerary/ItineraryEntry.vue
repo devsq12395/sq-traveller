@@ -1,17 +1,17 @@
 <template>
   <div 
     @click="goToItinerary"
-    class="flex items-start bg-white shadow-md rounded-lg p-4 mb-4 cursor-pointer hover:bg-gray-100"
+    class="w-60 bg-white shadow-md rounded-lg overflow-hidden cursor-pointer hover:bg-gray-100 m-2"
   >
     <img
-      :src="img_url || 'https://via.placeholder.com/150'"
+      :src="img_url"
       alt="Itinerary Thumbnail"
-      class="w-24 h-24 rounded-md mr-4"
+      class="w-full h-40 object-cover"
     />
-    <div>
-      <h2 class="text-xl font-bold">{{ name }}</h2>
-      <p class="text-gray-600">{{ description }}</p>
-      <p class="text-sm text-gray-500 mt-2">
+    <div class="p-4">
+      <h2 class="text-lg font-bold truncate">{{ name }}</h2>
+      <p class="text-gray-600 text-sm truncate">{{ description }}</p>
+      <p class="text-xs text-gray-500 mt-2">
         <strong>Start:</strong> {{ formatDate(time_start) }}<br>
         <strong>End:</strong> {{ formatDate(time_end) }}
       </p>
@@ -46,13 +46,14 @@ export default {
     img_url: {
       type: String,
       required: false,
-      default: 'https://via.placeholder.com/150', // Default placeholder
+      default: 'https://via.placeholder.com/150',
     },
   },
   methods: {
     formatDate(date) {
       if (!date) return 'Invalid Date';
-      const parsedDate = new Date(date);
+      // Use a more robust date parsing
+      const parsedDate = new Date(Date.parse(date));
       return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleString();
     },
     goToItinerary() {
@@ -63,5 +64,16 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles if needed */
+/* Adjust the width and height for better thumbnail view */
+.w-60 {
+  width: 15rem;
+}
+.h-40 {
+  height: 10rem;
+}
+.truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 </style>

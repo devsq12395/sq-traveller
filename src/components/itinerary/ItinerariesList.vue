@@ -14,7 +14,7 @@
     />
 
     <div v-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
-    <div v-else>
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <ItineraryEntry
         v-for="itinerary in itineraries"
         :key="itinerary.id"
@@ -79,5 +79,9 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles if needed */
+/* Styles for grid layout */
+.grid {
+  display: grid;
+  gap: 1rem;
+}
 </style>

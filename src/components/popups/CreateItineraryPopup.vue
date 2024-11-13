@@ -92,31 +92,41 @@ export default {
     };
 
 
-    // Handle itinerary creation
     const handleCreateItinerary = async () => {
+      // Attempt to create the itinerary
       const { data, error } = await createItinerary(
         user.user_id,
         itinerary.value.name,
         itinerary.value.description,
-        new Date(itinerary.value.time_start).toLocaleTimeString('en-US', { hour12: false }),
-        new Date(itinerary.value.time_end).toLocaleTimeString('en-US', { hour12: false })
+        itinerary.value.time_start,
+        itinerary.value.time_end
       );
 
+      // Check if there was an error
       if (error) {
-        console.error('Error creating itinerary:', error); // Updated error logging
+        console.error('Error creating itinerary:', error); // Log the entire error object
         return;
       }
 
+      // Ensure data is not null
+      if (!data) {
+        console.error('Itinerary creation returned null data.');
+        return;
+      }
+
+      // If data is valid and there's an image URL, attempt to save the image
       if (data && imageUrl.value) {
         try {
-          await saveItineraryImage(data[0].id, imageUrl.value);
+          await saveItineraryImage(data[0].id, imageUrl.value); // Save image URL
+          console.log('Image saved successfully');
         } catch (imgError) {
-          console.error('Error saving itinerary image:', imgError);
+          console.error('Error saving itinerary image:', imgError); // Log the image error
         }
       }
 
-      emit('refresh'); // Refresh the list on success
-      closePopup(); // Close the popup
+      // Refresh and close the popup
+      emit('refresh');
+      closePopup();
     };
 
 

@@ -7,9 +7,13 @@ export async function fetchItineraries(user_id) {
     return { error: 'User ID is required to fetch itineraries.' };
   }
 
+  // Fetch itineraries and join with the itinerary_img table
   const { data, error } = await supabase
     .from('itinerary')
-    .select('id, name, description, time_start, time_end, itinerary_img(img_url)')
+    .select(`
+      id, name, description, time_start, time_end,
+      itinerary_img (img_url)
+    `)
     .eq('user_id', user_id);
 
   if (error) {
@@ -17,14 +21,19 @@ export async function fetchItineraries(user_id) {
     return { error };
   }
 
-  // Adjust time fields and handle nested `itinerary_img` data
-  const adjustedData = data.map(itinerary => ({
-    ...itinerary,
-    img_url: itinerary.itinerary_img?.img_url || 'https://via.placeholder.com/150',
-  }));
+  // Adjust time fields and handle nested itinerary_img data
+  const adjustedData = data.map(itinerary => {
+    // Access the first img_url from the itinerary_img array or use the placeholder
+    const img_url = itinerary.itinerary_img?.length ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
+    return {
+      ...itinerary,
+      img_url,
+    };
+  });
 
   return { data: adjustedData };
 }
+
 
 // Create a new event for a specific itinerary
 export async function createEvent(itinerary_id, { location, description, time_start, time_end }) {
@@ -46,28 +55,31 @@ export async function createEvent(itinerary_id, { location, description, time_st
 // Create a new itinerary
 export async function createItinerary(userId, name, description, timeStart, timeEnd) {
   try {
+    // Extract only the time portion from the provided ISO strings
+    const startTime = new Date(timeStart).toLocaleTimeString('en-US', { hour12: false });
+    const endTime = new Date(timeEnd).toLocaleTimeString('en-US', { hour12: false });
+
     const { data, error } = await supabase
       .from('itinerary')
       .insert({
         user_id: userId,
         name,
         description,
-        time_start: timeStart,
-        time_end: timeEnd,
-      });
+        time_start: startTime,
+        time_end: endTime,
+      }).select();
 
     if (error) {
-      console.error('Error creating itinerary:', error.message);
+      console.error('Error creating itinerary in Supabase:', error.message);
       return { data: null, error: error.message };
     }
 
     return { data, error: null };
   } catch (err) {
-    console.error('Unexpected error:', err.message);
+    console.error('Unexpected error in createItinerary:', err.message);
     return { data: null, error: err.message };
   }
 }
-
 
 // Save the image URL to the itinerary_img table
 export async function saveItineraryImage(itineraryId, imgUrl) {
