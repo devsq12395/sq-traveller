@@ -2,27 +2,31 @@
   <div class="flex min-h-screen p-8 bg-pink-100">
     <!-- Sidebar for Event List -->
     <div class="w-1/3 bg-blue-100 rounded-lg flex flex-col">
-      <!-- Fixed Header Section -->
+      <!-- Add itinerary image and description -->
       <div class="p-4 border-b border-gray-300">
-        <div class="flex justify-between items-center mb-4">
-          <h1 class="text-2xl font-semibold">{{ itineraryName }}</h1>
-          <!-- Buttons Container -->
-          <div class="flex space-x-4">
-            <!-- Back to Dashboard Button -->
-            <button
-              @click="goToDashboard"
-              class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-            >
-              ← Back to Dashboard
-            </button>
-            <!-- Create Event Button -->
-            <button
-              @click="showCreateEventPopup = true"
-              class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Create Event
-            </button>
+        <div class="flex items-center mb-4">
+          <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-24 h-24 mr-4" />
+          <div>
+            <h1 class="text-2xl font-semibold">{{ itineraryName }}</h1>
+            <p class="text-sm text-gray-600">{{ itineraryDescription }}</p>
           </div>
+        </div>
+        <!-- Buttons Container -->
+        <div class="flex space-x-4">
+          <!-- Back to Dashboard Button -->
+          <button
+            @click="goToDashboard"
+            class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+          >
+            ← Back to Dashboard
+          </button>
+          <!-- Create Event Button -->
+          <button
+            @click="showCreateEventPopup = true"
+            class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Create Event
+          </button>
         </div>
       </div>
 
@@ -73,7 +77,8 @@
 <script>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { fetchItineraryEvents } from '../helpers/itinerary';
+import { fetchItinerary } from '../helpers/itinerary';
+import { fetchItineraryEvents } from '../helpers/event';
 import EventEntry from '../components/events/EventEntry.vue';
 import EventInfo from '../components/events/EventInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
@@ -90,21 +95,39 @@ export default {
     const router = useRouter();
     const itineraryId = route.params.id;
     const itineraryName = ref('');
+    const itineraryDescription = ref('');
+    const itineraryImgUrl = ref('');
     const events = ref([]);
     const selectedEventId = ref(null);
     const showCreateEventPopup = ref(false);
 
-    // Fetch events for the itinerary
+    // Fetch itinerary details and events
+    const loadItinerary = async () => {
+      const { data, error } = await fetchItinerary(itineraryId);
+
+      if (!error) {
+        itineraryName.value = data.name;
+        itineraryDescription.value = data.description;
+        itineraryImgUrl.value = data.img_url;
+      } else {
+        console.error('Error fetching itinerary:', error.message);
+      }
+    };
+
     const loadEvents = async () => {
       const { data, error } = await fetchItineraryEvents(itineraryId);
 
       if (!error) {
         events.value = data;
-        itineraryName.value = data.length > 0 ? data[0].itinerary_name : 'Itinerary';
       } else {
         console.error('Error fetching events:', error.message);
       }
     };
+
+    onMounted(() => {
+      loadItinerary();
+      loadEvents();
+    });
 
     const selectEvent = (id) => {
       selectedEventId.value = id;
@@ -134,23 +157,15 @@ export default {
       );
     });
 
-    // Format the date for the day header
-    const formatDate = (date) => {
-      return new Date(date).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-      });
-    };
-
     const selectedEvent = computed(() =>
       events.value.find((event) => event.id === selectedEventId.value)
     );
 
-    onMounted(loadEvents);
-
     return {
       itineraryId,
       itineraryName,
+      itineraryDescription,
+      itineraryImgUrl,
       eventsGroupedByDay,
       selectedEventId,
       showCreateEventPopup,
@@ -159,7 +174,6 @@ export default {
       selectEvent,
       selectedEvent,
       goToDashboard,
-      formatDate,
     };
   },
 };

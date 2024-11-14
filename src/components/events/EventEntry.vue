@@ -8,9 +8,9 @@
   >
     <!-- Icon or Thumbnail -->
     <img
-      src="https://via.placeholder.com/50"
+      :src="imgUrl"
       alt="Event Thumbnail"
-      class="w-12 h-12 rounded-md mr-4 border border-gray-300 shadow-sm"
+      class="w-16 h-16 rounded-md mr-4 border border-gray-300 shadow-sm"
     />
 
     <!-- Event Details -->
@@ -34,26 +34,12 @@
 export default {
   name: 'EventEntry',
   props: {
-    location: {
-      type: String,
-      required: true,
-    },
-    time_start: {
-      type: String,
-      required: true,
-    },
-    time_end: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    isSelected: {
-      type: Boolean,
-      default: false,
-    },
+    location: { type: String, required: true },
+    time_start: { type: String, required: true },
+    time_end: { type: String, required: true },
+    description: { type: String, required: true },
+    imgUrl: { type: String, required: false, default: 'https://via.placeholder.com/50' },
+    isSelected: { type: Boolean, default: false },
   },
   methods: {
     formatDate(date) {

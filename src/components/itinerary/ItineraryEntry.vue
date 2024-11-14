@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { setItinerary } from '../../context/UserContext.js';
+
 export default {
   name: 'ItineraryEntry',
   props: {
@@ -57,6 +59,7 @@ export default {
       return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleString();
     },
     goToItinerary() {
+      setItinerary({ id: this.id });
       this.$router.push(`/itinerary/${this.id}`);
     },
   },

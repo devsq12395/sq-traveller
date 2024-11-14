@@ -6,6 +6,9 @@ const userState = reactive({
   email: null,
   user_id: null,
 });
+const itineraryState = reactive({
+  id: null
+});
 
 // Initialize user state from local storage
 function loadUserFromStorage() {
@@ -25,6 +28,10 @@ export function setUser(user) {
 
   // Save user data to local storage
   localStorage.setItem('user', JSON.stringify(user));
+}
+
+export function setItinerary(id) {
+  itineraryState.id = id;
 }
 
 // Function to clear user data and local storage

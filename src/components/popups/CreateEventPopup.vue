@@ -37,6 +37,14 @@
           class="w-full p-2 border border-gray-300 rounded"
         />
 
+        <!-- Image Upload Field -->
+        <input
+          type="file"
+          @change="handleImageUpload"
+          accept="image/*"
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-2">
           <button type="button" @click="closePopup" class="p-2 bg-gray-300 rounded">Cancel</button>
@@ -49,7 +57,8 @@
 
 <script>
 import { ref } from 'vue';
-import { createEvent } from '../../helpers/itinerary'; // Make sure this path is correct based on your structure
+import { createEvent, saveEventImage } from '../../helpers/event';
+import axios from 'axios';
 
 export default {
   name: 'CreateEventPopup',
@@ -67,14 +76,50 @@ export default {
       time_start: '',
       time_end: '',
     });
+    const imageUrl = ref('');
+
+    // Handles image upload
+    const handleImageUpload = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const uploadPreset = process.env.VUE_APP_CLOUDINARY_UPLOAD_PRESET;
+        const cloudinaryUrl = process.env.VUE_APP_CLOUDINARY_URL;
+
+        // Check if variables are defined
+        if (!uploadPreset || !cloudinaryUrl) {
+          console.error("Cloudinary environment variables are missing.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", uploadPreset);
+
+        const response = await axios.post(cloudinaryUrl, formData);
+        imageUrl.value = response.data.secure_url;
+        console.log("Image uploaded successfully:", imageUrl.value);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    };
 
     // Handles event creation
     const handleCreateEvent = async () => {
-      const { error } = await createEvent(props.itineraryId, event.value);
+      const { data, error } = await createEvent(props.itineraryId, event.value);
 
-      if (!error) {
-        emit('refresh'); // Refresh the event list in the parent component
-        closePopup(); // Close the popup after creation
+      if (!error && data) {
+        if (imageUrl.value) {
+          try {
+            await saveEventImage(data[0].id, imageUrl.value); // Save event image
+            console.log("Event image saved successfully");
+          } catch (imgError) {
+            console.error("Error saving event image:", imgError);
+          }
+        }
+        emit('refresh'); // Refresh event list
+        closePopup();
       } else {
         console.error('Error creating event:', error.message);
       }
@@ -82,13 +127,14 @@ export default {
 
     // Closes the popup
     const closePopup = () => {
-      event.value = { location: '', description: '', time_start: '', time_end: '' }; // Reset the form
-      emit('close'); // Emit close event to parent
+      event.value = { location: '', description: '', time_start: '', time_end: '' }; // Reset form
+      emit('close'); // Emit close event
     };
 
     return {
       event,
       handleCreateEvent,
+      handleImageUpload,
       closePopup,
     };
   },
