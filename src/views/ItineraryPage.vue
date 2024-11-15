@@ -157,6 +157,18 @@ export default {
       );
     });
 
+    // Format the date for the day header
+    const formatDate = (date) => {
+      if (!date) return 'Invalid Date';
+      const parsedDate = new Date(date);
+      return isNaN(parsedDate)
+        ? 'Invalid Date'
+        : parsedDate.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+          });
+    };
+
     const selectedEvent = computed(() =>
       events.value.find((event) => event.id === selectedEventId.value)
     );
@@ -174,6 +186,7 @@ export default {
       selectEvent,
       selectedEvent,
       goToDashboard,
+      formatDate,
     };
   },
 };

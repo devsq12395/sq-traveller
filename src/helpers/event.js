@@ -38,24 +38,14 @@ export async function fetchItineraryEvents(itinerary_id) {
 }
 
 // Save the image URL to the event_img table
-export async function saveEventImage(eventId, imageFile) {
+export async function saveEventImage(eventId, imgUrl) {
     try {
-        // Upload image to storage service, e.g., Supabase Storage or an external service
-        const { data: uploadData, error: uploadError } = await supabase
-        .storage
-        .from('event-images') // Assuming 'event-images' is your storage bucket
-        .upload(`images/${eventId}/${imageFile.name}`, imageFile);
-
-        if (uploadError) throw uploadError;
-
-        // Save the image URL to the event_img table
-        const imgUrl = `https://your-storage-url/${uploadData.path}`;
         const { data, error } = await supabase
-        .from('event_img')
-        .insert({
-            event_id: eventId,
-            img_url: imgUrl,
-        });
+            .from('event_img')
+            .insert({
+                event_id: eventId,
+                img_url: imgUrl,
+            });
 
         if (error) throw error;
         return { data };

@@ -43,8 +43,15 @@ export default {
   },
   methods: {
     formatDate(date) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-      return new Date(date).toLocaleString(undefined, options);
+      if (!date) return 'Invalid Date';
+      const parsedDate = new Date(date);
+      return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+      });
     },
     onSelect() {
       this.$emit('select-event');
@@ -52,3 +59,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Add custom styling if needed */
+</style>
