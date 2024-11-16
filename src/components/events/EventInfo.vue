@@ -4,7 +4,7 @@
     <div class="flex-1 space-y-4">
       <!-- Event Image and Name -->
       <div class="mb-4">
-        <img src="https://via.placeholder.com/300x150" alt="Event Thumbnail" class="w-full object-cover rounded shadow-md mb-2" />
+        <img :src="event.img_url" alt="Event Thumbnail" class="w-full object-cover rounded shadow-md mb-2" />
         <h2 class="text-3xl font-bold">{{ event.location }}</h2>
         <p class="text-gray-600">
           {{ formatDate(event.time_start) }} - {{ formatDate(event.time_end) }}
@@ -25,7 +25,7 @@
 
       <!-- Edit Buttons Section -->
       <div class="flex space-x-4">
-        <button class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Description</button>
+        <button @click="showEditEventPopup = true" class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Details</button>
         <button class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Notes</button>
       </div>
     </div>
@@ -39,12 +39,16 @@
     <div class="w-1/4 space-y-4">
       <EventBudgets :eventId="event.id" />
     </div>
+
+    <!-- EditEventPopup -->
+    <EditEventPopup v-if="showEditEventPopup" :event="event" @close="showEditEventPopup = false" />
   </div>
 </template>
 
 <script>
 import EventActivities from './EventActivities.vue';
 import EventBudgets from './EventBudgets.vue';
+import EditEventPopup from '../popups/EditEventPopup.vue'; // Import the EditEventPopup component
 
 export default {
   name: 'EventInfo',
@@ -57,6 +61,12 @@ export default {
   components: {
     EventActivities,
     EventBudgets,
+    EditEventPopup, // Register the EditEventPopup component
+  },
+  data() {
+    return {
+      showEditEventPopup: false, // Track the visibility of the EditEventPopup
+    };
   },
   methods: {
     formatDate(date) {

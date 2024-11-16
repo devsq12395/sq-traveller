@@ -47,6 +47,7 @@
               :time_end="event.time_end"
               :description="event.description"
               :isSelected="selectedEventId === event.id"
+              :imgUrl="event.img_url"
               @select-event="selectEvent(event.id)"
             />
           </div>
@@ -54,9 +55,7 @@
       </div>
 
       <!-- Fixed Footer Section -->
-      <div class="p-4 border-t border-gray-300">
-        
-      </div>
+      <div class="p-4 border-t border-gray-300"></div>
     </div>
 
     <!-- Main content area for selected Event -->
@@ -79,6 +78,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
+import { setEventId } from '../context/UserContext'; // Import the event context
 import EventEntry from '../components/events/EventEntry.vue';
 import EventInfo from '../components/events/EventInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
@@ -131,6 +131,7 @@ export default {
 
     const selectEvent = (id) => {
       selectedEventId.value = id;
+      setEventId(id); // Save selected event ID in the context
     };
 
     const closeCreateEventPopup = () => {

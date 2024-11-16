@@ -6,8 +6,13 @@ const userState = reactive({
   email: null,
   user_id: null,
 });
+
 const itineraryState = reactive({
-  id: null
+  id: null,
+});
+
+const eventState = reactive({
+  eventId: null,
 });
 
 // Initialize user state from local storage
@@ -34,6 +39,10 @@ export function setItinerary(id) {
   itineraryState.id = id;
 }
 
+export function setEventId(eventId) {
+  eventState.eventId = eventId;
+}
+
 // Function to clear user data and local storage
 export function clearUser() {
   userState.username = null;
@@ -44,9 +53,17 @@ export function clearUser() {
   localStorage.removeItem('user');
 }
 
-// Provide the user state to other components
+// Provide the user and event states to other components
 export function useUser() {
   return userState;
+}
+
+export function useItinerary() {
+  return itineraryState;
+}
+
+export function useEvent() {
+  return eventState;
 }
 
 // Load user data from storage on app initialization

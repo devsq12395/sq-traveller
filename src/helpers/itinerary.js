@@ -70,8 +70,6 @@ export async function createItinerary(userId, name, description, timeStart, time
     const startTime = new Date(timeStart).toISOString();
     const endTime = new Date(timeEnd).toISOString();
 
-    console.log (`${startTime}, ${endTime}`);
-
     const { data, error } = await supabase
       .from('itinerary')
       .insert({

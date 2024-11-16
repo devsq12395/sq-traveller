@@ -1,9 +1,9 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
     <div class="bg-white p-6 rounded shadow-lg w-96">
-      <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
-      
-      <form @submit.prevent="handleCreateEvent" class="space-y-4">
+      <h2 class="text-2xl font-bold mb-4">Edit Event</h2>
+
+      <form @submit.prevent="handleEditEvent" class="space-y-4">
         <!-- Location Field -->
         <input
           type="text"
@@ -48,7 +48,7 @@
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-2">
           <button type="button" @click="closePopup" class="p-2 bg-gray-300 rounded">Cancel</button>
-          <button type="submit" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Create</button>
+          <button type="submit" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save Changes</button>
         </div>
       </form>
     </div>
@@ -56,20 +56,16 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { createEvent, saveEventImage } from '../../helpers/event';
+import { ref, onMounted } from 'vue';
+import { updateEvent, saveEventImage, fetchEvent } from '../../helpers/event';
+import { useEvent } from '../../context/UserContext';
 import axios from 'axios';
 
 export default {
-  name: 'CreateEventPopup',
-  props: {
-    itineraryId: {
-      type: String,
-      required: true,
-    },
-  },
+  name: 'EditEventPopup',
   emits: ['close', 'refresh'],
-  setup(props, { emit }) {
+  setup(_, { emit }) {
+    const { eventId } = useEvent(); // Use eventId from context
     const event = ref({
       location: '',
       description: '',
@@ -77,6 +73,25 @@ export default {
       time_end: '',
     });
     const imageUrl = ref('');
+
+    // Load the event data when the component is mounted
+    onMounted(async () => {
+      if (eventId) {
+        // Fetch the event data using eventId
+        const { data, error } = await fetchEvent(eventId);
+        if (!error) {
+          event.value = {
+            location: data.location,
+            description: data.description,
+            time_start: data.time_start,
+            time_end: data.time_end,
+          };
+          imageUrl.value = data.img_url || '';
+        } else {
+          console.error('Error fetching event data:', error.message);
+        }
+      }
+    });
 
     // Handles image upload
     const handleImageUpload = async (e) => {
@@ -105,38 +120,34 @@ export default {
       }
     };
 
-    // Handles event creation
-    const handleCreateEvent = async () => {
-      const { data, error } = await createEvent(props.itineraryId, event.value);
+    // Handles event editing
+    const handleEditEvent = async () => {
+      const { error } = await updateEvent(eventId, event.value);
 
-      console.log (data);
-      if (!error && data) {
+      if (!error) {
         if (imageUrl.value) {
           try {
-            console.log (data[0].id);
-            console.log (imageUrl.value);
-            await saveEventImage(data[0].id, imageUrl.value); // Save event image
-            console.log("Event image saved successfully");
+            await saveEventImage(eventId, imageUrl.value); // Save event image
+            console.log("Event image updated successfully");
           } catch (imgError) {
-            console.error("Error saving event image:", imgError);
+            console.error("Error updating event image:", imgError);
           }
         }
         emit('refresh'); // Refresh event list
         closePopup();
       } else {
-        console.error('Error creating event:', error.message);
+        console.error('Error updating event:', error.message);
       }
     };
 
     // Closes the popup
     const closePopup = () => {
-      event.value = { location: '', description: '', time_start: '', time_end: '' }; // Reset form
       emit('close'); // Emit close event
     };
 
     return {
       event,
-      handleCreateEvent,
+      handleEditEvent,
       handleImageUpload,
       closePopup,
     };
