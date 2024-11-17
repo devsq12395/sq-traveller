@@ -11,7 +11,7 @@ export async function fetchItineraries(user_id) {
   const { data, error } = await supabase
     .from('itinerary')
     .select(`
-      id, name, description, time_start, time_end,
+      id, name, description, days,
       itinerary_img (img_url)
     `)
     .eq('user_id', user_id);

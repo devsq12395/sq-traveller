@@ -21,8 +21,7 @@
         :id="itinerary.id"
         :name="itinerary.name"
         :description="itinerary.description"
-        :time_start="itinerary.time_start"
-        :time_end="itinerary.time_end"
+        :days="itinerary.days"
         :img_url="itinerary.img_url"
       />
     </div>

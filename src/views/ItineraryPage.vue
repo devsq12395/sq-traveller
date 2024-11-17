@@ -38,13 +38,12 @@
           class="mb-6 bg-white rounded-lg shadow p-4"
         >
           <h2 class="text-xl font-bold mb-2 text-center">
-            Day {{ index + 1 }} - {{ formatDate(dayEvents[0].time_start) }}
+            Day {{ index + 1 }}
           </h2>
           <div v-for="event in dayEvents" :key="event.id" class="mb-2">
             <EventEntry
               :location="event.location"
-              :time_start="event.time_start"
-              :time_end="event.time_end"
+              :day="event.day"
               :description="event.description"
               :isSelected="selectedEventId === event.id"
               :imgUrl="event.img_url"
@@ -143,32 +142,18 @@ export default {
       router.push('/dashboard');
     };
 
-    // Group events by day, sorted by start date
+    // Group events by day
     const eventsGroupedByDay = computed(() => {
       const grouped = events.value.reduce((acc, event) => {
-        const dateKey = new Date(event.time_start).toDateString();
-        if (!acc[dateKey]) acc[dateKey] = [];
-        acc[dateKey].push(event);
+        const dayKey = event.day;
+        if (!acc[dayKey]) acc[dayKey] = [];
+        acc[dayKey].push(event);
         return acc;
       }, {});
 
-      // Sort the groups by date
-      return Object.values(grouped).sort(
-        (a, b) => new Date(a[0].time_start) - new Date(b[0].time_start)
-      );
+      // Sort the groups by day
+      return Object.values(grouped).sort((a, b) => a[0].day - b[0].day);
     });
-
-    // Format the date for the day header
-    const formatDate = (date) => {
-      if (!date) return 'Invalid Date';
-      const parsedDate = new Date(date);
-      return isNaN(parsedDate)
-        ? 'Invalid Date'
-        : parsedDate.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-          });
-    };
 
     const selectedEvent = computed(() =>
       events.value.find((event) => event.id === selectedEventId.value)
@@ -187,7 +172,6 @@ export default {
       selectEvent,
       selectedEvent,
       goToDashboard,
-      formatDate,
     };
   },
 };
