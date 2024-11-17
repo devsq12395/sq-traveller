@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient';
+import { supabase } from './supabaseClient';
 
 // Fetch notes for a specific event
 export async function fetchEventNotes(eventId) {

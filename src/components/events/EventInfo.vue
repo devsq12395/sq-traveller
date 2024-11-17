@@ -26,7 +26,7 @@
       <!-- Edit Buttons Section -->
       <div class="flex space-x-4">
         <button @click="showEditEventPopup = true" class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Details</button>
-        <button class="p-2 px-4 bg-green-500 text-white rounded shadow">Add a note</button>
+        <button @click="$emit('show-add-note')" class="p-2 px-4 bg-green-500 text-white rounded shadow">Add a note</button>
       </div>
     </div>
 

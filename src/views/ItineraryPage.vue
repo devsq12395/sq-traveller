@@ -59,7 +59,7 @@
 
     <!-- Main content area for selected Event -->
     <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
-      <EventInfo v-if="selectedEvent" :event="selectedEvent" />
+      <EventInfo v-if="selectedEvent" :event="selectedEvent" @show-add-note="showCreateNotePopup = true" />
     </div>
 
     <!-- Create Event Popup -->
@@ -67,6 +67,13 @@
       v-if="showCreateEventPopup"
       :itineraryId="itineraryId"
       @close="closeCreateEventPopup"
+      @refresh="loadEvents"
+    />
+
+    <!-- Create Notes Popup -->
+    <CreateNotePopup
+      v-if="showCreateNotePopup"
+      @close="showCreateNotePopup = false"
       @refresh="loadEvents"
     />
   </div>
@@ -77,10 +84,11 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
-import { setEventId } from '../context/UserContext'; // Import the event context
+import { setEventId } from '../context/UserContext';
 import EventEntry from '../components/events/EventEntry.vue';
 import EventInfo from '../components/events/EventInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
+import CreateNotePopup from '../components/popups/CreateNotePopup.vue'; // Import the CreateNotePopup component
 
 export default {
   name: 'ItineraryPage',
@@ -88,6 +96,7 @@ export default {
     EventEntry,
     EventInfo,
     CreateEventPopup,
+    CreateNotePopup, // Register the CreateNotePopup component
   },
   setup() {
     const route = useRoute();
@@ -99,11 +108,11 @@ export default {
     const events = ref([]);
     const selectedEventId = ref(null);
     const showCreateEventPopup = ref(false);
+    const showCreateNotePopup = ref(false); // State to manage CreateNotePopup visibility
 
     // Fetch itinerary details and events
     const loadItinerary = async () => {
       const { data, error } = await fetchItinerary(itineraryId);
-
       if (!error) {
         itineraryName.value = data.name;
         itineraryDescription.value = data.description;
@@ -115,7 +124,6 @@ export default {
 
     const loadEvents = async () => {
       const { data, error } = await fetchItineraryEvents(itineraryId);
-
       if (!error) {
         events.value = data;
       } else {
@@ -137,12 +145,10 @@ export default {
       showCreateEventPopup.value = false;
     };
 
-    // Navigate back to the dashboard
     const goToDashboard = () => {
       router.push('/dashboard');
     };
 
-    // Group events by day
     const eventsGroupedByDay = computed(() => {
       const grouped = events.value.reduce((acc, event) => {
         const dayKey = event.day;
@@ -150,8 +156,6 @@ export default {
         acc[dayKey].push(event);
         return acc;
       }, {});
-
-      // Sort the groups by day
       return Object.values(grouped).sort((a, b) => a[0].day - b[0].day);
     });
 
@@ -167,6 +171,7 @@ export default {
       eventsGroupedByDay,
       selectedEventId,
       showCreateEventPopup,
+      showCreateNotePopup, // Return the state
       loadEvents,
       closeCreateEventPopup,
       selectEvent,
