@@ -16,18 +16,13 @@
           required
           class="w-full p-2 border border-gray-300 rounded"
         ></textarea>
-        <input
-          type="datetime-local"
-          v-model="itinerary.time_start"
+        <textarea
+          type="number"
+          v-model="itinerary.days"
+          placeholder="Number of days"
           required
           class="w-full p-2 border border-gray-300 rounded"
-        />
-        <input
-          type="datetime-local"
-          v-model="itinerary.time_end"
-          required
-          class="w-full p-2 border border-gray-300 rounded"
-        />
+        ></textarea>
         <!-- Image Upload Section -->
         <input
           type="file"
@@ -57,8 +52,7 @@ export default {
     const itinerary = ref({
       name: '',
       description: '',
-      time_start: '',
-      time_end: '',
+      days: 0
     });
     const imageUrl = ref('');
     const user = useUser();
@@ -98,8 +92,7 @@ export default {
         user.user_id,
         itinerary.value.name,
         itinerary.value.description,
-        itinerary.value.time_start,
-        itinerary.value.time_end
+        itinerary.value.days
       );
 
       // Check if there was an error
@@ -132,7 +125,7 @@ export default {
 
     // Close the popup
     const closePopup = () => {
-      itinerary.value = { name: '', description: '', time_start: '', time_end: '' };
+      itinerary.value = { name: '', description: '', days: 0 };
       emit('close');
     };
 

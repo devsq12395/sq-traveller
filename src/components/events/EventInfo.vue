@@ -7,18 +7,18 @@
         <img :src="event.img_url" alt="Event Thumbnail" class="w-full object-cover rounded shadow-md mb-2" />
         <h2 class="text-3xl font-bold">{{ event.location }}</h2>
         <p class="text-gray-600">
-          {{ formatDate(event.time_start) }} - {{ formatDate(event.time_end) }}
+          Day {{ event.day || 'not assigned' }}
         </p>
       </div>
 
       <!-- Description Section -->
-      <div>
+      <div class="text-left">
         <h3 class="text-lg font-semibold">Description:</h3>
         <p class="text-gray-700">{{ event.description }}</p>
       </div>
 
       <!-- Notes Section -->
-      <div>
+      <div class="text-left">
         <h3 class="text-lg font-semibold">Notes:</h3>
         <p class="text-gray-700">{{ event.notes || "No notes available" }}</p>
       </div>
@@ -26,7 +26,7 @@
       <!-- Edit Buttons Section -->
       <div class="flex space-x-4">
         <button @click="showEditEventPopup = true" class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Details</button>
-        <button class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Notes</button>
+        <button class="p-2 px-4 bg-green-500 text-white rounded shadow">Add a note</button>
       </div>
     </div>
 
@@ -67,12 +67,6 @@ export default {
     return {
       showEditEventPopup: false, // Track the visibility of the EditEventPopup
     };
-  },
-  methods: {
-    formatDate(date) {
-      const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-      return new Date(date).toLocaleTimeString([], options);
-    },
   },
 };
 </script>

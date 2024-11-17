@@ -12,8 +12,7 @@
       <h2 class="text-lg font-bold truncate">{{ name }}</h2>
       <p class="text-gray-600 text-sm truncate">{{ description }}</p>
       <p class="text-xs text-gray-500 mt-1">
-        <strong>Start:</strong> {{ formatDate(time_start) }}<br>
-        <strong>End:</strong> {{ formatDate(time_end) }}
+        <strong>Days:</strong> {{ days }}<br>
       </p>
     </div>
   </div>
@@ -37,12 +36,8 @@ export default {
       type: String,
       required: true,
     },
-    time_start: {
-      type: String,
-      required: true,
-    },
-    time_end: {
-      type: String,
+    days: {
+      type: Int32Array,
       required: true,
     },
     img_url: {
@@ -52,12 +47,6 @@ export default {
     },
   },
   methods: {
-    formatDate(date) {
-      console.log (date);
-      if (!date) return 'Invalid Date';
-      const parsedDate = new Date(Date.parse(date));
-      return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleString();
-    },
     goToItinerary() {
       setItinerary({ id: this.id });
       this.$router.push(`/itinerary/${this.id}`);

@@ -21,21 +21,14 @@
           class="w-full p-2 border border-gray-300 rounded"
         ></textarea>
 
-        <!-- Start Time Field -->
-        <input
-          type="datetime-local"
-          v-model="event.time_start"
+        <!-- Day Field -->
+        <textarea
+          type="number"
+          v-model="event.day"
+          placeholder="Day"
           required
           class="w-full p-2 border border-gray-300 rounded"
-        />
-
-        <!-- End Time Field -->
-        <input
-          type="datetime-local"
-          v-model="event.time_end"
-          required
-          class="w-full p-2 border border-gray-300 rounded"
-        />
+        ></textarea>
 
         <!-- Image Upload Field -->
         <input
@@ -73,8 +66,7 @@ export default {
     const event = ref({
       location: '',
       description: '',
-      time_start: '',
-      time_end: '',
+      day: 0
     });
     const imageUrl = ref('');
 
@@ -113,10 +105,7 @@ export default {
       if (!error && data) {
         if (imageUrl.value) {
           try {
-            console.log (data[0].id);
-            console.log (imageUrl.value);
             await saveEventImage(data[0].id, imageUrl.value); // Save event image
-            console.log("Event image saved successfully");
           } catch (imgError) {
             console.error("Error saving event image:", imgError);
           }
@@ -130,7 +119,7 @@ export default {
 
     // Closes the popup
     const closePopup = () => {
-      event.value = { location: '', description: '', time_start: '', time_end: '' }; // Reset form
+      event.value = { location: '', description: '', day: 0 }; // Reset form
       emit('close'); // Emit close event
     };
 

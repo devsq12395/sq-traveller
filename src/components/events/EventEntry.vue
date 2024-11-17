@@ -20,8 +20,7 @@
 
       <!-- Time Range -->
       <p class="text-gray-700 text-sm mb-2">
-        <span class="font-semibold">Start:</span> {{ formatDate(time_start) }}<br>
-        <span class="font-semibold">End:</span> {{ formatDate(time_end) }}
+        <span class="font-semibold">Day:</span> {{ day }}<br>
       </p>
 
       <!-- Description -->
@@ -35,24 +34,12 @@ export default {
   name: 'EventEntry',
   props: {
     location: { type: String, required: true },
-    time_start: { type: String, required: true },
-    time_end: { type: String, required: true },
+    day: { type: Int32Array, required: true, default: 'No day assigned' },
     description: { type: String, required: true },
     imgUrl: { type: String, required: false, default: 'https://via.placeholder.com/50' },
     isSelected: { type: Boolean, default: false },
   },
   methods: {
-    formatDate(date) {
-      if (!date) return 'Invalid Date';
-      const parsedDate = new Date(date);
-      return isNaN(parsedDate) ? 'Invalid Date' : parsedDate.toLocaleString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-      });
-    },
     onSelect() {
       this.$emit('select-event');
     },
