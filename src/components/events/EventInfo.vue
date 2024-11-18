@@ -20,7 +20,12 @@
       <!-- Notes Section -->
       <div class="text-left">
         <h3 class="text-lg font-semibold">Notes:</h3>
-        <p class="text-gray-700">{{ event.notes || "No notes available" }}</p>
+        <div v-if="notes.length > 0">
+          <ul>
+            <li v-for="note in notes" :key="note.id" class="text-gray-700">- {{ note.note }}</li>
+          </ul>
+        </div>
+        <p v-else class="text-gray-700">No notes available</p>
       </div>
 
       <!-- Edit Buttons Section -->
@@ -48,7 +53,8 @@
 <script>
 import EventActivities from './EventActivities.vue';
 import EventBudgets from './EventBudgets.vue';
-import EditEventPopup from '../popups/EditEventPopup.vue'; // Import the EditEventPopup component
+import EditEventPopup from '../popups/EditEventPopup.vue';
+import { fetchEventNotes } from '../../helpers/notes'; // Import the fetchEventNotes function
 
 export default {
   name: 'EventInfo',
@@ -61,12 +67,33 @@ export default {
   components: {
     EventActivities,
     EventBudgets,
-    EditEventPopup, // Register the EditEventPopup component
+    EditEventPopup,
   },
   data() {
     return {
-      showEditEventPopup: false, // Track the visibility of the EditEventPopup
+      showEditEventPopup: false,
+      notes: [], // Reactive data property to store notes
     };
+  },
+  watch: {
+    event: {
+      immediate: true, // Trigger the watcher immediately on component mount
+      handler(newEvent) {
+        if (newEvent && newEvent.id) {
+          this.fetchNotes(newEvent.id);
+        }
+      },
+    },
+  },
+  methods: {
+    async fetchNotes(eventId) {
+      const { data, error } = await fetchEventNotes(eventId);
+      if (!error) {
+        this.notes = data;
+      } else {
+        console.error('Error fetching notes:', error);
+      }
+    },
   },
 };
 </script>

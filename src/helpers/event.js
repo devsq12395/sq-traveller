@@ -42,7 +42,7 @@ export async function fetchItineraryEvents(itinerary_id) {
     return {
       ...event,
       img_url,
-      itinerary_name: event.itinerary?.name || 'Unnamed Itinerary',
+      itinerary_name: event.itinerary?.name || 'Unnamed Itinerary'
     };
   });
 
@@ -56,6 +56,7 @@ export async function fetchEvent(eventId) {
     return { error: 'Event ID is required to fetch the event.' };
   }
 
+  // Fetch the event details
   const { data, error } = await supabase
     .from('event')
     .select(`
@@ -70,7 +71,9 @@ export async function fetchEvent(eventId) {
     return { error };
   }
 
+  // Access the image URL from event_img or use a placeholder
   const img_url = data.event_img?.length ? data.event_img[0].img_url : 'https://via.placeholder.com/150';
+
   return { data: { ...data, img_url } };
 }
 

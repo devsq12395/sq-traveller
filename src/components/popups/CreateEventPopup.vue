@@ -5,38 +5,54 @@
       
       <form @submit.prevent="handleCreateEvent" class="space-y-4">
         <!-- Location Field -->
-        <input
-          type="text"
-          v-model="event.location"
-          placeholder="Location"
-          required
-          class="w-full p-2 border border-gray-300 rounded"
-        />
+        <div class="grid grid-cols-3 items-start gap-2">
+          <label for="location" class="text-gray-700 font-semibold text-left">Location:</label>
+          <input
+            type="text"
+            id="location"
+            v-model="event.location"
+            placeholder="Location"
+            required
+            class="col-span-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
 
         <!-- Description Field -->
-        <textarea
-          v-model="event.description"
-          placeholder="Description"
-          required
-          class="w-full p-2 border border-gray-300 rounded"
-        ></textarea>
+        <div class="grid grid-cols-3 items-start gap-2">
+          <label for="description" class="text-gray-700 font-semibold text-left">Description:</label>
+          <textarea
+            id="description"
+            v-model="event.description"
+            placeholder="Description"
+            required
+            class="col-span-2 p-2 border border-gray-300 rounded"
+          ></textarea>
+        </div>
 
         <!-- Day Field -->
-        <textarea
-          type="number"
-          v-model="event.day"
-          placeholder="Day"
-          required
-          class="w-full p-2 border border-gray-300 rounded"
-        ></textarea>
+        <div class="grid grid-cols-3 items-start gap-2">
+          <label for="day" class="text-gray-700 font-semibold text-left">Event Day:</label>
+          <input
+            type="number"
+            id="day"
+            v-model="event.day"
+            placeholder="Day"
+            required
+            class="col-span-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
 
         <!-- Image Upload Field -->
-        <input
-          type="file"
-          @change="handleImageUpload"
-          accept="image/*"
-          class="w-full p-2 border border-gray-300 rounded"
-        />
+        <div class="grid grid-cols-3 items-start gap-2">
+          <label for="image" class="text-gray-700 font-semibold text-left">Image:</label>
+          <input
+            type="file"
+            id="image"
+            @change="handleImageUpload"
+            accept="image/*"
+            class="col-span-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
 
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-2">
@@ -79,7 +95,6 @@ export default {
         const uploadPreset = process.env.VUE_APP_CLOUDINARY_UPLOAD_PRESET;
         const cloudinaryUrl = process.env.VUE_APP_CLOUDINARY_URL;
 
-        // Check if variables are defined
         if (!uploadPreset || !cloudinaryUrl) {
           console.error("Cloudinary environment variables are missing.");
           return;
@@ -101,7 +116,6 @@ export default {
     const handleCreateEvent = async () => {
       const { data, error } = await createEvent(props.itineraryId, event.value);
 
-      console.log (data);
       if (!error && data) {
         if (imageUrl.value) {
           try {

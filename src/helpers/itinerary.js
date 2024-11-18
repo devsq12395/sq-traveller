@@ -64,20 +64,15 @@ export async function fetchItinerary(itineraryId) {
 }
 
 // Create a new itinerary
-export async function createItinerary(userId, name, description, timeStart, timeEnd) {
+export async function createItinerary(userId, name, description, days) {
   try {
-    // Extract only the time portion from the provided ISO strings
-    const startTime = new Date(timeStart).toISOString();
-    const endTime = new Date(timeEnd).toISOString();
-
     const { data, error } = await supabase
       .from('itinerary')
       .insert({
         user_id: userId,
         name,
         description,
-        time_start: startTime,
-        time_end: endTime,
+        days
       })
       .select();
 
