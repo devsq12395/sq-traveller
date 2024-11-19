@@ -7,12 +7,17 @@
         <span>${{ budget.budget_price.toFixed(2) }}</span>
       </li>
     </ul>
-    <button class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
+    <hr class="my-2 border-gray-700">
+    <div class="flex justify-between font-bold">
+      <span>Total:</span>
+      <span>${{ totalBudget.toFixed(2) }}</span>
+    </div>
+    <button @click="$emit('show-add-budget')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { fetchEventBudgets } from '../../helpers/budgets';
 
 export default {
@@ -31,10 +36,13 @@ export default {
       budgets.value = data;
     };
 
+    const totalBudget = computed(() => budgets.value.reduce((acc, budget) => acc + budget.budget_price, 0));
+
     onMounted(loadBudgets);
 
     return {
       budgets,
+      totalBudget,
     };
   },
 };

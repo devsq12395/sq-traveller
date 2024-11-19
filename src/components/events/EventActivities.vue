@@ -9,16 +9,17 @@
           @change="updateActivity(activity)"
           class="mr-2"
         />
-        <span>{{ activity.activity_name }}</span>
+        <span>{{ activity.todo }}</span>
       </li>
     </ul>
-    <button class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
+    <button @click="$emit('show-add-todo')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import { fetchEventActivities, updateActivityStatus } from '../../helpers/activities';
+import { ref, onMounted, watch } from 'vue';
+import { updateActivityStatus } from '../../helpers/activities';
+import { fetchEventTodos, addTodo } from '../../helpers/todo';
 
 export default {
   name: 'EventActivities',
@@ -32,7 +33,7 @@ export default {
     const activities = ref([]);
 
     const loadActivities = async () => {
-      const { data } = await fetchEventActivities(props.eventId);
+      const { data } = await fetchEventTodos(props.eventId);
       activities.value = data;
     };
 
@@ -40,11 +41,30 @@ export default {
       await updateActivityStatus(activity.id, activity.is_checked);
     };
 
+    const addNewTodo = async (todoContent) => {
+      const { error } = await addTodo(props.eventId, todoContent);
+      if (!error) {
+        loadActivities(); // Refresh the list after adding
+      } else {
+        console.error('Error adding todo');
+      }
+    };
+
+    watch(() => props.eventId, {
+      immediate: true,
+      handler(newEventId) {
+        if (newEventId) {
+          loadActivities();
+        }
+      },
+    });
+
     onMounted(loadActivities);
 
     return {
       activities,
       updateActivity,
+      addNewTodo,
     };
   },
 };

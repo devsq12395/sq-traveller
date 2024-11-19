@@ -21,6 +21,7 @@
       <!-- Time Range -->
       <p class="text-gray-700 text-sm mb-2">
         <span class="font-semibold">Day:</span> {{ day }}<br>
+        <span class="font-semibold">Time:</span> {{ time_start || 'N/A' }} - {{ time_end || 'N/A' }}
       </p>
 
       <!-- Description -->
@@ -34,9 +35,11 @@ export default {
   name: 'EventEntry',
   props: {
     location: { type: String, required: true },
-    day: { type: Int32Array, required: true, default: 'No day assigned' },
+    day: { type: String, required: true, default: 'No day assigned' },
     description: { type: String, required: true },
     imgUrl: { type: String, required: false, default: 'https://via.placeholder.com/50' },
+    time_start: { type: String, required: false, default: '' },
+    time_end: { type: String, required: false, default: '' },
     isSelected: { type: Boolean, default: false },
   },
   methods: {

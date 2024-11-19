@@ -17,6 +17,31 @@
           />
         </div>
 
+        <!-- Time Start Field -->
+        <div class="grid grid-cols-3 items-start gap-2">
+          <label for="time_start" class="text-gray-700 font-semibold text-left">Start Time:</label>
+          <input
+            type="time"
+            id="time_start"
+            v-model="event.time_start"
+            placeholder="Start Time"
+            required
+            class="col-span-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <!-- Time End Field -->
+        <div class="grid grid-cols-3 items-start gap-2">
+          <label for="time_end" class="text-gray-700 font-semibold text-left">End Time:</label>
+          <input
+            type="time"
+            id="time_end"
+            v-model="event.time_end"
+            placeholder="End Time"
+            required
+            class="col-span-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
+
         <!-- Description Field -->
         <div class="grid grid-cols-3 items-start gap-2">
           <label for="description" class="text-gray-700 font-semibold text-left">Description:</label>

@@ -8,6 +8,8 @@
         <h2 class="text-3xl font-bold">{{ event.location }}</h2>
         <p class="text-gray-600">
           Day {{ event.day || 'not assigned' }}
+          <br>
+          Time: {{ event.time_start || 'N/A' }} - {{ event.time_end || 'N/A' }}
         </p>
       </div>
 
@@ -37,12 +39,12 @@
 
     <!-- Column #2: Things to Do -->
     <div class="w-1/4 space-y-4">
-      <EventActivities :eventId="event.id" />
+      <EventActivities :eventId="event.id" :key="event.id" @show-add-todo="$emit('show-add-todo')" />
     </div>
 
     <!-- Column #3: Budget -->
     <div class="w-1/4 space-y-4">
-      <EventBudgets :eventId="event.id" />
+      <EventBudgets :eventId="event.id" :key="event.id" @show-add-budget="$emit('show-add-budget')" />
     </div>
 
     <!-- EditEventPopup -->
@@ -62,6 +64,7 @@ export default {
     event: {
       type: Object,
       required: true,
+      default: () => ({}),
     },
   },
   components: {

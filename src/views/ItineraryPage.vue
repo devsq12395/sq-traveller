@@ -38,7 +38,7 @@
           class="mb-6 bg-white rounded-lg shadow p-4"
         >
           <h2 class="text-xl font-bold mb-2 text-center">
-            Day {{ index + 1 }}
+            Day {{ dayEvents[0].day }}
           </h2>
           <div v-for="event in dayEvents" :key="event.id" class="mb-2">
             <EventEntry
@@ -47,6 +47,8 @@
               :description="event.description"
               :isSelected="selectedEventId === event.id"
               :imgUrl="event.img_url"
+              :time_start="event.time_start"
+              :time_end="event.time_end"
               @select-event="selectEvent(event.id)"
             />
           </div>
@@ -59,7 +61,13 @@
 
     <!-- Main content area for selected Event -->
     <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
-      <EventInfo v-if="selectedEvent" :event="selectedEvent" @show-add-note="showCreateNotePopup = true" />
+      <EventInfo
+        v-if="selectedEvent"
+        :event="selectedEvent"
+        @show-add-note="showCreateNotePopup = true"
+        @show-add-todo="showCreateTodoPopup = true"
+        @show-add-budget="showCreateBudgetPopup = true"
+      />
     </div>
 
     <!-- Create Event Popup -->
@@ -76,6 +84,20 @@
       @close="showCreateNotePopup = false"
       @refresh="loadEvents"
     />
+
+    <!-- Create Todo Popup -->
+    <CreateTodoPopup
+      v-if="showCreateTodoPopup"
+      @close="showCreateTodoPopup = false"
+      @refresh="loadEvents"
+    />
+
+    <!-- Create Budget Popup -->
+    <CreateBudgetPopup
+      v-if="showCreateBudgetPopup"
+      @close="showCreateBudgetPopup = false"
+      @refresh="loadEvents"
+    />
   </div>
 </template>
 
@@ -88,7 +110,9 @@ import { setEventId } from '../context/UserContext';
 import EventEntry from '../components/events/EventEntry.vue';
 import EventInfo from '../components/events/EventInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
-import CreateNotePopup from '../components/popups/CreateNotePopup.vue'; // Import the CreateNotePopup component
+import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
+import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
+import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -96,7 +120,9 @@ export default {
     EventEntry,
     EventInfo,
     CreateEventPopup,
-    CreateNotePopup, // Register the CreateNotePopup component
+    CreateNotePopup,
+    CreateTodoPopup,
+    CreateBudgetPopup
   },
   setup() {
     const route = useRoute();
@@ -108,7 +134,9 @@ export default {
     const events = ref([]);
     const selectedEventId = ref(null);
     const showCreateEventPopup = ref(false);
-    const showCreateNotePopup = ref(false); // State to manage CreateNotePopup visibility
+    const showCreateNotePopup = ref(false);
+    const showCreateTodoPopup = ref(false);
+    const showCreateBudgetPopup = ref(false);
 
     // Fetch itinerary details and events
     const loadItinerary = async () => {
@@ -171,7 +199,9 @@ export default {
       eventsGroupedByDay,
       selectedEventId,
       showCreateEventPopup,
-      showCreateNotePopup, // Return the state
+      showCreateNotePopup,
+      showCreateTodoPopup,
+      showCreateBudgetPopup,
       loadEvents,
       closeCreateEventPopup,
       selectEvent,
