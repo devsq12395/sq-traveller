@@ -105,3 +105,77 @@ export async function saveItineraryImage(itineraryId, imgUrl) {
     return { error };
   }
 }
+
+// Fetch privacy setting for an itinerary
+export async function fetchItineraryPrivacy(itineraryId) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to fetch privacy settings.' };
+  }
+
+  const { data, error } = await supabase
+    .from('itinerary_privacy')
+    .select('privacy')
+    .eq('itinerary_id', itineraryId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching itinerary privacy:', error.message);
+    return { error };
+  }
+
+  // If no privacy setting exists, default to private
+  if (!data) {
+    return { data: { privacy: 'private' } };
+  }
+
+  return { data };
+}
+
+// Update privacy setting for an itinerary
+export async function updateItineraryPrivacy(itineraryId, privacy) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to update privacy settings.' };
+  }
+
+  if (!['private', 'public', 'shared'].includes(privacy)) {
+    return { error: 'Invalid privacy setting.' };
+  }
+
+  try {
+    // First check if a privacy setting exists
+    const { data: existingData } = await supabase
+      .from('itinerary_privacy')
+      .select('id')
+      .eq('itinerary_id', itineraryId)
+      .single();
+
+    let result;
+    
+    if (existingData) {
+      // Update existing privacy setting
+      result = await supabase
+        .from('itinerary_privacy')
+        .update({ privacy })
+        .eq('itinerary_id', itineraryId)
+        .select()
+        .single();
+    } else {
+      // Create new privacy setting
+      result = await supabase
+        .from('itinerary_privacy')
+        .insert([{ itinerary_id: itineraryId, privacy }])
+        .select()
+        .single();
+    }
+
+    const { data, error } = result;
+    if (error) throw error;
+
+    return { data };
+  } catch (error) {
+    console.error('Error updating itinerary privacy:', error.message);
+    return { error };
+  }
+}

@@ -29,6 +29,7 @@
             class="col-span-2 p-2 border border-gray-300 rounded"
           />
         </div>
+
         <!-- Time End Field -->
         <div class="grid grid-cols-3 items-start gap-2">
           <label for="time_end" class="text-gray-700 font-semibold text-left">End Time:</label>
@@ -67,16 +68,46 @@
           />
         </div>
 
-        <!-- Image Upload Field -->
+        <!-- Image Upload and Selection Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label for="image" class="text-gray-700 font-semibold text-left">Image:</label>
-          <input
-            type="file"
-            id="image"
-            @change="handleImageUpload"
-            accept="image/*"
-            class="col-span-2 p-2 border border-gray-300 rounded"
-          />
+          <label class="text-gray-700 font-semibold text-left">Image:</label>
+          <div class="col-span-2 space-y-4">
+            <!-- Default Images Grid -->
+            <div class="grid grid-cols-3 gap-2">
+              <div
+                v-for="(image, index) in defaultImages"
+                :key="index"
+                @click="selectDefaultImage(image)"
+                :class="[
+                  'cursor-pointer border-2 rounded p-1 hover:border-blue-500',
+                  selectedImage === image ? 'border-blue-500' : 'border-gray-200'
+                ]"
+              >
+                <img :src="image" alt="Default event image" class="w-full h-16 object-cover rounded" />
+              </div>
+            </div>
+
+            <!-- Or Divider -->
+            <div class="flex items-center my-4">
+              <div class="flex-grow border-t border-gray-300"></div>
+              <span class="mx-4 text-gray-500 text-sm">or upload your own</span>
+              <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            <!-- Custom Upload -->
+            <input
+              type="file"
+              id="image"
+              @change="handleImageUpload"
+              accept="image/*"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+
+            <!-- Preview Selected Image -->
+            <div v-if="selectedImage" class="mt-2">
+              <img :src="selectedImage" alt="Selected image" class="h-24 object-cover rounded" />
+            </div>
+          </div>
         </div>
 
         <!-- Action Buttons -->
@@ -91,7 +122,7 @@
 
 <script>
 import { ref } from 'vue';
-import { createEvent, saveEventImage } from '../../helpers/event';
+import { createEvent } from '../../helpers/event';
 import axios from 'axios';
 
 export default {
@@ -99,79 +130,96 @@ export default {
   props: {
     itineraryId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
-  emits: ['close', 'refresh'],
   setup(props, { emit }) {
     const event = ref({
       location: '',
+      time_start: '',
+      time_end: '',
       description: '',
-      day: 0
+      day: 1,
+      img_url: ''
     });
-    const imageUrl = ref('');
 
-    // Handles image upload
-    const handleImageUpload = async (e) => {
+    const selectedImage = ref(null);
+    const imageFile = ref(null);
+
+    // Default placeholder images
+    const defaultImages = [
+      'https://placehold.co/200x200/e5e7eb/a3a3a3?text=Food',
+      'https://placehold.co/200x200/e5e7eb/a3a3a3?text=Attraction',
+      'https://placehold.co/200x200/e5e7eb/a3a3a3?text=Transport',
+      'https://placehold.co/200x200/e5e7eb/a3a3a3?text=Hotel',
+      'https://placehold.co/200x200/e5e7eb/a3a3a3?text=Activity',
+      'https://placehold.co/200x200/e5e7eb/a3a3a3?text=Shopping'
+    ];
+
+    const selectDefaultImage = (image) => {
+      selectedImage.value = image;
+      imageFile.value = null; // Clear any uploaded file
+      event.value.img_url = image;
+    };
+
+    const handleImageUpload = (e) => {
       const file = e.target.files[0];
-      if (!file) return;
-
-      try {
-        const uploadPreset = process.env.VUE_APP_CLOUDINARY_UPLOAD_PRESET;
-        const cloudinaryUrl = process.env.VUE_APP_CLOUDINARY_URL;
-
-        if (!uploadPreset || !cloudinaryUrl) {
-          console.error("Cloudinary environment variables are missing.");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", uploadPreset);
-
-        const response = await axios.post(cloudinaryUrl, formData);
-        imageUrl.value = response.data.secure_url;
-        console.log("Image uploaded successfully:", imageUrl.value);
-      } catch (error) {
-        console.error("Error uploading image:", error);
+      if (file) {
+        imageFile.value = file;
+        selectedImage.value = URL.createObjectURL(file);
+        event.value.img_url = ''; // Clear any selected default image
       }
     };
 
-    // Handles event creation
     const handleCreateEvent = async () => {
-      const { data, error } = await createEvent(props.itineraryId, event.value);
+      try {
+        let finalImageUrl = event.value.img_url;
 
-      if (!error && data) {
-        if (imageUrl.value) {
-          try {
-            await saveEventImage(data[0].id, imageUrl.value); // Save event image
-          } catch (imgError) {
-            console.error("Error saving event image:", imgError);
-          }
+        // If a file was uploaded, handle the upload
+        if (imageFile.value) {
+          const formData = new FormData();
+          formData.append('image', imageFile.value);
+          const response = await axios.post('YOUR_UPLOAD_URL', formData);
+          finalImageUrl = response.data.url;
         }
-        emit('refresh'); // Refresh event list
-        closePopup();
-      } else {
-        console.error('Error creating event:', error.message);
+
+        // Create event with the image URL
+        const { error: eventError } = await createEvent(
+          props.itineraryId,
+          {
+            ...event.value,
+            img_url: finalImageUrl || selectedImage.value // Use selected default image if no upload
+          }
+        );
+
+        if (eventError) throw eventError;
+
+        emit('close');
+        emit('refresh');
+      } catch (error) {
+        console.error('Error creating event:', error);
       }
     };
 
-    // Closes the popup
     const closePopup = () => {
-      event.value = { location: '', description: '', day: 0 }; // Reset form
-      emit('close'); // Emit close event
+      emit('close');
     };
 
     return {
       event,
-      handleCreateEvent,
+      selectedImage,
+      defaultImages,
       handleImageUpload,
-      closePopup,
+      selectDefaultImage,
+      handleCreateEvent,
+      closePopup
     };
-  },
+  }
 };
 </script>
 
 <style scoped>
-/* Optional styles */
+.grid-cols-3 > img {
+  aspect-ratio: 1;
+}
 </style>

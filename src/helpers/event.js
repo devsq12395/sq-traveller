@@ -1,7 +1,8 @@
 import { supabase } from './supabaseClient';
 
 // Create a new event for a specific itinerary
-export async function createEvent(itinerary_id, { location, description, day, time_start, time_end }) {
+export async function createEvent(itinerary_id, { location, description, day, time_start, time_end, img_url }) {
+  // First create the event
   const { data, error } = await supabase.from('event').insert({
     itinerary_id,
     location,
@@ -15,6 +16,22 @@ export async function createEvent(itinerary_id, { location, description, day, ti
     console.error('Error creating event:', error.message);
     return { data: null, error };
   }
+
+  // If we have an image URL, save it
+  if (img_url) {
+    const { error: imgError } = await supabase
+      .from('event_img')
+      .insert({
+        event_id: data[0].id,
+        img_url
+      });
+
+    if (imgError) {
+      console.error('Error saving event image:', imgError.message);
+      return { data: null, error: imgError };
+    }
+  }
+
   return { data, error: null };
 }
 

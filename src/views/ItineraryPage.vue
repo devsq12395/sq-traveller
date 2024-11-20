@@ -1,14 +1,38 @@
 <template>
-  <div class="flex min-h-screen p-8 bg-pink-100">
+  <div class="flex min-h-screen p-8 pt-20 bg-pink-100">
     <!-- Sidebar for Event List -->
     <div class="w-1/3 bg-blue-100 rounded-lg flex flex-col">
       <!-- Add itinerary image and description -->
       <div class="p-4 border-b border-gray-300">
         <div class="flex items-center mb-4">
           <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-24 h-24 mr-4" />
-          <div>
-            <h1 class="text-2xl font-semibold">{{ itineraryName }}</h1>
-            <p class="text-sm text-gray-600">{{ itineraryDescription }}</p>
+          <div class="flex-grow">
+            <div class="flex justify-between items-start">
+              <div>
+                <h1 class="text-2xl font-semibold">{{ itineraryName }}</h1>
+                <p class="text-sm text-gray-600">{{ itineraryDescription }}</p>
+              </div>
+              <div class="relative">
+                <button
+                  @click="showSettingsPopup = !showSettingsPopup"
+                  class="p-2 text-gray-600 hover:bg-gray-100 rounded-full"
+                >
+                  <span class="text-xl">⋮</span>
+                </button>
+                <!-- Settings Popup -->
+                <div
+                  v-if="showSettingsPopup"
+                  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                >
+                  <button
+                    @click="goToSettings"
+                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Settings
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- Buttons Container -->
@@ -137,6 +161,7 @@ export default {
     const showCreateNotePopup = ref(false);
     const showCreateTodoPopup = ref(false);
     const showCreateBudgetPopup = ref(false);
+    const showSettingsPopup = ref(false);
 
     // Fetch itinerary details and events
     const loadItinerary = async () => {
@@ -177,6 +202,11 @@ export default {
       router.push('/dashboard');
     };
 
+    const goToSettings = () => {
+      showSettingsPopup.value = false;
+      router.push(`/itinerary/${route.params.id}/settings`);
+    };
+
     const eventsGroupedByDay = computed(() => {
       const grouped = events.value.reduce((acc, event) => {
         const dayKey = event.day;
@@ -202,11 +232,13 @@ export default {
       showCreateNotePopup,
       showCreateTodoPopup,
       showCreateBudgetPopup,
+      showSettingsPopup,
       loadEvents,
       closeCreateEventPopup,
       selectEvent,
       selectedEvent,
       goToDashboard,
+      goToSettings,
     };
   },
 };

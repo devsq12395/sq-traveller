@@ -1,31 +1,25 @@
 <template>
-  <div class="header flex justify-end p-4 bg-gray-100 shadow-md">
-    <span v-if="isLoggedIn" class="text-gray-800 font-semibold">Welcome, {{ userName }}</span>
-    <button v-else @click="goToLogin" class="text-blue-500 font-semibold">Login</button>
+  <div class="fixed top-0 left-0 right-0 z-50 header flex justify-between items-center px-6 py-4 bg-white shadow-md">
+    <div>
+      <router-link to="/" class="text-xl font-bold text-gray-800">SQ Traveller</router-link>
+    </div>
+    <div>
+      <span v-if="userState.username" class="text-gray-800 font-semibold">Welcome, {{ userState.username }}</span>
+      <router-link v-else to="/" class="text-blue-500 font-semibold hover:text-blue-600">Login</router-link>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
 import { useUser } from '../../context/UserContext';
-import { useRouter } from 'vue-router';
 
 export default {
   name: 'HeaderComponent',
   setup() {
-    const { user } = useUser();
-    const userName = ref(user ? user.name : 'Guest');
-    const isLoggedIn = ref(!!user);
-
-    const goToLogin = () => {
-      const router = useRouter();
-      router.push('/login');
-    };
+    const userState = useUser();
 
     return {
-      userName,
-      isLoggedIn,
-      goToLogin,
+      userState
     };
   },
 };
@@ -33,10 +27,7 @@ export default {
 
 <style scoped>
 .header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  background-color: rgba(150, 150, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
 }
 </style>
