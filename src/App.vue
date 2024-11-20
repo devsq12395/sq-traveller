@@ -1,12 +1,17 @@
 <template>
+  <HeaderComponent />
   <router-view />
 </template>
 
 <script>
 import { provide } from 'vue';
 import { useUser } from './context/UserContext';
+import HeaderComponent from './components/common/Header.vue'; 
 
 export default {
+  components: {
+    HeaderComponent,
+  },
   setup() {
     // Provide user state globally
     provide('user', useUser());
