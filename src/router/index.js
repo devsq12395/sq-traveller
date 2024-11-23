@@ -3,6 +3,7 @@ import LoginPage from '../views/LoginPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
 import ItineraryPage from '../views/ItineraryPage.vue';
 import ItinerarySettingsPage from '../views/ItinerarySettingsPage.vue';
+import UserSettingsPage from '../views/UserSettingsPage.vue';
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/itinerary/:id/settings',
     name: 'ItinerarySettings',
     component: ItinerarySettingsPage,
+  },
+  {
+    path: '/settings',
+    name: 'UserSettings',
+    component: UserSettingsPage,
   },
 ];
 

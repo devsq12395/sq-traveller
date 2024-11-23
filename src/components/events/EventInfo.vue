@@ -34,6 +34,12 @@
       <div class="flex space-x-4">
         <button @click="showEditEventPopup = true" class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Details</button>
         <button @click="$emit('show-add-note')" class="p-2 px-4 bg-green-500 text-white rounded shadow">Add a note</button>
+        <button 
+          @click="confirmDelete" 
+          class="p-2 px-4 bg-red-500 text-white rounded shadow hover:bg-red-600"
+        >
+          Delete Event
+        </button>
       </div>
     </div>
 
@@ -48,56 +54,96 @@
     </div>
 
     <!-- EditEventPopup -->
-    <EditEventPopup v-if="showEditEventPopup" :event="event" @close="showEditEventPopup = false" />
+    <EditEventPopup 
+      v-if="showEditEventPopup" 
+      :eventId="event.id" 
+      @close="showEditEventPopup = false"
+      @refresh="$emit('refresh')" 
+    />
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold mb-4">Delete Event</h3>
+        <p class="text-gray-700 mb-6">Are you sure you want to delete this event? This action cannot be undone.</p>
+        <div class="flex justify-end space-x-4">
+          <button
+            @click="showDeleteConfirm = false"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            @click="handleDelete"
+            class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { fetchEventNotes } from '../../helpers/notes';
+import { deleteEvent } from '../../helpers/event';
+import EditEventPopup from '../popups/EditEventPopup.vue';
 import EventActivities from './EventActivities.vue';
 import EventBudgets from './EventBudgets.vue';
-import EditEventPopup from '../popups/EditEventPopup.vue';
-import { fetchEventNotes } from '../../helpers/notes'; // Import the fetchEventNotes function
 
 export default {
   name: 'EventInfo',
+  emits: ['show-add-note', 'show-add-todo', 'show-add-budget', 'refresh'],
   props: {
     event: {
       type: Object,
-      required: true,
-      default: () => ({}),
-    },
+      required: true
+    }
   },
   components: {
     EventActivities,
     EventBudgets,
-    EditEventPopup,
+    EditEventPopup
   },
   data() {
     return {
       showEditEventPopup: false,
-      notes: [], // Reactive data property to store notes
+      showDeleteConfirm: false,
+      notes: []
     };
   },
   watch: {
     event: {
-      immediate: true, // Trigger the watcher immediately on component mount
       handler(newEvent) {
-        if (newEvent && newEvent.id) {
+        if (newEvent) {
           this.fetchNotes(newEvent.id);
         }
       },
-    },
+      immediate: true
+    }
   },
   methods: {
     async fetchNotes(eventId) {
-      const { data, error } = await fetchEventNotes(eventId);
-      if (!error) {
+      const { data } = await fetchEventNotes(eventId);
+      if (data) {
         this.notes = data;
-      } else {
-        console.error('Error fetching notes:', error);
       }
     },
-  },
+    confirmDelete() {
+      this.showDeleteConfirm = true;
+    },
+    async handleDelete() {
+      const { error } = await deleteEvent(this.event.id);
+      if (error) {
+        console.error('Error deleting event:', error);
+        // You might want to show an error message to the user here
+      } else {
+        this.showDeleteConfirm = false;
+        this.$emit('refresh');
+      }
+    }
+  }
 };
 </script>
 

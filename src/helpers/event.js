@@ -134,3 +134,33 @@ export async function updateEvent(eventId, updatedEventData) {
 
   return { data, error: null };
 }
+
+// Delete an event and all its related data
+export async function deleteEvent(eventId) {
+  if (!eventId) {
+    console.error('Event ID is null or undefined');
+    return { error: 'Event ID is required to delete the event.' };
+  }
+
+  try {
+    // Delete related records first (event_img, notes, todos, budgets)
+    await supabase.from('event_img').delete().eq('event_id', eventId);
+    await supabase.from('event_note').delete().eq('event_id', eventId);
+    await supabase.from('event_todo').delete().eq('event_id', eventId);
+    await supabase.from('event_budget').delete().eq('event_id', eventId);
+
+    // Finally, delete the event itself
+    const { data, error } = await supabase
+      .from('event')
+      .delete()
+      .eq('id', eventId)
+      .select();
+
+    if (error) throw error;
+
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error deleting event:', error.message);
+    return { error };
+  }
+}

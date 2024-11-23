@@ -63,6 +63,53 @@ export async function fetchItinerary(itineraryId) {
   return { data: adjustedData };
 }
 
+// Fetch itinerary with creator information
+export async function fetchItineraryWithCreator(itineraryId) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to fetch the itinerary.' };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('itinerary')
+      .select(`
+        id, name, description, days,
+        itinerary_img (img_url),
+        user_id,
+        profiles:user_id (username)
+      `)
+      .eq('id', itineraryId)
+      .single();
+
+    if (error) throw error;
+
+    // Access the first img_url from the itinerary_img or use the placeholder
+    const img_url = data.itinerary_img?.length ? data.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
+    const creatorName = data.profiles?.username || 'Unknown User';
+    
+    const adjustedData = { 
+      ...data, 
+      img_url,
+      creatorName
+    };
+
+    return { data: adjustedData };
+  } catch (error) {
+    console.error('Error fetching itinerary:', error.message);
+    return { 
+      data: {
+        name: '',
+        description: '',
+        days: 0,
+        img_url: 'https://via.placeholder.com/150',
+        creatorName: 'Unknown User'
+      }, 
+      error: error.message 
+    };
+  }
+}
+
 // Create a new itinerary
 export async function createItinerary(userId, name, description, days) {
   try {
@@ -147,7 +194,7 @@ export async function updateItineraryPrivacy(itineraryId, privacy) {
     // First check if a privacy setting exists
     const { data: existingData } = await supabase
       .from('itinerary_privacy')
-      .select('id')
+      .select('*')
       .eq('itinerary_id', itineraryId)
       .single();
 
@@ -159,15 +206,13 @@ export async function updateItineraryPrivacy(itineraryId, privacy) {
         .from('itinerary_privacy')
         .update({ privacy })
         .eq('itinerary_id', itineraryId)
-        .select()
-        .single();
+        .select();
     } else {
       // Create new privacy setting
       result = await supabase
         .from('itinerary_privacy')
         .insert([{ itinerary_id: itineraryId, privacy }])
-        .select()
-        .single();
+        .select();
     }
 
     const { data, error } = result;
