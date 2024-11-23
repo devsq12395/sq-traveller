@@ -77,68 +77,7 @@
 
       <!-- Settings Tab -->
       <div v-if="activeTab === 'settings'" class="h-full">
-        <div class="p-4 space-y-6">
-          <div class="border-b border-gray-200 pb-6">
-            <h2 class="text-xl font-semibold mb-4">Privacy Settings</h2>
-            
-            <div class="space-y-4">
-              <!-- Private Option -->
-              <label class="flex items-start space-x-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="private"
-                  v-model="privacySetting"
-                  class="mt-1"
-                  @change="updatePrivacy"
-                />
-                <div>
-                  <span class="font-medium block">Private</span>
-                  <span class="text-sm text-gray-500">Only you can see and access this itinerary</span>
-                </div>
-              </label>
-
-              <!-- Public Option -->
-              <label class="flex items-start space-x-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="public"
-                  v-model="privacySetting"
-                  class="mt-1"
-                  @change="updatePrivacy"
-                />
-                <div>
-                  <span class="font-medium block">Public</span>
-                  <span class="text-sm text-gray-500">Anyone with the itinerary link can see its contents</span>
-                </div>
-              </label>
-
-              <!-- Shared Option -->
-              <label class="flex items-start space-x-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="privacy"
-                  value="shared"
-                  v-model="privacySetting"
-                  class="mt-1"
-                  @change="updatePrivacy"
-                />
-                <div>
-                  <span class="font-medium block">Shared</span>
-                  <span class="text-sm text-gray-500">
-                    Anyone with the itinerary link can see its contents, and this itinerary will be shared on the Shared Itineraries list on the dashboard
-                  </span>
-                </div>
-              </label>
-            </div>
-
-            <!-- Success/Error Messages -->
-            <div v-if="message" :class="['mt-4 p-3 rounded', messageClass]">
-              {{ message }}
-            </div>
-          </div>
-        </div>
+        <ItinerarySettings :privacySetting="privacySetting" @update-privacy-setting="privacySetting = $event" />
       </div>
     </div>
   </div>
@@ -147,13 +86,15 @@
 <script>
 import ItineraryEventsList from '../events/ItineraryEventsList.vue';
 import ItineraryComments from './ItineraryComments.vue';
+import ItinerarySettings from './ItinerarySettings.vue';
 import { fetchItineraryPrivacy, updateItineraryPrivacy, fetchItineraryWithCreator } from '../../helpers/itinerary';
 
 export default {
   name: 'ItineraryInfo',
   components: {
     ItineraryEventsList,
-    ItineraryComments
+    ItineraryComments,
+    ItinerarySettings
   },
   props: {
     itineraryId: {
