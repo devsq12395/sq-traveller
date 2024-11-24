@@ -10,9 +10,8 @@
               type="radio"
               name="privacy"
               value="private"
-              :checked="privacySetting === 'private'"
+              v-model="localPrivacySetting"
               class="mt-1"
-              @change="$emit('update:privacySetting', 'private')"
             />
             <div>
               <span class="font-medium block">Private</span>
@@ -25,9 +24,8 @@
               type="radio"
               name="privacy"
               value="public"
-              :checked="privacySetting === 'public'"
+              v-model="localPrivacySetting"
               class="mt-1"
-              @change="$emit('update:privacySetting', 'public')"
             />
             <div>
               <span class="font-medium block">Public</span>
@@ -45,8 +43,17 @@ export default {
   props: {
     privacySetting: String
   },
-  methods: {
-    updatePrivacy() {
+  data() {
+    return {
+      localPrivacySetting: this.privacySetting
+    };
+  },
+  watch: {
+    privacySetting(newVal) {
+      this.localPrivacySetting = newVal;
+    },
+    localPrivacySetting(newVal) {
+      this.$emit('update:privacySetting', newVal);
       this.$emit('update-privacy');
     }
   }

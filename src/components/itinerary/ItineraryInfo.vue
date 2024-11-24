@@ -77,52 +77,40 @@
 
       <!-- Settings Tab -->
       <div v-if="activeTab === 'settings'" class="h-full">
-        <ItinerarySettings :privacySetting="privacySetting" @update-privacy-setting="privacySetting = $event" />
+        <ItinerarySettings
+          :privacySetting="privacySetting"
+          @update:privacySetting="privacySetting = $event"
+          @update-privacy="updatePrivacy"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ItineraryEventsList from '../events/ItineraryEventsList.vue';
-import ItineraryComments from './ItineraryComments.vue';
-import ItinerarySettings from './ItinerarySettings.vue';
 import { fetchItineraryPrivacy, updateItineraryPrivacy, fetchItineraryWithCreator } from '../../helpers/itinerary';
+import ItinerarySettings from './ItinerarySettings.vue';
+import ItineraryComments from './ItineraryComments.vue';
+import ItineraryEventsList from '../events/ItineraryEventsList.vue';
 
 export default {
   name: 'ItineraryInfo',
   components: {
-    ItineraryEventsList,
+    ItinerarySettings,
     ItineraryComments,
-    ItinerarySettings
+    ItineraryEventsList
   },
   props: {
     itineraryId: {
       type: String,
       required: true
     },
-    itineraryImgUrl: {
-      type: String,
-      required: true
-    },
-    itineraryName: {
-      type: String,
-      required: true
-    },
-    itineraryDescription: {
-      type: String,
-      required: true
-    },
-    eventsGroupedByDay: {
-      type: Object,
-      required: true
-    },
-    selectedEventId: {
-      type: String,
-      default: null
-    }
+    itineraryName: String,
+    itineraryDescription: String,
+    itineraryImgUrl: String,
+    eventsGroupedByDay: Array,
+    selectedEventId: String
   },
-  emits: ['go-to-dashboard', 'show-create-event', 'select-event'],
   data() {
     return {
       activeTab: 'details',
