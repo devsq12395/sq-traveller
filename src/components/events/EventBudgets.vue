@@ -12,7 +12,7 @@
       <span>Total:</span>
       <span>${{ totalBudget.toFixed(2) }}</span>
     </div>
-    <button @click="$emit('show-add-budget')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
+    <button v-if="isOwner" @click="$emit('show-add-budget')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
   </div>
 </template>
 
@@ -27,6 +27,10 @@ export default {
       type: String,
       required: true,
     },
+    isOwner: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props) {
     const budgets = ref([]);
@@ -42,7 +46,7 @@ export default {
 
     return {
       budgets,
-      totalBudget,
+      totalBudget
     };
   },
 };

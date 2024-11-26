@@ -41,6 +41,7 @@ export default {
     time_start: { type: String, required: false, default: '' },
     time_end: { type: String, required: false, default: '' },
     isSelected: { type: Boolean, default: false },
+    isOwner: { type: Boolean, default: false },
   },
   methods: {
     onSelect() {

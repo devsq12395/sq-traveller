@@ -1,69 +1,82 @@
 <template>
   <div class="flex flex-col min-h-screen pt-20 bg-pink-100">
-    <div class="flex p-8">
-      <!-- Sidebar for Event List -->
-      <ItineraryInfo
+    <template v-if="isPrivate">
+      <div class="flex flex-col items-center justify-center p-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Private Itinerary</h2>
+        <p class="text-gray-600">This itinerary is private. Only the owner can view it.</p>
+      </div>
+    </template>
+    <template v-else>
+      <div class="flex p-8">
+        <!-- Sidebar for Event List -->
+        <ItineraryInfo
+          :itineraryId="itineraryId"
+          :itineraryImgUrl="itineraryImgUrl"
+          :itineraryName="itineraryName"
+          :itineraryDescription="itineraryDescription"
+          :eventsGroupedByDay="eventsGroupedByDay"
+          :selectedEventId="selectedEventId"
+          :isOwner="isOwner"
+          @go-to-settings="goToSettings"
+          @go-to-dashboard="goToDashboard"
+          @show-create-event="showCreateEventPopup = true"
+          @select-event="selectEvent"
+          @edit-event="editEvent"
+          @delete-event="deleteEvent"
+        />
+
+        <!-- Main content area for selected Event -->
+        <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
+          <EventInfo
+            v-if="selectedEvent"
+            :event="selectedEvent"
+            :isOwner="isOwner"
+            @show-add-note="showCreateNotePopup = true"
+            @show-add-todo="showCreateTodoPopup = true"
+            @show-add-budget="showCreateBudgetPopup = true"
+          />
+        </div>
+      </div>
+
+      <!-- Create Event Popup -->
+      <CreateEventPopup
+        v-if="showCreateEventPopup"
         :itineraryId="itineraryId"
-        :itineraryImgUrl="itineraryImgUrl"
-        :itineraryName="itineraryName"
-        :itineraryDescription="itineraryDescription"
-        :eventsGroupedByDay="eventsGroupedByDay"
-        :selectedEventId="selectedEventId"
-        @go-to-settings="goToSettings"
-        @go-to-dashboard="goToDashboard"
-        @show-create-event="showCreateEventPopup = true"
-        @select-event="selectEvent"
+        @close="closeCreateEventPopup"
+        @refresh="loadEvents"
       />
 
-      <!-- Main content area for selected Event -->
-      <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
-        <EventInfo
-          v-if="selectedEvent"
-          :event="selectedEvent"
-          @show-add-note="showCreateNotePopup = true"
-          @show-add-todo="showCreateTodoPopup = true"
-          @show-add-budget="showCreateBudgetPopup = true"
-        />
-      </div>
-    </div>
+      <!-- Create Notes Popup -->
+      <CreateNotePopup
+        v-if="showCreateNotePopup"
+        @close="showCreateNotePopup = false"
+        @refresh="loadEvents"
+      />
 
-    <!-- Create Event Popup -->
-    <CreateEventPopup
-      v-if="showCreateEventPopup"
-      :itineraryId="itineraryId"
-      @close="closeCreateEventPopup"
-      @refresh="loadEvents"
-    />
+      <!-- Create Todo Popup -->
+      <CreateTodoPopup
+        v-if="showCreateTodoPopup"
+        @close="showCreateTodoPopup = false"
+        @refresh="loadEvents"
+      />
 
-    <!-- Create Notes Popup -->
-    <CreateNotePopup
-      v-if="showCreateNotePopup"
-      @close="showCreateNotePopup = false"
-      @refresh="loadEvents"
-    />
-
-    <!-- Create Todo Popup -->
-    <CreateTodoPopup
-      v-if="showCreateTodoPopup"
-      @close="showCreateTodoPopup = false"
-      @refresh="loadEvents"
-    />
-
-    <!-- Create Budget Popup -->
-    <CreateBudgetPopup
-      v-if="showCreateBudgetPopup"
-      @close="showCreateBudgetPopup = false"
-      @refresh="loadEvents"
-    />
+      <!-- Create Budget Popup -->
+      <CreateBudgetPopup
+        v-if="showCreateBudgetPopup"
+        @close="showCreateBudgetPopup = false"
+        @refresh="loadEvents"
+      />
+    </template>
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useUser, setEventId } from '../context/UserContext';
+import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
-import { setEventId } from '../context/UserContext';
 import EventInfo from '../components/events/EventInfo.vue';
 import ItineraryInfo from '../components/itinerary/ItineraryInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
@@ -84,6 +97,7 @@ export default {
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const user = useUser();
     const itineraryId = route.params.id;
     const itineraryName = ref('');
     const itineraryDescription = ref('');
@@ -95,20 +109,77 @@ export default {
     const showCreateTodoPopup = ref(false);
     const showCreateBudgetPopup = ref(false);
     const showSettingsPopup = ref(false);
+    const isOwner = ref(false);
+    const isPrivate = ref(false);
+
+    // Check authentication and get current user
+    const checkAuth = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      console.log('Current auth user:', authUser);
+      console.log('Current user context:', user);
+      
+      if (authUser && authUser.id !== user.user_id) {
+        console.log('User context needs update. Auth user ID:', authUser.id);
+        // Update user context if needed
+        const { data: profile } = await supabase
+          .from('profile')
+          .select('username')
+          .eq('user_id', authUser.id)
+          .single();
+        
+        if (profile) {
+          console.log('Updating user context with profile:', profile);
+          user.setUser({
+            username: profile.username,
+            email: authUser.email,
+            user_id: authUser.id,
+          });
+        }
+      }
+      return authUser?.id;
+    };
 
     // Fetch itinerary details and events
     const loadItinerary = async () => {
-      const { data, error } = await fetchItinerary(itineraryId);
-      if (!error) {
-        itineraryName.value = data.name;
-        itineraryDescription.value = data.description;
-        itineraryImgUrl.value = data.img_url;
-      } else {
-        console.error('Error fetching itinerary:', error.message);
+      const currentUserId = await checkAuth();
+      console.log('Loading itinerary with user ID:', currentUserId);
+      const response = await fetchItinerary(itineraryId, currentUserId);
+      console.log('Fetch itinerary response:', response);
+      
+      if (response.error) {
+        console.log('Error response:', response.error);
+        if (response.isPrivate) {
+          console.log('Itinerary is private - blocking access');
+          isPrivate.value = true;
+          // Clear any existing data
+          itineraryName.value = '';
+          itineraryDescription.value = '';
+          itineraryImgUrl.value = '';
+          isOwner.value = false;
+          events.value = [];
+          return;
+        }
+        console.error('Error fetching itinerary:', response.error);
+        return;
       }
+
+      const { data } = response;
+      console.log('Itinerary loaded:', data);
+      console.log('Is owner:', data.isOwner);
+      
+      itineraryName.value = data.name;
+      itineraryDescription.value = data.description;
+      itineraryImgUrl.value = data.img_url;
+      isOwner.value = data.isOwner;
     };
 
     const loadEvents = async () => {
+      // Don't load events if itinerary is private
+      if (isPrivate.value) {
+        console.log('Not loading events - itinerary is private');
+        return;
+      }
+      
       const { data, error } = await fetchItineraryEvents(itineraryId);
       if (!error) {
         events.value = data;
@@ -118,13 +189,17 @@ export default {
     };
 
     onMounted(() => {
-      loadItinerary();
-      loadEvents();
+      loadItinerary().then(() => {
+        // Only load events if itinerary is not private
+        if (!isPrivate.value) {
+          loadEvents();
+        }
+      });
     });
 
     const selectEvent = (id) => {
       selectedEventId.value = id;
-      setEventId(id); // Save selected event ID in the context
+      setEventId(id);
     };
 
     const closeCreateEventPopup = () => {
@@ -138,6 +213,14 @@ export default {
     const goToSettings = () => {
       showSettingsPopup.value = false;
       router.push(`/itinerary/${route.params.id}/settings`);
+    };
+
+    const editEvent = (eventId) => {
+      console.log('Edit event:', eventId);
+    };
+
+    const deleteEvent = (eventId) => {
+      console.log('Delete event:', eventId);
     };
 
     const eventsGroupedByDay = computed(() => {
@@ -183,8 +266,12 @@ export default {
       selectedEvent,
       goToDashboard,
       goToSettings,
+      isOwner,
+      isPrivate,
+      editEvent,
+      deleteEvent
     };
-  },
+  }
 };
 </script>
 

@@ -17,7 +17,10 @@
           :imgUrl="event.img_url"
           :time_start="event.time_start"
           :time_end="event.time_end"
+          :isOwner="isOwner"
           @select-event="$emit('select-event', event.id)"
+          @edit-event="$emit('edit-event', event.id)"
+          @delete-event="$emit('delete-event', event.id)"
         />
       </div>
     </div>
@@ -40,6 +43,10 @@ export default {
     selectedEventId: {
       type: String,
       default: null
+    },
+    isOwner: {
+      type: Boolean,
+      default: false
     }
   }
 };

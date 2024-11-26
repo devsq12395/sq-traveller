@@ -7,12 +7,13 @@
           type="checkbox"
           v-model="activity.is_checked"
           @change="updateActivity(activity)"
+          :disabled="!isOwner"
           class="mr-2"
         />
         <span>{{ activity.todo }}</span>
       </li>
     </ul>
-    <button @click="$emit('show-add-todo')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
+    <button v-if="isOwner" @click="$emit('show-add-todo')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
   </div>
 </template>
 
@@ -28,6 +29,10 @@ export default {
       type: String,
       required: true,
     },
+    isOwner: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props) {
     const activities = ref([]);

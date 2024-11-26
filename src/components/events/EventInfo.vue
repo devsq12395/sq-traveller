@@ -31,7 +31,7 @@
       </div>
 
       <!-- Edit Buttons Section -->
-      <div class="flex space-x-4">
+      <div v-if="isOwner" class="flex space-x-4">
         <button @click="showEditEventPopup = true" class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Details</button>
         <button @click="$emit('show-add-note')" class="p-2 px-4 bg-green-500 text-white rounded shadow">Add a note</button>
         <button 
@@ -45,12 +45,22 @@
 
     <!-- Column #2: Things to Do -->
     <div class="w-1/4 space-y-4">
-      <EventActivities :eventId="event.id" :key="event.id" @show-add-todo="$emit('show-add-todo')" />
+      <EventActivities 
+        :eventId="event.id" 
+        :isOwner="isOwner"
+        :key="event.id" 
+        @show-add-todo="$emit('show-add-todo')" 
+      />
     </div>
 
     <!-- Column #3: Budget -->
     <div class="w-1/4 space-y-4">
-      <EventBudgets :eventId="event.id" :key="event.id" @show-add-budget="$emit('show-add-budget')" />
+      <EventBudgets 
+        :eventId="event.id" 
+        :isOwner="isOwner"
+        :key="event.id" 
+        @show-add-budget="$emit('show-add-budget')" 
+      />
     </div>
 
     <!-- EditEventPopup -->
@@ -99,6 +109,10 @@ export default {
     event: {
       type: Object,
       required: true
+    },
+    isOwner: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

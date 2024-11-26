@@ -24,7 +24,7 @@
         </div>
       </div>
       <!-- Buttons Container -->
-      <div class="flex space-x-4 mt-6">
+      <div v-if="isOwner" class="flex space-x-4 mt-6">
         <button
           @click="goToDashboard"
           class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
@@ -43,7 +43,7 @@
     <!-- Tabs -->
     <div class="flex border-b border-gray-200 bg-blue-50">
       <button
-        v-for="tab in tabs"
+        v-for="tab in availableTabs"
         :key="tab.id"
         @click="activeTab = tab.id"
         class="px-4 py-2 text-sm font-medium"
@@ -65,7 +65,10 @@
           <ItineraryEventsList
             :eventsGroupedByDay="eventsGroupedByDay"
             :selectedEventId="selectedEventId"
+            :isOwner="isOwner"
             @select-event="$emit('select-event', $event)"
+            @edit-event="$emit('edit-event', $event)"
+            @delete-event="$emit('delete-event', $event)"
           />
         </div>
       </div>
@@ -76,12 +79,15 @@
       </div>
 
       <!-- Settings Tab -->
-      <div v-if="activeTab === 'settings'" class="h-full">
+      <div v-if="activeTab === 'settings' && isOwner" class="h-full">
         <ItinerarySettings
           :privacySetting="privacySetting"
           @update:privacySetting="privacySetting = $event"
           @update-privacy="updatePrivacy"
         />
+        <div v-if="message" :class="['mt-4 p-4 rounded-md text-center', messageClass]">
+          {{ message }}
+        </div>
       </div>
     </div>
   </div>
@@ -109,15 +115,19 @@ export default {
     itineraryDescription: String,
     itineraryImgUrl: String,
     eventsGroupedByDay: Array,
-    selectedEventId: String
+    selectedEventId: String,
+    isOwner: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       activeTab: 'details',
-      tabs: [
+      allTabs: [
         { id: 'details', name: 'Details' },
         { id: 'comments', name: 'Comments' },
-        { id: 'settings', name: 'Settings' }
+        { id: 'settings', name: 'Settings', ownerOnly: true }
       ],
       privacySetting: 'private',
       message: '',
@@ -125,6 +135,11 @@ export default {
       itineraryDays: 0,
       creatorName: ''
     };
+  },
+  computed: {
+    availableTabs() {
+      return this.allTabs.filter(tab => !tab.ownerOnly || this.isOwner);
+    }
   },
   async created() {
     const { data } = await fetchItineraryWithCreator(this.itineraryId);
