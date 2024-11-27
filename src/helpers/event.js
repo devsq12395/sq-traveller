@@ -37,75 +37,117 @@ export async function createEvent(itinerary_id, { location, description, day, ti
 
 // Fetch events for a specific itinerary
 export async function fetchItineraryEvents(itinerary_id) {
-  if (!itinerary_id) {
-    console.error('Itinerary ID is null or undefined');
-    return { error: 'Itinerary ID is required to fetch events.' };
-  }
+  try {
+    if (!itinerary_id) {
+      console.error('Itinerary ID is null or undefined');
+      return { error: 'Itinerary ID is required to fetch events.' };
+    }
+  
+    const { data, error } = await supabase
+      .from('event')
+      .select(`
+          id, location, description, day, time_start, time_end,
+          itinerary (name), 
+          event_img (img_url)
+      `)
+      .eq('itinerary_id', itinerary_id);
+  
+    if (error) {
+      console.error('Error fetching events:', error.message);
+      return { error };
+    }
+  
+    const flattenedData = data.map(event => {
+      let img_url = 'https://via.placeholder.com/150';
+      if (event.event_img) {
+        img_url = event.event_img.img_url;
+      }
 
-  const { data, error } = await supabase
-    .from('event')
-    .select(`
-        id, location, description, day, time_start, time_end,
-        itinerary (name), 
-        event_img (img_url)
-    `)
-    .eq('itinerary_id', itinerary_id);
-
-  if (error) {
+      return {
+        ...event,
+        img_url,
+        itinerary_name: event.itinerary?.name || 'Unnamed Itinerary'
+      };
+    });
+  
+    return { data: flattenedData };
+  } catch (error) {
     console.error('Error fetching events:', error.message);
     return { error };
   }
-
-  const flattenedData = data.map(event => {
-    const img_url = event.event_img?.length ? event.event_img[0].img_url : 'https://via.placeholder.com/150';
-    return {
-      ...event,
-      img_url,
-      itinerary_name: event.itinerary?.name || 'Unnamed Itinerary'
-    };
-  });
-
-  return { data: flattenedData };
 }
 
 // Fetch a single event by ID
 export async function fetchEvent(eventId) {
-  if (!eventId) {
-    console.error('Event ID is null or undefined');
-    return { error: 'Event ID is required to fetch the event.' };
-  }
-
-  // Fetch the event details
-  const { data, error } = await supabase
-    .from('event')
-    .select(`
-      id, location, description, day, time_start, time_end,
-      event_img (img_url)
-    `)
-    .eq('id', eventId)
-    .single();
-
-  if (error) {
+  try {
+    if (!eventId) {
+      console.error('Event ID is null or undefined');
+      return { error: 'Event ID is required to fetch the event.' };
+    }
+  
+    // Fetch the event details
+    const { data, error } = await supabase
+      .from('event')
+      .select(`
+        id, location, description, day, time_start, time_end,
+        event_img (img_url)
+      `)
+      .eq('id', eventId)
+      .single();
+  
+    if (error) {
+      console.error('Error fetching event:', error.message);
+      return { error };
+    }
+  
+    // Access the image URL from event_img or use a placeholder
+    let img_url = 'https://via.placeholder.com/150';
+    if (data.event_img) {
+      img_url = data.event_img.img_url;
+    }
+  
+    return { data: { ...data, img_url } };
+  } catch (error) {
     console.error('Error fetching event:', error.message);
     return { error };
   }
-
-  // Access the image URL from event_img or use a placeholder
-  const img_url = data.event_img?.length ? data.event_img[0].img_url : 'https://via.placeholder.com/150';
-
-  return { data: { ...data, img_url } };
 }
 
 // Save the image URL to the event_img table
 export async function saveEventImage(eventId, imgUrl) {
   try {
-    const { data, error } = await supabase
+    // Check if an image already exists for the event
+    const { data: existingImage, error: fetchError } = await supabase
       .from('event_img')
-      .insert({
-        event_id: eventId,
-        img_url: imgUrl,
-      });
+      .select('id')
+      .eq('event_id', eventId)
+      .single();
 
+    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+      console.error('Error checking existing image:', fetchError.message);
+      return { error: fetchError };
+    }
+
+    let result;
+    if (existingImage) {
+      console.log (`existingImage: ${JSON.stringify(existingImage)}`);
+      // Update the existing image
+      result = await supabase
+        .from('event_img')
+        .update({ img_url: imgUrl })
+        .eq('id', existingImage.id);
+    } else {
+      console.log ('no existing image');
+      // Insert a new image
+      result = await supabase
+        .from('event_img')
+        .insert({
+          event_id: eventId,
+          img_url: imgUrl,
+        });
+    }
+
+    const { data, error } = result;
     if (error) throw error;
     return { data };
   } catch (error) {

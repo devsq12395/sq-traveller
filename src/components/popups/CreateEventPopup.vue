@@ -128,6 +128,8 @@
                 accept="image/*"
                 class="w-full p-2 border border-gray-300 rounded"
               />
+              <div v-if="uploading" class="upload-status">Uploading image...</div>
+              <div v-if="uploadSuccess" class="upload-status">Image uploaded!</div>
 
               <!-- Preview Selected Image -->
               <div v-if="selectedImage" class="mt-2">
@@ -176,6 +178,9 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = 6; // Show 6 images per page (2 rows of 3)
 
+    const uploading = ref(false);
+    const uploadSuccess = ref(false);
+
     // Computed properties for pagination
     const totalPages = computed(() => Math.ceil(defaultImages.length / itemsPerPage));
     
@@ -203,12 +208,35 @@ export default {
       event.value.img_url = image.url;
     };
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
       const file = e.target.files[0];
-      if (file) {
-        imageFile.value = file;
-        selectedImage.value = URL.createObjectURL(file);
-        event.value.img_url = ''; // Clear any selected default image
+      if (!file) return;
+
+      uploading.value = true;
+      uploadSuccess.value = false;
+
+      try {
+        const uploadPreset = process.env.VUE_APP_CLOUDINARY_UPLOAD_PRESET;
+        const cloudinaryUrl = process.env.VUE_APP_CLOUDINARY_URL;
+
+        if (!uploadPreset || !cloudinaryUrl) {
+          console.error("Cloudinary environment variables are missing.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", uploadPreset);
+
+        const response = await axios.post(cloudinaryUrl, formData);
+        event.value.img_url = response.data.secure_url;
+        selectedImage.value = response.data.secure_url;
+
+        uploadSuccess.value = true;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      } finally {
+        uploading.value = false;
       }
     };
 
@@ -258,7 +286,9 @@ export default {
       handleCreateEvent,
       closePopup,
       nextPage,
-      previousPage
+      previousPage,
+      uploading,
+      uploadSuccess
     };
   }
 };
@@ -267,5 +297,11 @@ export default {
 <style scoped>
 .grid-cols-3 > img {
   aspect-ratio: 1;
+}
+
+.upload-status {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #555;
 }
 </style>

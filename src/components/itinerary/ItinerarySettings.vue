@@ -32,6 +32,20 @@
               <span class="text-sm text-gray-500">Anyone with the link can view this itinerary</span>
             </div>
           </label>
+          <!-- Shared Option -->
+          <label class="flex items-start space-x-3 cursor-pointer">
+            <input
+              type="radio"
+              name="privacy"
+              value="shared"
+              v-model="localPrivacySetting"
+              class="mt-1"
+            />
+            <div>
+              <span class="font-medium block">Shared</span>
+              <span class="text-sm text-gray-500">Anyone can view this itinerary and will be shared on the "Shared Itineraries" list</span>
+            </div>
+          </label>
         </div>
       </div>
     </div>

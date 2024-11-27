@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-    <div class="bg-white p-6 rounded shadow-lg w-96">
+    <div class="bg-white p-6 rounded shadow-lg w-[900px]">
       <h2 class="text-2xl font-bold mb-4">Create an Itinerary</h2>
       <form @submit.prevent="handleCreateItinerary" class="space-y-4">
         <!-- Itinerary Name Field -->
@@ -43,14 +43,25 @@
 
         <!-- Image Upload Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label for="image" class="text-gray-700 font-semibold text-left">Image:</label>
-          <input
-            type="file"
-            id="image"
-            @change="handleImageUpload"
-            accept="image/*"
-            class="col-span-2 p-2 border border-gray-300 rounded"
-          />
+          <label class="text-gray-700 font-semibold text-left">Image:</label>
+          <div class="col-span-2 space-y-2">
+            <input
+              type="file"
+              id="image"
+              @change="handleImageUpload"
+              accept="image/*"
+              class="p-2 border border-gray-300 rounded w-full"
+            />
+            <div class="flex items-center gap-2">
+              <span class="text-gray-600">or</span>
+              <input
+                type="url"
+                v-model="imageUrl"
+                placeholder="Enter image URL"
+                class="flex-1 p-2 border border-gray-300 rounded"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Action Buttons -->
@@ -107,34 +118,39 @@ export default {
     };
 
     const handleCreateItinerary = async () => {
-      const { data, error } = await createItinerary(
-        user.user_id,
-        itinerary.value.name,
-        itinerary.value.description,
-        itinerary.value.days
-      );
+      try {
+        console.log (user);
+        const { data, error } = await createItinerary(
+          user.user_id,
+          itinerary.value.name,
+          itinerary.value.description,
+          itinerary.value.days
+        );
 
-      if (error) {
-        console.error('Error creating itinerary:', error);
-        return;
-      }
-
-      if (!data) {
-        console.error('Itinerary creation returned null data.');
-        return;
-      }
-
-      if (data && imageUrl.value) {
-        try {
-          await saveItineraryImage(data[0].id, imageUrl.value);
-          console.log('Image saved successfully');
-        } catch (imgError) {
-          console.error('Error saving itinerary image:', imgError);
+        if (error) {
+          console.error('Error creating itinerary:', error);
+          return;
         }
-      }
 
-      emit('refresh');
-      closePopup();
+        if (!data) {
+          console.error('Itinerary creation returned null data.');
+          return;
+        }
+
+        if (data && imageUrl.value) {
+          try {
+            await saveItineraryImage(data[0].id, imageUrl.value);
+            console.log('Image saved successfully');
+          } catch (imgError) {
+            console.error('Error saving itinerary image:', imgError);
+          }
+        }
+
+        emit('refresh');
+        closePopup();
+      } catch (error) {
+        console.error('Error creating itinerary:', error);
+      }
     };
 
     const closePopup = () => {
@@ -147,11 +163,15 @@ export default {
       handleCreateItinerary,
       handleImageUpload,
       closePopup,
+      imageUrl
     };
   },
 };
 </script>
 
 <style scoped>
+.bg-gray-900 {
+  z-index: 50;
+}
 /* Additional styles if needed */
 </style>

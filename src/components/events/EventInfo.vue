@@ -9,7 +9,7 @@
         <p class="text-gray-600">
           Day {{ event.day || 'not assigned' }}
           <br>
-          Time: {{ event.time_start || 'N/A' }} - {{ event.time_end || 'N/A' }}
+          Time: {{ formatTime(event.time_start) || 'N/A' }} - {{ formatTime(event.time_end) || 'N/A' }}
         </p>
       </div>
 
@@ -138,6 +138,10 @@ export default {
     }
   },
   methods: {
+    formatTime(time) {
+      if (!time) return '';
+      return time.substring(0, 5); // Takes only HH:mm part
+    },
     async fetchNotes(eventId) {
       const { data } = await fetchEventNotes(eventId);
       if (data) {
@@ -151,7 +155,6 @@ export default {
       const { error } = await deleteEvent(this.event.id);
       if (error) {
         console.error('Error deleting event:', error);
-        // You might want to show an error message to the user here
       } else {
         this.showDeleteConfirm = false;
         this.$emit('refresh');

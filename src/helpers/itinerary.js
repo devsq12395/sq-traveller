@@ -24,7 +24,7 @@ export async function fetchItineraries(user_id) {
   // Adjust time fields and handle nested itinerary_img data
   const adjustedData = data.map(itinerary => {
     // Access the first img_url from the itinerary_img array or use the placeholder
-    const img_url = itinerary.itinerary_img?.length ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
+    const img_url = itinerary.itinerary_img ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150';
     return {
       ...itinerary,
       img_url,
@@ -99,13 +99,12 @@ export async function fetchItinerary(itineraryId, currentUserId) {
       description: itinerary.description,
       days: itinerary.days,
       user_id: itinerary.user_id,
-      img_url: itinerary.itinerary_img?.[0]?.img_url || 'https://via.placeholder.com/150',
+      img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
       privacy: privacy,
       isOwner: isOwner
     };
 
-    console.log('Formatted data:', formattedData);
     return { data: formattedData };
   } catch (error) {
     console.error('Error in fetchItinerary:', error.message);
@@ -135,7 +134,7 @@ export async function fetchItineraryWithCreator(itineraryId) {
     if (error) throw error;
 
     // Access the first img_url from the itinerary_img or use the placeholder
-    const img_url = data.itinerary_img?.length ? data.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
+    const img_url = data.itinerary_img.img_url ? data.itinerary_img.img_url : 'https://via.placeholder.com/150';
     const creatorName = data.profiles?.username || 'Unknown User';
     
     const adjustedData = { 
@@ -187,6 +186,7 @@ export async function createItinerary(userId, name, description, days) {
 
 // Save the image URL to the itinerary_img table
 export async function saveItineraryImage(itineraryId, imgUrl) {
+  console.log('Saving image with itineraryId:', itineraryId, 'and imgUrl:', imgUrl);
   try {
     const { data, error } = await supabase
       .from('itinerary_img')
@@ -249,44 +249,88 @@ export async function fetchItineraryPrivacy(itineraryId) {
 export async function updateItineraryPrivacy(itineraryId, privacy) {
   if (!itineraryId) {
     console.error('Itinerary ID is null or undefined');
-    return { error: 'Itinerary ID is required to update privacy settings.' };
+    return { error: 'Itinerary ID is required to update privacy.' };
   }
 
   if (!['private', 'public', 'shared'].includes(privacy)) {
-    return { error: 'Invalid privacy setting.' };
+    console.error('Invalid privacy setting:', privacy);
+    return { error: 'Privacy must be either private, public, or shared.' };
   }
 
   try {
     // First check if a privacy setting exists
-    const { data: existingData } = await supabase
+    const { data: existingPrivacy, error: checkError } = await supabase
       .from('itinerary_privacy')
-      .select('*')
+      .select('id')
       .eq('itinerary_id', itineraryId)
       .single();
 
-    let result;
-    
-    if (existingData) {
-      // Update existing privacy setting
-      result = await supabase
-        .from('itinerary_privacy')
-        .update({ privacy })
-        .eq('itinerary_id', itineraryId)
-        .select();
-    } else {
-      // Create new privacy setting
-      result = await supabase
-        .from('itinerary_privacy')
-        .insert([{ itinerary_id: itineraryId, privacy }])
-        .select();
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking existing privacy:', checkError);
+      return { error: checkError };
     }
 
-    const { data, error } = result;
-    if (error) throw error;
+    let updateResult;
+    if (existingPrivacy) {
+      // Update existing privacy setting
+      updateResult = await supabase
+        .from('itinerary_privacy')
+        .update({ privacy })
+        .eq('itinerary_id', itineraryId);
+    } else {
+      // Insert new privacy setting
+      updateResult = await supabase
+        .from('itinerary_privacy')
+        .insert([{ itinerary_id: itineraryId, privacy }]);
+    }
 
-    return { data };
+    const { error: updateError } = updateResult;
+    if (updateError) {
+      console.error('Error updating privacy:', updateError);
+      return { error: updateError };
+    }
+
+    return { data: { privacy } };
   } catch (error) {
-    console.error('Error updating itinerary privacy:', error.message);
-    return { error };
+    console.error('Error in updateItineraryPrivacy:', error);
+    return { error: error.message };
+  }
+}
+
+// Fetch shared itineraries
+export async function fetchSharedItineraries() {
+  try {
+    const { data, error } = await supabase
+      .from('itinerary')
+      .select(`
+        *,
+        itinerary_img (img_url),
+        profiles:user_id (username),
+        itinerary_privacy!inner (privacy)
+      `)
+      .eq('itinerary_privacy.privacy', 'shared')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching shared itineraries:', error);
+      return { error };
+    }
+
+    // Format the response
+    const formattedData = data.map(itinerary => ({
+      id: itinerary.id,
+      name: itinerary.name,
+      description: itinerary.description,
+      days: itinerary.days,
+      user_id: itinerary.user_id,
+      img_url: itinerary.itinerary_img?.[0]?.img_url || 'https://via.placeholder.com/150',
+      creatorName: itinerary.profiles?.username || 'Unknown User',
+      created_at: itinerary.created_at
+    }));
+
+    return { data: formattedData };
+  } catch (error) {
+    console.error('Error in fetchSharedItineraries:', error);
+    return { error: error.message };
   }
 }

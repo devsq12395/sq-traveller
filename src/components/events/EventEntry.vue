@@ -21,7 +21,7 @@
       <!-- Time Range -->
       <p class="text-gray-700 text-sm mb-2">
         <span class="font-semibold">Day:</span> {{ day }}<br>
-        <span class="font-semibold">Time:</span> {{ time_start || 'N/A' }} - {{ time_end || 'N/A' }}
+        <span class="font-semibold">Time:</span> {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
       </p>
 
       <!-- Description -->
@@ -47,6 +47,10 @@ export default {
     onSelect() {
       this.$emit('select-event');
     },
+    formatTime(time) {
+      if (!time) return '';
+      return time.substring(0, 5); // Takes only HH:mm part
+    }
   },
 };
 </script>

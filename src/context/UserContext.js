@@ -15,6 +15,10 @@ const eventState = reactive({
   eventId: null,
 });
 
+const loadingState = reactive({
+  isLoading: false,
+});
+
 // Initialize user state from local storage
 function loadUserFromStorage() {
   const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -64,6 +68,14 @@ export function useItinerary() {
 
 export function useEvent() {
   return eventState;
+}
+
+export function setLoading(isLoading) {
+  loadingState.isLoading = isLoading;
+}
+
+export function useLoading() {
+  return loadingState;
 }
 
 // Load user data from storage on app initialization

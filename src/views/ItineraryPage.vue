@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen pt-20 bg-pink-100">
+    <LoadingScreen />
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Private Itinerary</h2>
@@ -73,7 +74,7 @@
 <script>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUser, setEventId } from '../context/UserContext';
+import { useUser, setEventId, setLoading } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
@@ -83,6 +84,7 @@ import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
 import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
 import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
+import LoadingScreen from '../components/common/LoadingScreen.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -92,7 +94,8 @@ export default {
     CreateEventPopup,
     CreateNotePopup,
     CreateTodoPopup,
-    CreateBudgetPopup
+    CreateBudgetPopup,
+    LoadingScreen
   },
   setup() {
     const route = useRoute();
@@ -189,10 +192,15 @@ export default {
     };
 
     onMounted(() => {
+      setLoading(true); // Show loading on start
       loadItinerary().then(() => {
         // Only load events if itinerary is not private
         if (!isPrivate.value) {
-          loadEvents();
+          loadEvents().finally(() => {
+            //setLoading(false); // Hide loading after events are loaded
+          });
+        } else {
+          //setLoading(false); // Hide loading if itinerary is private
         }
       });
     });
@@ -230,6 +238,8 @@ export default {
         acc[dayKey].push(event);
         return acc;
       }, {});
+
+      console.log('Events grouped by day:', grouped);
 
       // First sort events within each day by time_start
       Object.values(grouped).forEach(dayEvents => {

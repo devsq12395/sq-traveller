@@ -113,7 +113,6 @@ export default {
     },
     itineraryName: String,
     itineraryDescription: String,
-    itineraryImgUrl: String,
     eventsGroupedByDay: Array,
     selectedEventId: String,
     isOwner: {
@@ -133,7 +132,8 @@ export default {
       message: '',
       messageClass: '',
       itineraryDays: 0,
-      creatorName: ''
+      creatorName: '',
+      itineraryImgUrl: 'https://via.placeholder.com/150',
     };
   },
   computed: {
@@ -146,6 +146,7 @@ export default {
     if (data) {
       this.itineraryDays = data.days;
       this.creatorName = data.creatorName;
+      this.itineraryImgUrl = data.img_url;
     }
     await this.loadPrivacySettings();
   },

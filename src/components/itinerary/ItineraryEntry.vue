@@ -52,6 +52,9 @@ export default {
       this.$router.push(`/itinerary/${this.id}`);
     },
   },
+  created() {
+    console.log('ItineraryEntry img_url:', this.img_url);
+  },
 };
 </script>
 
