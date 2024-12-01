@@ -12,13 +12,22 @@
           </span>
           <div class="relative">
             <button 
+              v-if="profile"
               @click="isMenuOpen = !isMenuOpen"
               class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <span class="text-xl">&#8230;</span>
             </button>
             
-            <div v-if="isMenuOpen" 
+            <button 
+              v-else
+              @click="handleLogin"
+              class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Login
+            </button>
+            
+            <div v-if="isMenuOpen && profile" 
               class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
             >
               <router-link 
@@ -46,7 +55,7 @@
 import { useRouter } from 'vue-router';
 import { ref, onMounted, watch } from 'vue';
 import { getProfileData, logout } from '../../helpers/authService';
-import { useUser } from '../../context/UserContext';
+import { useUser, setLoginPopupShow } from '../../context/UserContext';
 
 export default {
   name: 'AppHeader',
@@ -65,10 +74,16 @@ export default {
         const error = await logout();
         if (error) throw error;
         isMenuOpen.value = false;
-        router.push('/login');
+        router.push('/');
       } catch (error) {
         console.error('Error logging out:', error.message);
       }
+    };
+
+    const handleLogin = () => {
+      console.log('handleLogin clicked');
+      setLoginPopupShow(true);
+      console.log('LoginPopup state set to true');
     };
 
     // Watch for changes in user context
@@ -86,6 +101,7 @@ export default {
 
     return {
       handleLogout,
+      handleLogin,
       profile,
       isMenuOpen
     };

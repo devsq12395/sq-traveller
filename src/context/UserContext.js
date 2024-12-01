@@ -19,6 +19,10 @@ const loadingState = reactive({
   isLoading: false,
 });
 
+const loginPopupState = reactive({
+  isLoginPopupShow: false,
+});
+
 // Initialize user state from local storage
 function loadUserFromStorage() {
   const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -76,6 +80,16 @@ export function setLoading(isLoading) {
 
 export function useLoading() {
   return loadingState;
+}
+
+export function setLoginPopupShow(show) {
+  console.log('Setting login popup show to:', show);
+  loginPopupState.isLoginPopupShow = show;
+  console.log('Current loginPopupState:', loginPopupState);
+}
+
+export function useLoginPopup() {
+  return loginPopupState;
 }
 
 // Load user data from storage on app initialization

@@ -30,37 +30,46 @@
         Sign Up
       </button>
       <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
+      <p v-if="successMessage" class="text-green-500">{{ successMessage }}</p>
     </form>
-
-    <p v-if="signupMessage" class="text-green-500 mt-4">{{ signupMessage }}</p>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import { signup } from '../../helpers/authService';
 
 export default {
   name: 'UserSignup',
-  data() {
-    return {
-      username: '',
-      email: '',
-      password: '',
-      errorMessage: null,
-      signupMessage: null,
-    };
-  },
-  methods: {
-    async handleSignup() {
-      const error = await signup(this.username, this.email, this.password);
-      if (error) {
-        this.errorMessage = error.message;
+  emits: ['signup-success'],
+  setup(props, { emit }) {
+    const username = ref('');
+    const email = ref('');
+    const password = ref('');
+    const errorMessage = ref(null);
+    const successMessage = ref(null);
+
+    const handleSignup = async () => {
+      const result = await signup(email.value, password.value, username.value);
+      if (result.error) {
+        errorMessage.value = result.error.message;
+        successMessage.value = null;
       } else {
-        this.errorMessage = null;
-        this.signupMessage = 'A confirmation email has been sent. Please verify your email before logging in.';
+        errorMessage.value = null;
+        successMessage.value = result.data.message;
+        emit('signup-success');
       }
-    },
-  },
+    };
+
+    return {
+      username,
+      email,
+      password,
+      errorMessage,
+      successMessage,
+      handleSignup
+    };
+  }
 };
 </script>
 

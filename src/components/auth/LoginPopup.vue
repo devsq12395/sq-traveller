@@ -1,9 +1,9 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="$emit('close')">
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="handleClose">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
       <!-- Close button -->
       <div class="flex justify-end p-2">
-        <button @click="$emit('close')" class="text-gray-500 hover:text-gray-700">
+        <button @click="handleClose" class="text-gray-500 hover:text-gray-700">
           <span class="text-2xl">&times;</span>
         </button>
       </div>
@@ -26,8 +26,10 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 import UserLogin from './UserLogin.vue';
 import UserSignup from './UserSignup.vue';
+import { setLoginPopupShow } from '../../context/UserContext';
 
 export default {
   name: 'LoginPopup',
@@ -35,11 +37,25 @@ export default {
     UserLogin,
     UserSignup,
   },
-  methods: {
-    handleLoginSuccess() {
-      this.$emit('close');
-      this.$router.push('/dashboard');
-    }
+  setup(props, { emit }) {
+    const router = useRouter();
+
+    const handleClose = () => {
+      console.log('Closing popup');
+      setLoginPopupShow(false);
+      emit('close');
+    };
+
+    const handleLoginSuccess = () => {
+      console.log('Login success');
+      handleClose();
+      router.push('/dashboard');
+    };
+
+    return {
+      handleClose,
+      handleLoginSuccess
+    };
   },
   emits: ['close']
 };

@@ -27,28 +27,34 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import { login } from '../../helpers/authService';
 
 export default {
   name: 'UserLogin',
-  data() {
-    return {
-      email: '',
-      password: '',
-      errorMessage: null,
-    };
-  },
-  methods: {
-    async handleLogin() {
-      const error = await login(this.email, this.password);
+  emits: ['login-success'],
+  setup(props, { emit }) {
+    const email = ref('');
+    const password = ref('');
+    const errorMessage = ref(null);
+
+    const handleLogin = async () => {
+      const error = await login(email.value, password.value);
       if (error) {
-        this.errorMessage = error.message;
+        errorMessage.value = error.message;
       } else {
-        this.errorMessage = null;
-        this.$router.push('/dashboard');
+        errorMessage.value = null;
+        emit('login-success');
       }
-    },
-  },
+    };
+
+    return {
+      email,
+      password,
+      errorMessage,
+      handleLogin
+    };
+  }
 };
 </script>
 
