@@ -52,8 +52,23 @@ export async function fetchItinerary(itineraryId, currentUserId) {
       .single();
 
     if (privacyError) {
-      console.error('Error fetching privacy setting:', privacyError.message);
-      return { error: privacyError };
+      if (privacyError.code === 'PGRST116') { // No rows returned error
+        // Create a default privacy setting if none exists
+        const { error: insertError } = await supabase
+          .from('itinerary_privacy')
+          .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
+          .single();
+
+        if (insertError) {
+          console.error('Error creating default privacy setting:', insertError.message);
+          return { error: insertError };
+        }
+
+        return { data: { privacy: 'private' } };
+      } else {
+        console.error('Error fetching privacy setting:', privacyError.message);
+        return { error: privacyError };
+      }
     }
 
     console.log('Privacy data:', privacyData);
@@ -298,8 +313,23 @@ export async function updateItineraryPrivacy(itineraryId, privacy) {
 }
 
 // Fetch shared itineraries
-export async function fetchSharedItineraries() {
+export async function fetchSharedItineraries({ page = 1, pageSize = 12 } = {}) {
   try {
+    // First, get total count
+    const { count, error: countError } = await supabase
+      .from('itinerary')
+      .select('*, itinerary_privacy!inner(privacy)', { count: 'exact' })
+      .eq('itinerary_privacy.privacy', 'shared');
+
+    if (countError) {
+      console.error('Error getting total count:', countError);
+      return { error: countError };
+    }
+
+    // Calculate pagination
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
     const { data, error } = await supabase
       .from('itinerary')
       .select(`
@@ -309,7 +339,8 @@ export async function fetchSharedItineraries() {
         itinerary_privacy!inner (privacy)
       `)
       .eq('itinerary_privacy.privacy', 'shared')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
     if (error) {
       console.error('Error fetching shared itineraries:', error);
@@ -323,12 +354,20 @@ export async function fetchSharedItineraries() {
       description: itinerary.description,
       days: itinerary.days,
       user_id: itinerary.user_id,
-      img_url: itinerary.itinerary_img?.[0]?.img_url || 'https://via.placeholder.com/150',
+      img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
       created_at: itinerary.created_at
     }));
 
-    return { data: formattedData };
+    return { 
+      data: formattedData,
+      pagination: {
+        total: count,
+        page,
+        pageSize,
+        totalPages: Math.ceil(count / pageSize)
+      }
+    };
   } catch (error) {
     console.error('Error in fetchSharedItineraries:', error);
     return { error: error.message };

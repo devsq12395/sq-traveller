@@ -74,7 +74,7 @@
 <script>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUser, setEventId, setLoading } from '../context/UserContext';
+import { useUser, setLoading, setEventId } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
@@ -197,11 +197,13 @@ export default {
         // Only load events if itinerary is not private
         if (!isPrivate.value) {
           loadEvents().finally(() => {
-            //setLoading(false); // Hide loading after events are loaded
+            setLoading(false); // Hide loading after everything is loaded
           });
         } else {
-          //setLoading(false); // Hide loading if itinerary is private
+          setLoading(false); // Hide loading if itinerary is private (no events to load)
         }
+      }).catch(() => {
+        setLoading(false); // Hide loading if there's an error
       });
     });
 

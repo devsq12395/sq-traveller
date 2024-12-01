@@ -63,7 +63,8 @@ export default {
       required: true
     }
   },
-  setup(props) {
+  emits: ['update:commentCount'],
+  setup(props, { emit }) {
     const userState = useUser();
     const comments = ref([]);
     const newComment = ref('');
@@ -73,6 +74,7 @@ export default {
       const { data, error } = await fetchComments(props.itineraryId);
       if (!error && data) {
         comments.value = data;
+        emit('update:commentCount', data.length);
       }
     };
 
@@ -89,12 +91,14 @@ export default {
       if (!error && data) {
         comments.value.unshift(data);
         newComment.value = '';
+        emit('update:commentCount', comments.value.length);
       }
       isSubmitting.value = false;
     };
 
     const handleCommentDeleted = (commentId) => {
       comments.value = comments.value.filter(comment => comment.id !== commentId);
+      emit('update:commentCount', comments.value.length);
     };
 
     onMounted(() => {

@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { setUser } from '../context/UserContext';
+import { setUser, clearUser } from '../context/UserContext';
 
 // Login function
 export async function login(email, password) {
@@ -81,6 +81,9 @@ export async function signup(email, password, username) {
 // Logout function
 export async function logout() {
   const { error } = await supabase.auth.signOut();
+  if (!error) {
+    clearUser(); // Clear user data from context and local storage
+  }
   return error;
 }
 

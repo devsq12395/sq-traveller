@@ -43,7 +43,7 @@
 
         <!-- Image Upload Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label class="text-gray-700 font-semibold text-left">Image:</label>
+          <label class="text-gray-700 font-semibold text-left">Image (4:3 ratio recommended):</label>
           <div class="col-span-2 space-y-2">
             <input
               type="file"
@@ -52,7 +52,7 @@
               accept="image/*"
               class="p-2 border border-gray-300 rounded w-full"
             />
-            <div class="flex items-center gap-2">
+            <div v-if="!uploadSuccess && !isUploading" class="flex items-center gap-2">
               <span class="text-gray-600">or</span>
               <input
                 type="url"
@@ -60,6 +60,12 @@
                 placeholder="Enter image URL"
                 class="flex-1 p-2 border border-gray-300 rounded"
               />
+            </div>
+            <div v-if="isUploading" class="flex items-center gap-2">
+              <span class="text-gray-600">Uploading image...</span>
+            </div>
+            <div v-if="uploadSuccess" class="flex items-center gap-2">
+              <span class="text-gray-600">Image uploaded successfully!</span>
             </div>
           </div>
         </div>
@@ -91,6 +97,8 @@ export default {
     });
     const imageUrl = ref('');
     const user = useUser();
+    const isUploading = ref(false);
+    const uploadSuccess = ref(false);
 
     const handleImageUpload = async (event) => {
       const file = event.target.files[0];
@@ -109,11 +117,17 @@ export default {
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
 
+        isUploading.value = true;
+        uploadSuccess.value = false;
         const response = await axios.post(cloudinaryUrl, formData);
+
         imageUrl.value = response.data.secure_url;
-        console.log("Image uploaded successfully:", imageUrl.value);
+
+        uploadSuccess.value = true; // Set uploadSuccess to true on success
       } catch (error) {
         console.error("Error uploading image:", error);
+      } finally {
+        isUploading.value = false; // Ensure isUploading is set to false
       }
     };
 
@@ -163,7 +177,9 @@ export default {
       handleCreateItinerary,
       handleImageUpload,
       closePopup,
-      imageUrl
+      imageUrl,
+      isUploading,
+      uploadSuccess
     };
   },
 };

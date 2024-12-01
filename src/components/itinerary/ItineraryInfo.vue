@@ -3,7 +3,7 @@
     <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
       <div class="flex items-start">
-        <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-24 h-24 object-cover rounded-lg mr-2" />
+        <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-32 h-24 object-cover rounded-lg mr-2" />
         <div class="flex-grow">
           <div class="flex justify-between items-start">
             <div class="w-full pr-8 text-left">
@@ -75,7 +75,10 @@
 
       <!-- Comments Tab -->
       <div v-if="activeTab === 'comments'" class="h-full bg-blue-100">
-        <ItineraryComments :itineraryId="itineraryId" />
+        <ItineraryComments 
+          :itineraryId="itineraryId" 
+          @update:commentCount="commentCount = $event"
+        />
       </div>
 
       <!-- Settings Tab -->
@@ -123,9 +126,10 @@ export default {
   data() {
     return {
       activeTab: 'details',
+      commentCount: 0,
       allTabs: [
         { id: 'details', name: 'Details' },
-        { id: 'comments', name: 'Comments' },
+        { id: 'comments', name: () => `Comments (${this.commentCount})` },
         { id: 'settings', name: 'Settings', ownerOnly: true }
       ],
       privacySetting: 'private',
@@ -138,7 +142,10 @@ export default {
   },
   computed: {
     availableTabs() {
-      return this.allTabs.filter(tab => !tab.ownerOnly || this.isOwner);
+      return this.allTabs.map(tab => ({
+        ...tab,
+        name: typeof tab.name === 'function' ? tab.name() : tab.name
+      })).filter(tab => !tab.ownerOnly || this.isOwner);
     }
   },
   async created() {

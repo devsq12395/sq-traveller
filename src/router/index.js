@@ -3,10 +3,16 @@ import LoginPage from '../views/LoginPage.vue';
 import DashboardPage from '../views/DashboardPage.vue';
 import ItineraryPage from '../views/ItineraryPage.vue';
 import UserSettingsPage from '../views/UserSettingsPage.vue';
+import HomePage from '../views/HomePage.vue';
 
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    component: HomePage,
+  },
+  {
+    path: '/login',
     name: 'Login',
     component: LoginPage,
   },

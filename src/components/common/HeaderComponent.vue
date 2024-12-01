@@ -44,9 +44,9 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import { supabase } from '../../helpers/supabaseClient';
-import { ref, onMounted } from 'vue';
-import { getProfileData } from '../../helpers/authService';
+import { ref, onMounted, watch } from 'vue';
+import { getProfileData, logout } from '../../helpers/authService';
+import { useUser } from '../../context/UserContext';
 
 export default {
   name: 'AppHeader',
@@ -54,19 +54,34 @@ export default {
     const router = useRouter();
     const profile = ref(null);
     const isMenuOpen = ref(false);
+    const user = useUser();
+
+    const updateProfile = async () => {
+      profile.value = await getProfileData();
+    };
 
     const handleLogout = async () => {
       try {
-        const { error } = await supabase.auth.signOut();
+        const error = await logout();
         if (error) throw error;
-        router.push('/');
+        isMenuOpen.value = false;
+        router.push('/login');
       } catch (error) {
         console.error('Error logging out:', error.message);
       }
     };
 
+    // Watch for changes in user context
+    watch(() => user.user_id, async (newUserId) => {
+      if (newUserId) {
+        await updateProfile();
+      } else {
+        profile.value = null;
+      }
+    });
+
     onMounted(async () => {
-      profile.value = await getProfileData();
+      await updateProfile();
     });
 
     return {
