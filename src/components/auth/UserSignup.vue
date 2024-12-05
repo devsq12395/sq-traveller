@@ -56,7 +56,7 @@ export default {
         successMessage.value = null;
       } else {
         errorMessage.value = null;
-        successMessage.value = result.data.message;
+        successMessage.value = `${result.data.message}`;
         emit('signup-success');
       }
     };

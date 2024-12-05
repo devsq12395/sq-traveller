@@ -69,7 +69,7 @@ export default {
     const itineraries = ref([]);
     const showCreatePopup = ref(false);
     const currentPage = ref(1);
-    const itemsPerPage = 12; // Number of items to show per page
+    const itemsPerPage = 6; // Number of items to show per page
     const user = useUser();
 
     const totalPages = computed(() => Math.ceil(itineraries.value.length / itemsPerPage));

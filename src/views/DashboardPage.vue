@@ -10,7 +10,7 @@
       
       <!-- Itineraries Section -->
       <div class="border-b border-gray-300 pb-6">
-        <ItinerariesList />
+        <ItinerariesList ref="itinerariesListRef" />
       </div>
 
       <!-- Shared Itineraries Section -->
@@ -22,8 +22,10 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue';
 import ItinerariesList from '../components/itinerary/ItinerariesList.vue';
 import SharedItineraries from '../components/itinerary/SharedItineraries.vue';
+import { useUser } from '../context/UserContext';
 
 export default {
   name: 'DashboardPage',
@@ -31,9 +33,21 @@ export default {
     ItinerariesList,
     SharedItineraries,
   },
-  methods: {
-    
-  },
+  setup() {
+    const itinerariesListRef = ref(null);
+    const user = useUser();
+
+    // Watch for changes in user_id and reload itineraries
+    watch(() => user.user_id, (newUserId) => {
+      if (newUserId && itinerariesListRef.value) {
+        itinerariesListRef.value.loadItineraries();
+      }
+    });
+
+    return {
+      itinerariesListRef
+    };
+  }
 };
 </script>
 

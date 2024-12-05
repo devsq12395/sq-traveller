@@ -37,45 +37,64 @@ export async function login(email, password) {
 
 // Signup function
 export async function signup(email, password, username) {
-  // First, create the auth user
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
+  try {
+    // First, create the auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username: username,
+        },
+      },
+    });
+
+    // Handle auth errors
+    if (authError) {
+      console.error('Auth signUp error:', authError.message);
+      return { error: authError };
+    }
+
+    // Check if user is available (email confirmation may delay availability)
+    if (!authData.user) {
+      console.error('User not available. Email confirmation might be required.');
+      return {
+        error: {
+          message: 'User signup successful, but email confirmation is required.',
+        },
+      };
+    }
+
+    // Create profile record
+    const { error: profileError } = await supabase
+      .from('profile')
+      .insert([
+        {
+          user_id: authData.user.id, // Ensure this matches RLS policies
+          username: username,
+        },
+      ]);
+
+    // Handle profile creation errors
+    if (profileError) {
+      console.error('Profile creation error:', profileError.message);
+
+      // Cleanup: Consider prompting an admin or manually handling orphaned users
+      return { error: profileError };
+    }
+
+    // Return success message
+    return {
       data: {
-        username: username,
+        message: 'Signup successful! Please check your email to confirm your account.',
+        user: authData.user,
       },
-    },
-  });
-
-  if (authError) {
-    return { error: authError };
+      error: null,
+    };
+  } catch (err) {
+    console.error('Unexpected signup error:', err.message);
+    return { error: { message: 'Unexpected error occurred during signup.' } };
   }
-
-  // Create profile record
-  const { error: profileError } = await supabase
-    .from('profile')
-    .insert([
-      {
-        user_id: authData.user.id,
-        username: username,
-        email: email,
-      },
-    ]);
-
-  if (profileError) {
-    // If profile creation fails, we should probably cleanup the auth user
-    // but Supabase doesn't provide a direct way to delete users
-    return { error: profileError };
-  }
-
-  return {
-    data: {
-      message: 'Signup successful! Please check your email to confirm your account.',
-      user: authData.user,
-    },
-    error: null,
-  };
 }
 
 // Logout function

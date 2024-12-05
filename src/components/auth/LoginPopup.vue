@@ -18,7 +18,7 @@
         <!-- Signup Section -->
         <div class="w-1/2 p-6 bg-gray-50">
           <h2 class="text-2xl font-bold mb-6">Sign Up</h2>
-          <UserSignup @signup-success="handleLoginSuccess" />
+          <UserSignup @signup-success="handleSignupSuccess" />
         </div>
       </div>
     </div>
@@ -27,6 +27,7 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import { nextTick } from 'vue';
 import UserLogin from './UserLogin.vue';
 import UserSignup from './UserSignup.vue';
 import { setLoginPopupShow } from '../../context/UserContext';
@@ -46,15 +47,25 @@ export default {
       emit('close');
     };
 
-    const handleLoginSuccess = () => {
+    const handleLoginSuccess = async () => {
       console.log('Login success');
+      // Ensure state updates are processed before closing popup
+      await nextTick();
       handleClose();
-      router.push('/dashboard');
+      // Only navigate if we're not already on the dashboard
+      if (router.currentRoute.value.path !== '/dashboard') {
+        router.push('/dashboard');
+      }
+    };
+
+    const handleSignupSuccess = () => {
+      console.log('Signup success');
     };
 
     return {
       handleClose,
-      handleLoginSuccess
+      handleLoginSuccess,
+      handleSignupSuccess
     };
   },
   emits: ['close']

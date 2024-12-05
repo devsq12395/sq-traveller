@@ -88,9 +88,6 @@
           @update:privacySetting="privacySetting = $event"
           @update-privacy="updatePrivacy"
         />
-        <div v-if="message" :class="['mt-4 p-4 rounded-md text-center', messageClass]">
-          {{ message }}
-        </div>
       </div>
     </div>
   </div>
@@ -133,8 +130,6 @@ export default {
         { id: 'settings', name: 'Settings', ownerOnly: true }
       ],
       privacySetting: 'private',
-      message: '',
-      messageClass: '',
       itineraryDays: 0,
       creatorName: '',
       itineraryImgUrl: 'https://via.placeholder.com/150',
@@ -170,14 +165,7 @@ export default {
     async updatePrivacy() {
       const { error } = await updateItineraryPrivacy(this.itineraryId, this.privacySetting);
       if (error) {
-        this.message = 'Failed to update privacy settings';
-        this.messageClass = 'bg-red-100 text-red-700';
-      } else {
-        this.message = 'Privacy settings updated successfully';
-        this.messageClass = 'bg-green-100 text-green-700';
-        setTimeout(() => {
-          this.message = '';
-        }, 3000);
+        console.error('Failed to update privacy settings:', error);
       }
     }
   }
