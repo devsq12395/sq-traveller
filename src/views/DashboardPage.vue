@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen p-8 pt-20 bg-gray-100">
+  <div class="min-h-screen p-8 pt-40 bg-gray-100">
     <div class="flex flex-col space-y-6">
       <!-- Header Section -->
       <div class="flex justify-between items-center pb-4 border-b border-gray-300">
@@ -52,5 +52,5 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles if needed */
+  /* Additional styles if needed */
 </style>

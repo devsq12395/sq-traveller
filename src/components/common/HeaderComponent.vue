@@ -1,9 +1,9 @@
 <template>
-  <header class="fixed w-full bg-white shadow-md z-50">
+  <header class="fixed w-full bg-blue-200 shadow-md z-50">
     <div class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
-        <router-link to="/dashboard" class="text-xl font-bold text-gray-800">
-          SQ Traveller
+        <router-link to="/dashboard" class="flex items-center space-x-2">
+          <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-16 w-40"/>
         </router-link>
         
         <div class="flex items-center space-x-4">

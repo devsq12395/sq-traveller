@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 bg-white rounded-lg shadow">
+  <div class="p-4 bg-blue-100 rounded-lg shadow">
     <h2 class="text-2xl font-bold mb-4">Shared Itineraries</h2>
     <div v-if="loading" class="text-center py-4">
       <p>Loading shared itineraries...</p>

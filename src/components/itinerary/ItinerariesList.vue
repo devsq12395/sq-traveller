@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-lg p-6">
+  <div class="bg-blue-100 rounded-lg shadow-lg p-6">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-4xl font-bold text-left">My Itineraries</h1>
       <button
