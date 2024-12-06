@@ -20,6 +20,7 @@
             Login with Google
           </button>
           <p v-if="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
+          <SetUsernamePopup v-if="showSetUsernamePopup" @close="showSetUsernamePopup = false" />
         </div>
         
         <!-- Signup Section -->
@@ -38,17 +39,20 @@ import { nextTick, ref } from 'vue';
 import UserLogin from './UserLogin.vue';
 import UserSignup from './UserSignup.vue';
 import { setLoginPopupShow } from '../../context/UserContext';
-import { loginWithGoogle } from '../../helpers/authService';
+import { loginWithGoogle, getUserHasProfile } from '../../helpers/authService';
+import SetUsernamePopup from './SetUsernamePopup.vue';
 
 export default {
   name: 'LoginPopup',
   components: {
     UserLogin,
     UserSignup,
+    SetUsernamePopup,
   },
   setup(props, { emit }) {
     const router = useRouter();
     const errorMessage = ref(null);
+    const showSetUsernamePopup = ref(false);
 
     const handleClose = () => {
       console.log('Closing popup');
@@ -76,7 +80,19 @@ export default {
         errorMessage.value = error.message;
       } else if (data) {
         console.log('Redirecting to Google login...');
-        window.location.href = data.url; // Redirect to Google's OAuth URL
+        window.location.href = data.url;
+      }
+    };
+
+    const checkUserProfile = async () => {
+      const { hasProfile, error } = await getUserHasProfile();
+      if (error) {
+        console.error('Error checking user profile:', error.message);
+        errorMessage.value = error.message;
+      } else if (!hasProfile) {
+        router.push('/set-username'); // Redirect to SetUsernamePage
+      } else {
+        handleLoginSuccess();
       }
     };
 
@@ -85,7 +101,9 @@ export default {
       handleLoginSuccess,
       handleSignupSuccess,
       handleGoogleLogin,
+      checkUserProfile,
       errorMessage,
+      showSetUsernamePopup,
     };
   },
   emits: ['close'],

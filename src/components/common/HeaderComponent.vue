@@ -52,21 +52,32 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { ref, onMounted, watch } from 'vue';
-import { getProfileData, logout } from '../../helpers/authService';
+import { getProfileData, logout, getUserHasProfile } from '../../helpers/authService';
 import { useUser, setLoginPopupShow } from '../../context/UserContext';
 
 export default {
   name: 'AppHeader',
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const profile = ref(null);
     const isMenuOpen = ref(false);
     const user = useUser();
 
     const updateProfile = async () => {
-      profile.value = await getProfileData();
+      if (route.name !== 'SetUsernamePage') {
+        const { hasProfile, error } = await getUserHasProfile();
+
+        if (error) {
+          console.error('Error checking user profile:', error.message);
+        } else if (!hasProfile) {
+          router.push('/set-username'); // Redirect to SetUsernamePage if no profile
+        } else {
+          profile.value = await getProfileData();
+        }
+      }
     };
 
     const handleLogout = async () => {

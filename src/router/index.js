@@ -4,6 +4,7 @@ import DashboardPage from '../views/DashboardPage.vue';
 import ItineraryPage from '../views/ItineraryPage.vue';
 import UserSettingsPage from '../views/UserSettingsPage.vue';
 import HomePage from '../views/HomePage.vue';
+import SetUsernamePage from '../views/SetUsernamePage.vue';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/settings',
     name: 'UserSettings',
     component: UserSettingsPage,
+  },
+  {
+    path: '/set-username',
+    name: 'SetUsernamePage',
+    component: SetUsernamePage,
   },
 ];
 
