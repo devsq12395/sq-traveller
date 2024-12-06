@@ -130,3 +130,23 @@ export async function getProfileData() {
     return null;
   }
 }
+
+// Login with Google
+export async function loginWithGoogle() {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+
+    if (error) {
+      console.error('Error logging in with Google:', error.message);
+      return { error };
+    }
+
+    // The data object will contain the redirect URL to the Google login page
+    return { data };
+  } catch (err) {
+    console.error('Unexpected error during Google login:', err.message);
+    return { error: { message: 'Unexpected error occurred during Google login.' } };
+  }
+}

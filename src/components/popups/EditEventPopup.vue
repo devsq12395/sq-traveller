@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-    <div class="bg-white p-6 rounded shadow-lg w-[900px]">
+    <div class="bg-gray-100 p-6 rounded shadow-lg w-[900px]">
       <h2 class="text-2xl font-bold mb-4">Edit Event</h2>
       <div class="border-b border-gray-200 mb-6"></div>
 
@@ -10,6 +10,23 @@
           <div class="absolute left-1/2 top-0 bottom-0 border-l border-gray-200"></div>
           <!-- Left Column - Event Details -->
           <div class="flex-1 space-y-4">
+            <!-- Name Field -->
+            <div class="grid grid-cols-3 items-start gap-2">
+              <label for="name" class="text-gray-700 font-semibold text-left">
+                Name:
+                <span class="text-sm text-gray-500">({{ event.name ? event.name.length : 0 }}/50)</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                v-model="event.name"
+                placeholder="Name"
+                maxlength="50"
+                required
+                class="col-span-2 p-2 border border-gray-300 rounded"
+              />
+            </div>
+
             <!-- Location Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="location" class="text-gray-700 font-semibold text-left">
@@ -161,6 +178,7 @@ export default {
   emits: ['close', 'refresh'],
   setup(props, { emit }) {
     const event = ref({
+      name: '',
       location: '',
       description: '',
       day: 0,
@@ -205,6 +223,7 @@ export default {
         const { data, error } = await fetchEvent(props.eventId);
         if (!error && data) {
           event.value = {
+            name: data.name,
             location: data.location,
             description: data.description,
             day: data.day || 0,
@@ -253,6 +272,7 @@ export default {
       
       try {
         const eventData = {
+          name: event.value.name,
           location: event.value.location,
           description: event.value.description,
           day: event.value.day,
@@ -262,7 +282,7 @@ export default {
 
         console.log('Sending event data:', eventData);
         const { error } = await updateEvent(props.eventId, eventData);
-        console.log('Update response error:', error);
+        if (error) console.log('Update response error:', error);
 
         if (!error) {
           // If there's a new image URL, save it
@@ -276,6 +296,7 @@ export default {
           }
           console.log('Event updated successfully, emitting refresh');
           emit('refresh');
+          emit('eventUpdated');
           closePopup();
         } else {
           console.error('Error updating event:', error.message);

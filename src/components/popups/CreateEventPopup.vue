@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-    <div class="bg-white p-6 rounded shadow-lg w-[900px]">
+    <div class="bg-gray-100 p-6 rounded shadow-lg w-[900px]">
       <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
       <div class="border-b border-gray-200 mb-6"></div>
       
@@ -12,6 +12,23 @@
           
           <!-- Left Column - Event Details -->
           <div class="flex-1 space-y-4">
+            <!-- Name Field -->
+            <div class="grid grid-cols-3 items-start gap-2">
+              <label for="name" class="text-gray-700 font-semibold text-left">
+                Name:
+                <span class="text-sm text-gray-500">({{ event.name.length }}/50)</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                v-model="event.name"
+                placeholder="Name"
+                maxlength="50"
+                required
+                class="col-span-2 p-2 border border-gray-300 rounded"
+              />
+            </div>
+
             <!-- Location Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="location" class="text-gray-700 font-semibold text-left">
@@ -108,9 +125,9 @@
 
               <!-- Pagination -->
               <div class="flex justify-between">
-                <button @click="previousPage" class="p-2 bg-gray-300 rounded">Previous</button>
+                <button type="button" @click="previousPage" class="p-2 bg-gray-300 rounded">Previous</button>
                 <span class="text-gray-500 text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
-                <button @click="nextPage" class="p-2 bg-gray-300 rounded">Next</button>
+                <button type="button" @click="nextPage" class="p-2 bg-gray-300 rounded">Next</button>
               </div>
 
               <!-- Or Divider -->
@@ -165,6 +182,7 @@ export default {
   },
   setup(props, { emit }) {
     const event = ref({
+      name: '',
       location: '',
       time_start: '',
       time_end: '',

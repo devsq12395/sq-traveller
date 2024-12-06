@@ -11,7 +11,7 @@ export async function fetchItineraries(user_id) {
   const { data, error } = await supabase
     .from('itinerary')
     .select(`
-      id, name, description, days,
+      id, created_at, name, description, days,
       itinerary_img (img_url)
     `)
     .eq('user_id', user_id);
@@ -109,11 +109,7 @@ export async function fetchItinerary(itineraryId, currentUserId) {
 
     // Format the response
     const formattedData = {
-      id: itinerary.id,
-      name: itinerary.name,
-      description: itinerary.description,
-      days: itinerary.days,
-      user_id: itinerary.user_id,
+      ... itinerary,
       img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
       privacy: privacy,
@@ -138,7 +134,7 @@ export async function fetchItineraryWithCreator(itineraryId) {
     const { data, error } = await supabase
       .from('itinerary')
       .select(`
-        id, name, description, days,
+        id, created_at, name, description, days,
         itinerary_img (img_url),
         user_id,
         profiles:user_id (username)
@@ -349,14 +345,9 @@ export async function fetchSharedItineraries({ page = 1, pageSize = 12 } = {}) {
 
     // Format the response
     const formattedData = data.map(itinerary => ({
-      id: itinerary.id,
-      name: itinerary.name,
-      description: itinerary.description,
-      days: itinerary.days,
-      user_id: itinerary.user_id,
+      ...itinerary,
       img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
-      created_at: itinerary.created_at
     }));
 
     return { 

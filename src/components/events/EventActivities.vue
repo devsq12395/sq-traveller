@@ -1,16 +1,9 @@
 <template>
   <div class="mb-4">
-    <h3 class="text-xl font-semibold">Things to do:</h3>
+    <h3 class="text-xl font-semibold text-left mb-5">Things to do:</h3>
     <ul>
       <li v-for="activity in activities" :key="activity.id" class="flex items-center">
-        <input
-          type="checkbox"
-          v-model="activity.is_checked"
-          @change="updateActivity(activity)"
-          :disabled="!isOwner"
-          class="mr-2"
-        />
-        <span>{{ activity.todo }}</span>
+        <span>- {{ activity.todo }}</span>
       </li>
     </ul>
     <button v-if="isOwner" @click="$emit('show-add-todo')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>

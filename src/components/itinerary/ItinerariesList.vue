@@ -75,9 +75,10 @@ export default {
     const totalPages = computed(() => Math.ceil(itineraries.value.length / itemsPerPage));
     
     const paginatedItineraries = computed(() => {
+      const sortedItineraries = [...itineraries.value].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       const start = (currentPage.value - 1) * itemsPerPage;
       const end = start + itemsPerPage;
-      return itineraries.value.slice(start, end);
+      return sortedItineraries.slice(start, end);
     });
 
     const loadItineraries = async () => {

@@ -15,13 +15,18 @@
 
     <!-- Event Details -->
     <div class="flex-1">
-      <!-- Location Name -->
-      <h3 class="text-xl font-semibold text-gray-800">{{ location }}</h3>
+      <!-- Name -->
+      <h3 class="text-xl font-semibold text-gray-800">{{ name }}</h3>
 
       <!-- Time Range -->
       <p class="text-gray-700 text-sm mb-2">
         <span class="font-semibold">Day:</span> {{ day }}<br>
         <span class="font-semibold">Time:</span> {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
+      </p>
+      
+      <!-- Location -->
+      <p class="text-gray-700 text-sm mb-2">
+        <span class="font-semibold">Location:</span> {{ location }}
       </p>
 
       <!-- Description -->
@@ -34,6 +39,7 @@
 export default {
   name: 'EventEntry',
   props: {
+    name: { type: String, required: true },
     location: { type: String, required: true },
     day: { type: String, required: true, default: 'No day assigned' },
     description: { type: String, required: true },
