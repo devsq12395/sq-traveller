@@ -1,39 +1,64 @@
 <template>
-  <div v-if="event" class="bg-purple-100 p-6 rounded shadow-lg flex space-x-8 w-full">
-    <!-- Column #1: Image, Name, Time, Description, Notes -->
-    <div class="flex-1 space-y-4">
-      <!-- Event Image and Name -->
-      <div class="mb-4">
-        <img :src="event.img_url" alt="Event Thumbnail" class="w-full object-cover rounded shadow-md mb-2" />
-        <h2 class="text-3xl font-bold">{{ event.location }}</h2>
-        <p class="text-gray-600">
-          Day {{ event.day || 'not assigned' }}
-          <br>
-          Time: {{ formatTime(event.time_start) || 'N/A' }} - {{ formatTime(event.time_end) || 'N/A' }}
-        </p>
+  <div v-if="event" class="bg-purple-100 p-6 rounded shadow-lg grid grid-cols-3 gap-4 w-full">
+    <!-- Column #1: Image -->
+    <div class="col-span-1">
+      <img 
+        :src="event.img_url" 
+        alt="Event Thumbnail" 
+        class="w-full max-h-64 object-cover rounded shadow-md"
+      />
+    </div>
+
+    <!-- Column #2: Name and Details -->
+    <div class="col-span-2 space-y-4">
+      <!-- Event Name -->
+      <h2 class="text-3xl font-bold">{{ event.name }}</h2>
+      <p class="text-gray-600">
+        Day {{ event.day || 'not assigned' }}
+        <br>
+        Time: {{ formatTime(event.time_start) || 'N/A' }} - {{ formatTime(event.time_end) || 'N/A' }}
+      </p>
+
+      <!-- Location Section -->
+      <div class="text-left">
+        <h3 class="text-lg font-semibold">Location:</h3>
+        <p class="text-gray-700 text-left">{{ event.location }}</p>
       </div>
 
       <!-- Description Section -->
       <div class="text-left">
         <h3 class="text-lg font-semibold">Description:</h3>
-        <p class="text-gray-700">{{ event.description }}</p>
+        <p class="text-gray-700 text-left">{{ event.description }}</p>
       </div>
 
       <!-- Notes Section -->
       <div class="text-left">
         <h3 class="text-lg font-semibold">Notes:</h3>
         <div v-if="notes.length > 0">
-          <ul>
+          <ul class="text-left">
             <li v-for="note in notes" :key="note.id" class="text-gray-700">- {{ note.note }}</li>
           </ul>
         </div>
-        <p v-else class="text-gray-700">No notes available</p>
+        <p v-else class="text-gray-700 text-left">No notes available</p>
       </div>
+
+      <!-- Divider -->
+      <hr class="border-gray-400 my-4" />
 
       <!-- Edit Buttons Section -->
       <div v-if="isOwner" class="flex space-x-4">
-        <button @click="showEditEventPopup = true" class="p-2 px-4 bg-green-500 text-white rounded shadow">Edit Details</button>
-        <button @click="$emit('show-add-note')" class="p-2 px-4 bg-green-500 text-white rounded shadow">Add a note</button>
+        <button 
+          @click="showEditEventPopup = true" 
+          class="p-2 px-4 bg-green-500 text-white rounded shadow"
+        >
+          Edit Details
+        </button>
+        <button 
+          @click="$emit('show-add-note')" 
+          class="p-2 px-4 bg-green-500 text-white rounded shadow"
+        >
+          Add a note
+        </button>
         <button 
           @click="confirmDelete" 
           class="p-2 px-4 bg-red-500 text-white rounded shadow hover:bg-red-600"
@@ -43,24 +68,24 @@
       </div>
     </div>
 
-    <!-- Column #2: Things to Do -->
-    <div class="w-1/4 space-y-4">
-      <EventActivities 
-        :eventId="event.id" 
-        :isOwner="isOwner"
-        :key="event.id" 
-        @show-add-todo="$emit('show-add-todo')" 
-      />
-    </div>
-
-    <!-- Column #3: Budget -->
-    <div class="w-1/4 space-y-4">
-      <EventBudgets 
-        :eventId="event.id" 
-        :isOwner="isOwner"
-        :key="event.id" 
-        @show-add-budget="$emit('show-add-budget')" 
-      />
+    <!-- Column #3: Things to Do and Budget -->
+    <div class="col-span-3 mt-6 grid grid-cols-2 gap-4">
+      <div class="space-y-4">
+        <EventActivities 
+          :eventId="event.id" 
+          :isOwner="isOwner"
+          :key="event.id" 
+          @show-add-todo="$emit('show-add-todo')" 
+        />
+      </div>
+      <div class="space-y-4">
+        <EventBudgets 
+          :eventId="event.id" 
+          :isOwner="isOwner"
+          :key="event.id" 
+          @show-add-budget="$emit('show-add-budget')" 
+        />
+      </div>
     </div>
 
     <!-- EditEventPopup -->
@@ -69,6 +94,7 @@
       :eventId="event.id" 
       @close="showEditEventPopup = false"
       @refresh="$emit('refresh')" 
+      @eventUpdated="$emit('eventUpdated')"
     />
 
     <!-- Delete Confirmation Modal -->
@@ -165,5 +191,9 @@ export default {
 </script>
 
 <style scoped>
-/* Add custom styling if necessary */
+/* Ensure the image has a size limit */
+img {
+  max-height: 256px; /* Restricts image height */
+  object-fit: cover;
+}
 </style>

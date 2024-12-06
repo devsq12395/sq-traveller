@@ -10,6 +10,7 @@
       </h2>
       <div v-for="event in dayEvents" :key="event.id" class="mb-2">
         <EventEntry
+          :name="event.name"
           :location="event.location"
           :day="event.day"
           :description="event.description"

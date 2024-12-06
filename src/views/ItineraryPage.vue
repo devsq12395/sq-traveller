@@ -35,6 +35,7 @@
             @show-add-note="showCreateNotePopup = true"
             @show-add-todo="showCreateTodoPopup = true"
             @show-add-budget="showCreateBudgetPopup = true"
+            @eventUpdated="handleEventUpdate"
           />
         </div>
       </div>
@@ -283,6 +284,12 @@ export default {
       editEvent,
       deleteEvent
     };
+  },
+  methods: {
+    handleEventUpdate() {
+      console.log('Event updated');
+      this.loadEvents();
+    }
   }
 };
 </script>

@@ -13,6 +13,13 @@
         <div class="w-1/2 p-6">
           <h2 class="text-2xl font-bold mb-6">Login</h2>
           <UserLogin @login-success="handleLoginSuccess" />
+          <button 
+            @click="handleGoogleLogin" 
+            class="p-3 bg-red-500 text-white rounded mt-4 hover:bg-red-600 w-full"
+          >
+            Login with Google
+          </button>
+          <p v-if="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
         </div>
         
         <!-- Signup Section -->
@@ -27,10 +34,11 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import UserLogin from './UserLogin.vue';
 import UserSignup from './UserSignup.vue';
 import { setLoginPopupShow } from '../../context/UserContext';
+import { loginWithGoogle } from '../../helpers/authService';
 
 export default {
   name: 'LoginPopup',
@@ -40,6 +48,7 @@ export default {
   },
   setup(props, { emit }) {
     const router = useRouter();
+    const errorMessage = ref(null);
 
     const handleClose = () => {
       console.log('Closing popup');
@@ -49,10 +58,8 @@ export default {
 
     const handleLoginSuccess = async () => {
       console.log('Login success');
-      // Ensure state updates are processed before closing popup
       await nextTick();
       handleClose();
-      // Only navigate if we're not already on the dashboard
       if (router.currentRoute.value.path !== '/dashboard') {
         router.push('/dashboard');
       }
@@ -62,13 +69,26 @@ export default {
       console.log('Signup success');
     };
 
+    const handleGoogleLogin = async () => {
+      const { data, error } = await loginWithGoogle();
+      if (error) {
+        console.error('Error logging in with Google:', error.message);
+        errorMessage.value = error.message;
+      } else if (data) {
+        console.log('Redirecting to Google login...');
+        window.location.href = data.url; // Redirect to Google's OAuth URL
+      }
+    };
+
     return {
       handleClose,
       handleLoginSuccess,
-      handleSignupSuccess
+      handleSignupSuccess,
+      handleGoogleLogin,
+      errorMessage,
     };
   },
-  emits: ['close']
+  emits: ['close'],
 };
 </script>
 

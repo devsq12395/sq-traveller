@@ -22,6 +22,7 @@
       <!-- Pagination Controls -->
       <div class="mt-6 flex justify-center items-center space-x-2">
         <button 
+          type="button"
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
           class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
@@ -30,6 +31,7 @@
         </button>
         <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
         <button 
+          type="button"
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
           class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"

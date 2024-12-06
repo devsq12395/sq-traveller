@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4">
-    <h3 class="text-xl font-semibold">Budget:</h3>
+    <h3 class="text-xl font-semibold text-left mb-5">Budget:</h3>
     <ul>
       <li v-for="budget in budgets" :key="budget.id" class="flex justify-between">
         <span>{{ budget.budget_name }}</span>
