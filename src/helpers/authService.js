@@ -117,7 +117,7 @@ export async function getProfileData() {
       .from('profile')
       .select('username')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching profile:', error);
@@ -148,5 +148,82 @@ export async function loginWithGoogle() {
   } catch (err) {
     console.error('Unexpected error during Google login:', err.message);
     return { error: { message: 'Unexpected error occurred during Google login.' } };
+  }
+}
+
+// Check if the currently logged-in user has a profile
+export async function getUserHasProfile() {
+  try {
+    // Get the currently logged-in user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError) {
+      console.error('Error getting user:', userError.message);
+      return { hasProfile: false, error: userError };
+    }
+
+    if (!user) {
+      console.warn('No user is logged in.');
+      return { hasProfile: false, error: null };
+    }
+
+    // Query the profile table to check if a profile exists for the user
+    const { data: profile, error: profileError } = await supabase
+      .from('profile')
+      .select('id') // Only fetch the ID to minimize payload
+      .eq('user_id', user.id)
+      .maybeSingle(); // Use maybeSingle to avoid errors when 0 rows are returned
+
+    if (profileError) {
+      console.error('Error checking for profile:', profileError.message);
+      return { hasProfile: false, error: profileError };
+    }
+
+    // Return whether the user has a profile
+    return { hasProfile: !!profile, error: null };
+  } catch (err) {
+    console.error('Unexpected error in getUserHasProfile:', err.message);
+    return { hasProfile: false, error: { message: 'Unexpected error occurred.' } };
+  }
+}
+
+// Create a new profile for the currently logged-in user
+export async function createProfile(username) {
+  try {
+    // Get the currently logged-in user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError) {
+      console.error('Error getting user:', userError.message);
+      return { success: false, error: userError };
+    }
+
+    if (!user) {
+      console.warn('No user is logged in.');
+      return { success: false, error: { message: 'User not logged in.' } };
+    }
+
+    // Insert a new profile for the logged-in user
+    const { data: profile, error: profileError } = await supabase
+      .from('profile')
+      .insert([
+        {
+          user_id: user.id, // The user's ID
+          username: username, // The provided username
+        },
+      ])
+      .select()
+      .single();
+
+    if (profileError) {
+      console.error('Error creating profile:', profileError.message);
+      return { success: false, error: profileError };
+    }
+
+    console.log('Profile created successfully:', profile);
+    return { success: true, profile, error: null };
+  } catch (err) {
+    console.error('Unexpected error in createProfile:', err.message);
+    return { success: false, error: { message: 'Unexpected error occurred.' } };
   }
 }
