@@ -52,10 +52,11 @@
 </template>
 
 <script>
+import { supabase } from '../../helpers/supabaseClient';
 import { useRouter, useRoute } from 'vue-router';
 import { ref, onMounted, watch } from 'vue';
 import { getProfileData, logout, getUserHasProfile } from '../../helpers/authService';
-import { useUser, setLoginPopupShow } from '../../context/UserContext';
+import { setUser, useUser, setLoginPopupShow } from '../../context/UserContext';
 
 export default {
   name: 'AppHeader',
@@ -75,7 +76,20 @@ export default {
         } else if (!hasProfile) {
           router.push('/set-username'); // Redirect to SetUsernamePage if no profile
         } else {
-          profile.value = await getProfileData();
+          const { data: getUser } = await supabase.auth.getUser();
+          console.log ('Current user:', getUser);
+          const { hasProfile, errorHasProfile } = await getUserHasProfile();
+          if (errorHasProfile) {
+            console.error('Error checking user profile:', errorHasProfile.message);
+          } else if (hasProfile) {
+            profile.value = await getProfileData();
+          }
+
+          setUser({
+            username: (hasProfile) ? profile.value.username : null,
+            email: getUser.user.email,
+            user_id: getUser.user.id,
+          });
         }
       }
     };
