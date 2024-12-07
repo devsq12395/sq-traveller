@@ -74,7 +74,8 @@ export default {
     };
 
     const handleGoogleLogin = async () => {
-      const { data, error } = await loginWithGoogle();
+      const { data, error, message } = await loginWithGoogle();
+      console.log (message);
       if (error) {
         console.error('Error logging in with Google:', error.message);
         errorMessage.value = error.message;
