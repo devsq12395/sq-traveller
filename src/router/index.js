@@ -5,6 +5,7 @@ import ItineraryPage from '../views/ItineraryPage.vue';
 import UserSettingsPage from '../views/UserSettingsPage.vue';
 import HomePage from '../views/HomePage.vue';
 import SetUsernamePage from '../views/SetUsernamePage.vue';
+import DataDeletionPage from '../views/DataDeletionPage.vue';
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: '/set-username',
     name: 'SetUsernamePage',
     component: SetUsernamePage,
+  },
+  {
+    path: '/data-deletion',
+    name: 'DataDeletionPage',
+    component: DataDeletionPage,
   },
 ];
 
