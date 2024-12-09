@@ -30,7 +30,7 @@
       </p>
 
       <!-- Description -->
-      <p class="text-gray-600 text-sm">{{ description }}</p>
+      <p class="text-gray-600 text-sm">{{ truncatedDescription }}</p>
     </div>
   </div>
 </template>
@@ -48,6 +48,12 @@ export default {
     time_end: { type: String, required: false, default: '' },
     isSelected: { type: Boolean, default: false },
     isOwner: { type: Boolean, default: false },
+  },
+  computed: {
+    truncatedDescription() {
+      const _description = this.description || ''; 
+      return _description.length > 70 ? _description.substring(0, 70) + '...' : _description;
+    }
   },
   methods: {
     onSelect() {

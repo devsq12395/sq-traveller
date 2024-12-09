@@ -151,6 +151,26 @@ export async function loginWithGoogle() {
   }
 }
 
+// Login with Facebook
+export async function loginWithFacebook() {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+    });
+
+    if (error) {
+      console.error('Error logging in with Facebook:', error.message);
+      return { error };
+    }
+
+    // The data object will contain the redirect URL to the Facebook login page
+    return { data };
+  } catch (err) {
+    console.error('Unexpected error during Facebook login:', err.message);
+    return { error: { message: 'Unexpected error occurred during Google login.' } };
+  }
+}
+
 // Check if the currently logged-in user has a profile
 export async function getUserHasProfile() {
   try {

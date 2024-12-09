@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen pt-20 bg-pink-100">
+  <div class="flex flex-col min-h-screen pt-20 bg-gray-500">
     <LoadingScreen />
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
@@ -8,35 +8,45 @@
       </div>
     </template>
     <template v-else>
-      <div class="flex p-8">
-        <!-- Sidebar for Event List -->
-        <ItineraryInfo
-          :itineraryId="itineraryId"
-          :itineraryImgUrl="itineraryImgUrl"
-          :itineraryName="itineraryName"
-          :itineraryDescription="itineraryDescription"
-          :eventsGroupedByDay="eventsGroupedByDay"
-          :selectedEventId="selectedEventId"
-          :isOwner="isOwner"
-          @go-to-settings="goToSettings"
-          @go-to-dashboard="goToDashboard"
-          @show-create-event="showCreateEventPopup = true"
-          @select-event="selectEvent"
-          @edit-event="editEvent"
-          @delete-event="deleteEvent"
+      <div class="flex flex-col p-8">
+        <ItineraryHeadline
+          :image="itineraryImgUrl"
+          :title="itineraryName"
+          :description="itineraryDescription"
+          :numberOfDays="eventsGroupedByDay.length"
+          :createdBy="createdBy"
         />
-
-        <!-- Main content area for selected Event -->
-        <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
-          <EventInfo
-            v-if="selectedEvent"
-            :event="selectedEvent"
+        
+        <div class="flex p-8">
+          <!-- Sidebar for Event List -->
+          <ItineraryInfo
+            :itineraryId="itineraryId"
+            :itineraryImgUrl="itineraryImgUrl"
+            :itineraryName="itineraryName"
+            :itineraryDescription="itineraryDescription"
+            :eventsGroupedByDay="eventsGroupedByDay"
+            :selectedEventId="selectedEventId"
             :isOwner="isOwner"
-            @show-add-note="showCreateNotePopup = true"
-            @show-add-todo="showCreateTodoPopup = true"
-            @show-add-budget="showCreateBudgetPopup = true"
-            @eventUpdated="handleEventUpdate"
+            @go-to-settings="goToSettings"
+            @go-to-dashboard="goToDashboard"
+            @show-create-event="showCreateEventPopup = true"
+            @select-event="selectEvent"
+            @edit-event="editEvent"
+            @delete-event="deleteEvent"
           />
+
+          <!-- Main content area for selected Event -->
+          <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
+            <EventInfo
+              v-if="selectedEvent"
+              :event="selectedEvent"
+              :isOwner="isOwner"
+              @show-add-note="showCreateNotePopup = true"
+              @show-add-todo="showCreateTodoPopup = true"
+              @show-add-budget="showCreateBudgetPopup = true"
+              @eventUpdated="handleEventUpdate"
+            />
+          </div>
         </div>
       </div>
 
@@ -86,6 +96,7 @@ import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
 import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 import LoadingScreen from '../components/common/LoadingScreen.vue';
+import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -96,7 +107,8 @@ export default {
     CreateNotePopup,
     CreateTodoPopup,
     CreateBudgetPopup,
-    LoadingScreen
+    LoadingScreen,
+    ItineraryHeadline
   },
   setup() {
     const route = useRoute();
@@ -115,6 +127,7 @@ export default {
     const showSettingsPopup = ref(false);
     const isOwner = ref(false);
     const isPrivate = ref(false);
+    const createdBy = ref('');
 
     // Check authentication and get current user
     const checkAuth = async () => {
@@ -175,6 +188,7 @@ export default {
       itineraryDescription.value = data.description;
       itineraryImgUrl.value = data.img_url;
       isOwner.value = data.isOwner;
+      createdBy.value = data.created_by;
     };
 
     const loadEvents = async () => {
@@ -282,7 +296,8 @@ export default {
       isOwner,
       isPrivate,
       editEvent,
-      deleteEvent
+      deleteEvent,
+      createdBy
     };
   },
   methods: {

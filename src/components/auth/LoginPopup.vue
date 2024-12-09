@@ -39,7 +39,7 @@ import { nextTick, ref } from 'vue';
 import UserLogin from './UserLogin.vue';
 import UserSignup from './UserSignup.vue';
 import { setLoginPopupShow } from '../../context/UserContext';
-import { loginWithGoogle, getUserHasProfile } from '../../helpers/authService';
+import { loginWithGoogle, loginWithFacebook, getUserHasProfile } from '../../helpers/authService';
 import SetUsernamePopup from './SetUsernamePopup.vue';
 
 export default {
@@ -85,6 +85,18 @@ export default {
       }
     };
 
+    const handleFacebookLogin = async () => {
+      const { data, error, message } = await loginWithFacebook();
+      console.log (message);
+      if (error) {
+        console.error('Error logging in with Facebook:', error.message);
+        errorMessage.value = error.message;
+      } else if (data) {
+        console.log('Redirecting to Facebook login...');
+        window.location.href = data.url;
+      }
+    };
+
     const checkUserProfile = async () => {
       const { hasProfile, error } = await getUserHasProfile();
       if (error) {
@@ -102,6 +114,7 @@ export default {
       handleLoginSuccess,
       handleSignupSuccess,
       handleGoogleLogin,
+      handleFacebookLogin,
       checkUserProfile,
       errorMessage,
       showSetUsernamePopup,
