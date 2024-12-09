@@ -5,12 +5,13 @@
       isSelected ? 'bg-yellow-300' : 'bg-yellow-200 hover:bg-yellow-300'
     ]"
     @click="onSelect"
+    style="height: 180px;"
   >
     <!-- Icon or Thumbnail -->
     <img
       :src="imgUrl"
       alt="Event Thumbnail"
-      class="w-16 h-16 rounded-md mr-4 border border-gray-300 shadow-sm"
+      class="w-16 h-[90%] rounded-md mr-4 border border-gray-300 shadow-sm"
     />
 
     <!-- Event Details -->

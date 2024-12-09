@@ -8,17 +8,17 @@
       </div>
     </template>
     <template v-else>
-      <div class="flex flex-col p-8">
+      <div class="flex flex-col items-center p-8">
         <ItineraryHeadline
+          :itineraryId="itineraryId"
           :image="itineraryImgUrl"
           :title="itineraryName"
           :description="itineraryDescription"
-          :numberOfDays="eventsGroupedByDay.length"
+          :numberOfDays="eventsGroupedByDay"
           :createdBy="createdBy"
         />
-        
-        <div class="flex p-8">
-          <!-- Sidebar for Event List -->
+
+        <div class="flex justify-center w-full">
           <ItineraryInfo
             :itineraryId="itineraryId"
             :itineraryImgUrl="itineraryImgUrl"
@@ -33,20 +33,8 @@
             @select-event="selectEvent"
             @edit-event="editEvent"
             @delete-event="deleteEvent"
+            class="w-7/10"
           />
-
-          <!-- Main content area for selected Event -->
-          <div class="w-2/3 bg-purple-50 p-4 rounded-lg ml-4 flex flex-col">
-            <EventInfo
-              v-if="selectedEvent"
-              :event="selectedEvent"
-              :isOwner="isOwner"
-              @show-add-note="showCreateNotePopup = true"
-              @show-add-todo="showCreateTodoPopup = true"
-              @show-add-budget="showCreateBudgetPopup = true"
-              @eventUpdated="handleEventUpdate"
-            />
-          </div>
         </div>
       </div>
 
@@ -89,7 +77,7 @@ import { useUser, setLoading, setEventId } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
-import EventInfo from '../components/events/EventInfo.vue';
+//import EventInfo from '../components/events/EventInfo.vue';
 import ItineraryInfo from '../components/itinerary/ItineraryInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
 import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
@@ -101,7 +89,7 @@ import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
 export default {
   name: 'ItineraryPage',
   components: {
-    EventInfo,
+    //EventInfo,
     ItineraryInfo,
     CreateEventPopup,
     CreateNotePopup,

@@ -1,28 +1,8 @@
 <template>
-  <div class="w-1/3 bg-blue-100 rounded-lg flex flex-col h-[calc(100vh-10rem)]">
+  <div class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 70%;">
     <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
-      <div class="flex items-start">
-        <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-32 h-24 object-cover rounded-lg mr-2" />
-        <div class="flex-grow">
-          <div class="flex justify-between items-start">
-            <div class="w-full pr-8 text-left">
-              <h1 class="text-2xl font-semibold">{{ itineraryName }}</h1>
-              <p class="text-sm text-gray-600 mt-1 line-clamp-4 h-[5rem]">{{ itineraryDescription }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Metadata section -->
-      <div class="flex-col text-sm text-gray-500 mt-4 pt-4 border-t border-gray-300">
-        <div class="flex items-center">
-          <span class="mr-1">Number of days:</span>
-          <span>{{ itineraryDays }}</span>
-        </div>
-        <div class="flex items-center mt-1">
-          <span>Created by {{ creatorName }}</span>
-        </div>
-      </div>
+      
       <!-- Buttons Container -->
       <div v-if="isOwner" class="flex space-x-4 mt-6">
         <button
