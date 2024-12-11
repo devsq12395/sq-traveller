@@ -38,6 +38,15 @@
         </div>
       </div>
 
+      <!-- Event Info Popup -->
+      <EventInfoPopup
+        v-if="showEventInfoPopup"
+        :event="selectedEvent"
+        :isOwner="isOwner"
+        @close="showEventInfoPopup = false"
+        @delete-event="deleteEvent"
+      />
+
       <!-- Create Event Popup -->
       <CreateEventPopup
         v-if="showCreateEventPopup"
@@ -85,6 +94,7 @@ import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 import LoadingScreen from '../components/common/LoadingScreen.vue';
 import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
+import EventInfoPopup from '../components/popups/EventInfoPopup.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -96,7 +106,8 @@ export default {
     CreateTodoPopup,
     CreateBudgetPopup,
     LoadingScreen,
-    ItineraryHeadline
+    ItineraryHeadline,
+    EventInfoPopup,
   },
   setup() {
     const route = useRoute();
@@ -116,6 +127,7 @@ export default {
     const isOwner = ref(false);
     const isPrivate = ref(false);
     const createdBy = ref('');
+    const showEventInfoPopup = ref(false);
 
     // Check authentication and get current user
     const checkAuth = async () => {
@@ -213,6 +225,7 @@ export default {
     const selectEvent = (id) => {
       selectedEventId.value = id;
       setEventId(id);
+      showEventInfoPopup.value = true;
     };
 
     const closeCreateEventPopup = () => {
@@ -285,7 +298,8 @@ export default {
       isPrivate,
       editEvent,
       deleteEvent,
-      createdBy
+      createdBy,
+      showEventInfoPopup
     };
   },
   methods: {

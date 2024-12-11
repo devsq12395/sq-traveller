@@ -18,7 +18,12 @@
         class="p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
       />
       <!-- Login Button -->
-      <button type="submit" class="p-3 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+      <button 
+        type="submit" 
+        :disabled="disabledButton" 
+        class="p-3 rounded w-full"
+        :class="disabledButton ? 'bg-gray-300 cursor-not-allowed text-gray-700' : 'bg-indigo-500 hover:bg-indigo-600 text-white'"
+      >
         Login
       </button>
       <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
@@ -33,6 +38,12 @@ import { login } from '../../helpers/authService';
 export default {
   name: 'UserLogin',
   emits: ['login-success'],
+  props: {
+    disabledButton: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup(props, { emit }) {
     const email = ref('');
     const password = ref('');
