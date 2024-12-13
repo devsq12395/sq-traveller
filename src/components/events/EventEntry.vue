@@ -1,8 +1,8 @@
 <template>
   <div
-    class="flex shadow-lg rounded-lg mb-4 transition duration-300 cursor-pointer bg-blue-100 hover:bg-blue-200"
+    class="flex flex-col shadow-lg rounded-lg mb-4 transition-all duration-300 cursor-pointer bg-blue-100 hover:bg-blue-200"
     @click="toggleInfo"
-    style="height: 120px;"
+    style="min-height: 120px;"
   >
     <!-- Thumbnail taking 100% height and starting at 0 x position -->
     <div class="relative h-full w-[25%] rounded-l-lg overflow-hidden">
@@ -34,7 +34,7 @@
         <p class="text-gray-600 text-sm">{{ truncatedDescription }}</p>
       </div>
     </div>
-    <EventInfoSprouting v-if="showInfo" :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" :isOwner="isOwner" :visible="showInfo" />
+    <EventInfoSprouting v-if="showInfo" :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" :isOwner="isOwner" :visible="showInfo" class="transition-all duration-300" />
   </div>
 </template>
 
