@@ -1,12 +1,14 @@
 <template>
   <div class="mb-4">
-    <h3 class="text-xl font-semibold text-left mb-5">Things to do:</h3>
+    <div class="flex justify-between items-center mb-5">
+      <h3 class="text-xl font-semibold text-left">Things to do:</h3>
+      <button v-if="isOwner" @click="$emit('show-add-todo')" class="p-2 bg-green-500 text-white rounded">Add To-Do</button>
+    </div>
     <ul>
       <li v-for="activity in activities" :key="activity.id" class="flex items-center">
         <span>- {{ activity.todo }}</span>
       </li>
     </ul>
-    <button v-if="isOwner" @click="$emit('show-add-todo')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
   </div>
 </template>
 

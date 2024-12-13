@@ -1,6 +1,9 @@
 <template>
   <div class="mb-4">
-    <h3 class="text-xl font-semibold text-left mb-5">Budget:</h3>
+    <div class="flex justify-between items-center mb-5">
+      <h3 class="text-xl font-semibold text-left">Budget:</h3>
+      <button v-if="isOwner" @click="$emit('show-add-budget')" class="p-2 bg-green-500 text-white rounded">Add Budget</button>
+    </div>
     <ul>
       <li v-for="budget in budgets" :key="budget.id" class="flex justify-between">
         <span>{{ budget.budget_name }}</span>
@@ -12,7 +15,6 @@
       <span>Total:</span>
       <span>${{ totalBudget.toFixed(2) }}</span>
     </div>
-    <button v-if="isOwner" @click="$emit('show-add-budget')" class="mt-2 p-2 bg-green-500 text-white rounded">Add</button>
   </div>
 </template>
 
