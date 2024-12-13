@@ -364,3 +364,62 @@ export async function fetchSharedItineraries({ page = 1, pageSize = 12 } = {}) {
     return { error: error.message };
   }
 }
+
+// Search itineraries by terms
+export async function searchItineraries(searchTerm, { page = 1, pageSize = 12 } = {}) {
+  try {
+    // First, get total count with search term
+    const { count, error: countError } = await supabase
+      .from('itinerary')
+      .select('*, itinerary_privacy!inner(privacy)', { count: 'exact' })
+      .eq('itinerary_privacy.privacy', 'shared')
+      .ilike('name', `%${searchTerm}%`);
+
+    if (countError) {
+      console.error('Error getting total count with search term:', countError);
+      return { error: countError };
+    }
+
+    // Calculate pagination
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error } = await supabase
+      .from('itinerary')
+      .select(`
+        *,
+        itinerary_img (img_url),
+        profiles:user_id (username),
+        itinerary_privacy!inner (privacy)
+      `)
+      .eq('itinerary_privacy.privacy', 'shared')
+      .ilike('name', `%${searchTerm}%`)
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error('Error searching itineraries:', error);
+      return { error };
+    }
+
+    // Format the response
+    const formattedData = data.map(itinerary => ({
+      ...itinerary,
+      img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
+      creatorName: itinerary.profiles?.username || 'Unknown User',
+    }));
+
+    return { 
+      data: formattedData,
+      pagination: {
+        total: count,
+        page,
+        pageSize,
+        totalPages: Math.ceil(count / pageSize)
+      }
+    };
+  } catch (error) {
+    console.error('Error in searchItineraries:', error);
+    return { error: error.message };
+  }
+}

@@ -14,7 +14,7 @@
           <label class="flex items-center space-x-2">
             <input type="checkbox" v-model="isTermsChecked" />
             <span class="text-sm">
-              I agree to the <a href="#" class="text-blue-500 underline">Terms and Conditions</a>
+              I agree to the <a href="https://docs.google.com/document/d/1En846DT-jYKjaPseW-rmuS69F4wAX74z7HMT85seLEg/edit?tab=t.0#heading=h.unu1of39qmba" class="text-blue-500 underline">Terms and Conditions</a>
             </span>
           </label>
         </div>

@@ -10,52 +10,61 @@
             class="w-full max-h-64 object-cover rounded shadow-md"
           />
         </div>
-        <!-- Column #2: Name and Details -->
-        <div class="col-span-2 space-y-4">
+
+        <!-- Column #2: Main Texts with Box Background -->
+        <div class="col-span-2 bg-gray-100 p-4 rounded-lg shadow-inner">
           <h2 class="text-3xl font-bold">{{ event.name }}</h2>
           <p class="text-gray-600">
             Day {{ event.day || 'not assigned' }}
             <br>
             Time: {{ formatTime(event.time_start) || 'N/A' }} - {{ formatTime(event.time_end) || 'N/A' }}
           </p>
+
           <!-- Location Section -->
           <div class="text-left">
             <h3 class="text-lg font-semibold">Location:</h3>
-            <p class="text-gray-700 text-left">{{ event.location }}</p>
+            <p class="text-gray-700">{{ event.location }}</p>
           </div>
+
           <!-- Description Section -->
           <div class="text-left">
             <h3 class="text-lg font-semibold">Description:</h3>
-            <p class="text-gray-700 text-left">{{ event.description }}</p>
+            <p class="text-gray-700">{{ event.description }}</p>
           </div>
-          <!-- Notes Section -->
+
+          <!-- Notes Section with "Add Note" Button -->
           <div class="text-left">
             <h3 class="text-lg font-semibold">Notes:</h3>
-            <div v-if="notes.length > 0">
-              <ul class="text-left">
-                <li v-for="note in notes" :key="note.id" class="text-gray-700">- {{ note.note }}</li>
-              </ul>
+            <div class="flex justify-between items-start">
+              <div>
+                <ul v-if="notes.length > 0" class="text-gray-700">
+                  <li v-for="note in notes" :key="note.id">- {{ note.note }}</li>
+                </ul>
+                <p v-else class="text-gray-700">No notes available</p>
+              </div>
+              <button 
+                @click="$emit('show-add-note')" 
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >Add a note</button>
             </div>
-            <p v-else class="text-gray-700 text-left">No notes available</p>
           </div>
+
           <!-- Divider -->
           <hr class="border-gray-400 my-4" />
+
           <!-- Edit Buttons Section -->
           <div v-if="isOwner" class="flex space-x-4">
             <button 
               @click="showEditEventPopup = true" 
               class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >Edit</button>
-            <button 
-              @click="$emit('show-add-note')" 
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >Add a note</button>
+            >Edit Event</button>
             <button 
               @click="confirmDelete" 
               class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >Delete</button>
+            >Delete Event</button>
           </div>
         </div>
+
         <!-- Column #3: Things to Do and Budget -->
         <div class="col-span-3 mt-6 grid grid-cols-2 gap-4">
           <div class="space-y-4">
@@ -75,6 +84,7 @@
             />
           </div>
         </div>
+
         <!-- EditEventPopup -->
         <EditEventPopup 
           v-if="showEditEventPopup" 
@@ -83,6 +93,7 @@
           @refresh="$emit('refresh')" 
           @eventUpdated="$emit('eventUpdated')"
         />
+
         <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
@@ -105,6 +116,7 @@
           </div>
         </div>
       </div>
+
       <!-- Bottom Close Button -->
       <div class="flex justify-center mt-4">
         <button @click="$emit('close')" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
