@@ -1,6 +1,6 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-4/5 max-w-5xl">
+  <transition name="slide-up">
+    <div v-if="visible" class="bg-gray-50 p-6 rounded-lg shadow-lg w-full max-w-5xl mt-4">
       <div class="grid grid-cols-3 gap-4">
         <!-- Column #1: Image -->
         <div class="col-span-1">
@@ -26,12 +26,12 @@
             <p class="text-gray-700">{{ event.location }}</p>
           </div>
 
-          <!-- Notes Section with "Add Note" Button -->
+          <!-- Notes Section -->
           <div class="text-left">
             <h3 class="text-lg font-semibold text-gray-800">Notes:</h3>
             <div class="flex justify-between items-start">
               <div>
-                <ul v-if="notes.length > 0" class="text-gray-700">
+                <ul v-if="Array.isArray(notes) && notes.length > 0" class="text-gray-700">
                   <li v-for="note in notes" :key="note.id">- {{ note.note }}</li>
                 </ul>
                 <p v-else class="text-gray-700">No notes available</p>
@@ -73,7 +73,7 @@
           </button>
         </div>
         <div class="mt-4 bg-white p-4 rounded shadow-inner">
-          <component :is="currentTabComponent" :eventId="event.id" :isOwner="isOwner" :description="event.description" :notes="notes" />
+          <component :is="currentTabComponent" :eventId="event.eventId" :isOwner="isOwner" :description="event.description" :notes="notes" />
         </div>
       </div>
 
@@ -107,35 +107,36 @@
           </div>
         </div>
       </div>
-      
-      <!-- Bottom Close Button -->
-      <div class="flex justify-center mt-4">
-        <button @click="$emit('close')" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-          Close
-        </button>
-      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
 import { ref, computed } from 'vue';
-import EventDescription from '../events/EventDescription.vue';
-import EventActivities from '../events/EventActivities.vue';
-import EventBudgets from '../events/EventBudgets.vue';
-import EventNotes from '../events/EventNotes.vue';
+import EventDescription from './EventDescription.vue';
+import EventActivities from './EventActivities.vue';
+import EventBudgets from './EventBudgets.vue';
+import EventNotes from './EventNotes.vue';
 import { fetchEventNotes } from '../../helpers/notes';
 import { deleteEvent } from '../../helpers/event';
 import EditEventPopup from '../popups/EditEventPopup.vue';
 
 export default {
-  name: 'EventInfoPopup',
+  name: 'EventInfoSprouting',
   components: {
     EventDescription,
     EventActivities,
     EventBudgets,
     EventNotes,
     EditEventPopup
+  },
+  props: {
+    event: {
+      type: Object,
+      required: true
+    },
+    isOwner: Boolean,
+    visible: Boolean
   },
   setup() {
     const tabs = ['Description', 'Activities', 'Budget', 'Notes'];
@@ -160,13 +161,6 @@ export default {
       currentTabComponent
     };
   },
-  props: {
-    event: {
-      type: Object,
-      required: true
-    },
-    isOwner: Boolean
-  },
   data() {
     return {
       showEditEventPopup: false,
@@ -176,8 +170,8 @@ export default {
   },
   watch: {
     event: {
-      handler(newEvent) {
-        this.fetchNotes(newEvent.id);
+      handler() {
+        this.fetchNotes();
       },
       immediate: true
     }
@@ -188,8 +182,8 @@ export default {
       const [hour, minute] = time.split(':');
       return `${hour}:${minute}`;
     },
-    async fetchNotes(eventId) {
-      const { data } = await fetchEventNotes(eventId);
+    async fetchNotes() {
+      const { data } = await fetchEventNotes(this.event.eventId);
       this.notes = data;
     },
     confirmDelete() {
@@ -205,5 +199,10 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles if needed */
+.slide-up-enter-active, .slide-up-leave-active {
+  transition: transform 0.3s ease;
+}
+.slide-up-enter, .slide-up-leave-to /* .slide-up-leave-active in <2.1.8 */ {
+  transform: translateY(100%);
+}
 </style>
