@@ -34,12 +34,15 @@
         <p class="text-gray-600 text-sm">{{ truncatedDescription }}</p>
       </div>
     </div>
-    <EventInfoSprouting v-if="showInfo" :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" :isOwner="isOwner" :visible="showInfo" class="transition-all duration-300" />
+    <div class="event-info" ref="infoSprouting">
+      <EventInfoSprouting :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" :isOwner="isOwner" class="transition-all duration-300" />
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import gsap from 'gsap';
 import EventInfoSprouting from './EventInfoSprouting.vue';
 
 export default {
@@ -59,14 +62,23 @@ export default {
     isOwner: { type: Boolean, default: false }
   },
   setup() {
-    const showInfo = ref(false);
+    const infoSprouting = ref(null);
 
-    function toggleInfo() {
-      showInfo.value = !showInfo.value;
-    }
+    const toggleInfo = () => {
+      const targetHeight = infoSprouting.value.style.height === '0px' ? 'auto' : '0px';
+      gsap.to(infoSprouting.value, {
+        height: targetHeight,
+        duration: 0.5,
+        ease: 'power2.inOut'
+      });
+    };
+
+    onMounted(() => {
+      infoSprouting.value.style.height = '0px';
+    });
 
     return {
-      showInfo,
+      infoSprouting,
       toggleInfo
     };
   },
@@ -92,5 +104,10 @@ export default {
 }
 .relative:hover img {
   transform: scale(1.05);
+}
+
+.event-info {
+  overflow: hidden;
+  height: 0;
 }
 </style>

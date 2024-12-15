@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="bg-gray-50 p-6 rounded-lg shadow-lg w-full max-w-5xl mt-4">
+  <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full max-w-5xl mt-4">
     <div class="grid grid-cols-3 gap-4">
       <!-- Column #1: Image -->
       <div class="col-span-1">
