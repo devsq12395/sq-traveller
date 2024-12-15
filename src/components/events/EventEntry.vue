@@ -10,7 +10,7 @@
         <img
           :src="imgUrl"
           alt="Event Thumbnail"
-          class="absolute top-0 left-0 w-full h-full object-cover"
+          class="top-0 left-0 w-[75%] h-[75%] object-cover"
         />
       </div>
 
