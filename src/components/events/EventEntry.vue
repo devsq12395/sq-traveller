@@ -1,38 +1,35 @@
 <template>
-  <div
-    class="flex flex-col shadow-lg rounded-lg mb-4 transition-all duration-300 bg-blue-100 hover:bg-blue-300"
-    style="min-height: 120px;"
-  >
-    <!-- Event Details -->
-    <div class="flex flex-1">
-      <!-- Thumbnail taking 100% height and starting at 0 x position -->
-      <div class="relative h-full w-[25%] rounded-l-lg overflow-hidden">
-        <img
-          :src="imgUrl"
-          alt="Event Thumbnail"
-          class="top-0 left-0 w-[75%] h-[75%] object-cover"
+  <div class="bg-blue-100 p-6 rounded-lg shadow-lg w-full mt-4">
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Column #1: Image -->
+      <div class="col-span-1">
+        <img 
+          :src="imgUrl" 
+          alt="Event Thumbnail" 
+          class="w-full max-h-64 object-cover rounded shadow-md"
         />
       </div>
 
-      <!-- Left Column: Title, Day, and Time -->
-      <div class="flex-1 p-4 text-left">
-        <h3 class="text-xl font-semibold text-gray-800">{{ name }}</h3>
-        <p class="text-gray-700 text-sm mb-1">
-          <span class="font-semibold">Day:</span> {{ day }}
+      <!-- Column #2: Main Texts -->
+      <div class="col-span-2 bg-blue-200 p-4 rounded-lg shadow-inner">
+        <h2 class="text-3xl font-bold text-gray-800">{{ name }}</h2>
+        <p class="text-gray-600">
+          Day {{ day || 'not assigned' }}
+          <br>
+          Time: {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
         </p>
-        <p class="text-gray-700 text-sm">
-          <span class="font-semibold">Time:</span> {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
-        </p>
-      </div>
 
-      <!-- Right Column: Location and Description -->
-      <div class="flex-1 p-4 text-right">
-        <p class="text-gray-700 text-sm mb-1">
-          <span class="font-semibold">Location:</span> {{ location }}
-        </p>
-        <p class="text-gray-600 text-sm">{{ truncatedDescription }}</p>
+        <!-- Location Section -->
+        <div class="text-left">
+          <h3 class="text-lg font-semibold text-gray-800">Location:</h3>
+          <p class="text-gray-700">{{ location }}</p>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-gray-300 my-4" />
       </div>
     </div>
+
     <div class="event-info" ref="infoSprouting">
       <EventInfoSprouting 
         class="transition-all duration-300 w-full" 
@@ -41,12 +38,12 @@
         @show-create-event="$emit('show-create-event')"
       />
     </div>
-    <div class="arrow-container bg-blue-400 flex justify-center">
-      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700">
-        <span v-if="!isExpanded">▼</span>
-        <span v-else>▲</span>
-      </button>
-    </div>
+  </div>
+  <div class="arrow-container bg-blue-400 flex justify-center">
+    <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700">
+      <span v-if="!isExpanded">▼</span>
+      <span v-else>▲</span>
+    </button>
   </div>
 </template>
 

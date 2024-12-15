@@ -1,62 +1,9 @@
 <template>
   <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full mt-4">
-    <div class="grid grid-cols-3 gap-4">
-      <!-- Column #1: Image -->
-      <div class="col-span-1">
-        <img 
-          :src="event.imgUrl" 
-          alt="Event Thumbnail" 
-          class="w-full max-h-64 object-cover rounded shadow-md"
-        />
-      </div>
-
-      <!-- Column #2: Main Texts -->
-      <div class="col-span-2 bg-gray-100 p-4 rounded-lg shadow-inner">
-        <h2 class="text-3xl font-bold text-gray-800">{{ event.name }}</h2>
-        <p class="text-gray-600">
-          Day {{ event.day || 'not assigned' }}
-          <br>
-          Time: {{ formatTime(event.time_start) || 'N/A' }} - {{ formatTime(event.time_end) || 'N/A' }}
-        </p>
-
-        <!-- Location Section -->
-        <div class="text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Location:</h3>
-          <p class="text-gray-700">{{ event.location }}</p>
-        </div>
-
-        <!-- Notes Section -->
-        <div class="text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Notes:</h3>
-          <div class="flex justify-between items-start">
-            <div>
-              <ul v-if="Array.isArray(notes) && notes.length > 0" class="text-gray-700">
-                <li v-for="note in notes" :key="note.id">- {{ note.note }}</li>
-              </ul>
-              <p v-else class="text-gray-700">No notes available</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Divider -->
-        <hr class="border-gray-300 my-4" />
-
-        <!-- Edit Buttons Section -->
-        <div v-if="isOwner" class="flex space-x-4">
-          <button 
-            @click="showEditEventPopup = true" 
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >Edit Event</button>
-          <button 
-            @click="confirmDelete" 
-            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >Delete Event</button>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Tabs Section -->
-    <div class="mt-6">
+    <div>
       <div class="flex border-b border-gray-300">
         <button
           v-for="tab in tabs"
