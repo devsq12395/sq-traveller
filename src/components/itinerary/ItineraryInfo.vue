@@ -50,9 +50,6 @@
             @edit-event="$emit('edit-event', $event)"
             @delete-event="$emit('delete-event', $event)"
             @show-create-event="$emit('show-create-event')"
-            @show-add-note="$emit('show-add-note')"
-            @show-add-todo="$emit('show-add-todo')"
-            @show-add-budget="$emit('show-add-budget')"
           />
         </div>
       </div>

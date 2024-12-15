@@ -33,9 +33,6 @@
             @edit-event="editEvent"
             @delete-event="deleteEvent"
             @show-create-event="showCreateEventPopup = true"
-            @show-add-note="showCreateNotePopup = true"
-            @show-add-todo="showCreateTodoPopup = true"
-            @show-add-budget="showCreateBudgetPopup = true"
             class="w-7/10"
           />
         </div>
@@ -51,22 +48,16 @@
 
       <!-- Create Notes Popup -->
       <CreateNotePopup
-        v-if="showCreateNotePopup"
-        @close="showCreateNotePopup = false"
         @refresh="loadEvents"
       />
 
       <!-- Create Todo Popup -->
       <CreateTodoPopup
-        v-if="showCreateTodoPopup"
-        @close="showCreateTodoPopup = false"
         @refresh="loadEvents"
       />
 
       <!-- Create Budget Popup -->
       <CreateBudgetPopup
-        v-if="showCreateBudgetPopup"
-        @close="showCreateBudgetPopup = false"
         @refresh="loadEvents"
       />
     </template>

@@ -15,6 +15,13 @@ const eventState = reactive({
   eventId: null,
 });
 
+const eventPopupsState = reactive({
+  eventId: null,
+  isCreateTodoPopupShow: false,
+  isCreateNotePopupShow: false,
+  isCreateBudgetPopupShow: false,
+});
+
 const loadingState = reactive({
   isLoading: false,
 });
@@ -49,6 +56,22 @@ export function setItinerary(id) {
 
 export function setEventId(eventId) {
   eventState.eventId = eventId;
+}
+
+// Event popup functions
+export function setCreateTodoPopupShow(eventId, isShow) {
+  eventPopupsState.eventId = eventId;
+  eventPopupsState.isCreateTodoPopupShow = isShow;
+}
+
+export function setCreateNotePopupShow(eventId, isShow) {
+  eventPopupsState.eventId = eventId;
+  eventPopupsState.isCreateNotePopupShow = isShow;
+}
+
+export function setCreateBudgetPopupShow(eventId, isShow) {
+  eventPopupsState.eventId = eventId;
+  eventPopupsState.isCreateBudgetPopupShow = isShow;
 }
 
 // Function to clear user data and local storage

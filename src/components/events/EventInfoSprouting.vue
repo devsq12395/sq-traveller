@@ -78,8 +78,9 @@
           :description="event.description" 
           :notes="notes" 
           :key="event.eventId"
-          @show-add-todo="$emit('show-add-todo')"
-          @show-add-budget="$emit('show-add-budget')"
+          @show-add-todo="handleShowAddTodo"
+          @show-add-budget="handleShowAddBudget"
+          @show-add-note="handleShowAddNote"
         />
       </div>
     </div>
@@ -126,6 +127,7 @@ import EventNotes from './EventNotes.vue';
 import { fetchEventNotes } from '../../helpers/notes';
 import { deleteEvent } from '../../helpers/event';
 import EditEventPopup from '../popups/EditEventPopup.vue';
+import { setCreateTodoPopupShow, setCreateNotePopupShow, setCreateBudgetPopupShow } from '../context/UserContext';
 
 export default {
   name: 'EventInfoSprouting',
@@ -183,6 +185,15 @@ export default {
     }
   },
   methods: {
+    handleShowAddTodo() {
+      setCreateTodoPopupShow(this.event.eventId, true);
+    },
+    handleShowAddNote() {
+      setCreateNotePopupShow(this.event.eventId, true);
+    },
+    handleShowAddBudget() {
+      setCreateBudgetPopupShow(this.event.eventId, true);
+    },
     formatTime(time) {
       if (!time) return 'N/A';
       const [hour, minute] = time.split(':');

@@ -38,9 +38,6 @@
         class="transition-all duration-300 w-full" 
         :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" 
         :isOwner="isOwner" 
-        @show-add-todo="$emit('show-add-todo')"
-        @show-add-budget="$emit('show-add-budget')"
-        @show-add-note="$emit('show-add-note')"
         @show-create-event="$emit('show-create-event')"
       />
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+    <div v-if="eventPopupsState.isCreateNotePopupShow" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
       <div class="bg-white p-6 rounded shadow-lg w-96">
         <h2 class="text-2xl font-bold mb-4">Add Note</h2>
   
@@ -29,7 +29,7 @@
   <script>
   import { ref } from 'vue';
   import { addNote } from '../../helpers/notes';
-  import { useEvent } from '../../context/UserContext';
+  import { useEvent, eventPopupsState } from '../../context/UserContext';
   
   export default {
     name: 'CreateNotePopup',
