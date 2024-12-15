@@ -1,5 +1,5 @@
 <template>
-  <div v-if="eventPopupsState.isCreateBudgetPopupShow" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+  <div v-if="isShow" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded shadow-lg w-96">
       <h2 class="text-2xl font-bold mb-4">Add Budget</h2>
 
@@ -52,6 +52,7 @@ export default {
     const { eventId } = useEvent(); // Use eventId from context
     const budgetName = ref('');
     const budgetPrice = ref(0);
+    const isShow = ref(eventPopupsState.isCreateBudgetPopupShow);
 
     // Handle adding the budget
     const handleAddBudget = async () => {
@@ -74,6 +75,7 @@ export default {
       budgetPrice,
       handleAddBudget,
       closePopup,
+      isShow,
     };
   },
 };

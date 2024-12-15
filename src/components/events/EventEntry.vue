@@ -42,7 +42,7 @@
       />
     </div>
     <div class="arrow-container bg-blue-400 flex justify-center">
-      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700">
+      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700 w-full h-full">
         <span v-if="!isExpanded">▼</span>
         <span v-else>▲</span>
       </button>

@@ -15,7 +15,7 @@ const eventState = reactive({
   eventId: null,
 });
 
-const eventPopupsState = reactive({
+export const eventPopupsState = reactive({
   eventId: null,
   isCreateTodoPopupShow: false,
   isCreateNotePopupShow: false,

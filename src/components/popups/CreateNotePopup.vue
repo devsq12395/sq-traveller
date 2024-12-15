@@ -1,5 +1,5 @@
 <template>
-    <div v-if="eventPopupsState.isCreateNotePopupShow" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+    <div v-if="isShow" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
       <div class="bg-white p-6 rounded shadow-lg w-96">
         <h2 class="text-2xl font-bold mb-4">Add Note</h2>
   
@@ -37,6 +37,7 @@
     setup(_, { emit }) {
       const { eventId } = useEvent(); // Use eventId from context
       const noteContent = ref('');
+      const isShow = ref(eventPopupsState.isCreateNotePopupShow);
   
       // Handle adding the note
       const handleAddNote = async () => {
@@ -60,6 +61,7 @@
         noteContent,
         handleAddNote,
         closePopup,
+        isShow,
       };
     },
   };
@@ -68,4 +70,3 @@
   <style scoped>
   /* Optional styles */
   </style>
-  

@@ -127,7 +127,7 @@ import EventNotes from './EventNotes.vue';
 import { fetchEventNotes } from '../../helpers/notes';
 import { deleteEvent } from '../../helpers/event';
 import EditEventPopup from '../popups/EditEventPopup.vue';
-import { setCreateTodoPopupShow, setCreateNotePopupShow, setCreateBudgetPopupShow } from '../context/UserContext';
+import { setCreateTodoPopupShow, setCreateNotePopupShow, setCreateBudgetPopupShow } from '../../context/UserContext';
 
 export default {
   name: 'EventInfoSprouting',
