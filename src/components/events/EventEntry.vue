@@ -3,17 +3,17 @@
     class="flex flex-col shadow-lg rounded-lg mb-4 transition-all duration-300 bg-blue-100 hover:bg-blue-300"
     style="min-height: 120px;"
   >
-    <!-- Thumbnail taking 100% height and starting at 0 x position -->
-    <div class="relative h-full w-[25%] rounded-l-lg overflow-hidden">
-      <img
-        :src="imgUrl"
-        alt="Event Thumbnail"
-        class="absolute top-0 left-0 w-full h-full object-cover"
-      />
-    </div>
-
     <!-- Event Details -->
     <div class="flex flex-1">
+      <!-- Thumbnail taking 100% height and starting at 0 x position -->
+      <div class="relative h-full w-[25%] rounded-l-lg overflow-hidden">
+        <img
+          :src="imgUrl"
+          alt="Event Thumbnail"
+          class="absolute top-0 left-0 w-full h-full object-cover"
+        />
+      </div>
+
       <!-- Left Column: Title, Day, and Time -->
       <div class="flex-1 p-4 text-left">
         <h3 class="text-xl font-semibold text-gray-800">{{ name }}</h3>
@@ -42,7 +42,7 @@
       />
     </div>
     <div class="arrow-container bg-blue-400 flex justify-center">
-      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700 w-full h-full">
+      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700">
         <span v-if="!isExpanded">▼</span>
         <span v-else>▲</span>
       </button>

@@ -4,7 +4,7 @@
       <!-- Column #1: Image -->
       <div class="col-span-1">
         <img 
-          :src="event.img_url" 
+          :src="event.imgUrl" 
           alt="Event Thumbnail" 
           class="w-full max-h-64 object-cover rounded shadow-md"
         />
