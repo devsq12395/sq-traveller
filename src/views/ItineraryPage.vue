@@ -29,23 +29,17 @@
             :isOwner="isOwner"
             @go-to-settings="goToSettings"
             @go-to-dashboard="goToDashboard"
-            @show-create-event="showCreateEventPopup = true"
             @select-event="selectEvent"
             @edit-event="editEvent"
             @delete-event="deleteEvent"
+            @show-create-event="showCreateEventPopup = true"
+            @show-add-note="showCreateNotePopup = true"
+            @show-add-todo="showCreateTodoPopup = true"
+            @show-add-budget="showCreateBudgetPopup = true"
             class="w-7/10"
           />
         </div>
       </div>
-
-      <!-- Event Info Popup -->
-      <EventInfoPopup
-        v-if="showEventInfoPopup"
-        :event="selectedEvent"
-        :isOwner="isOwner"
-        @close="showEventInfoPopup = false"
-        @delete-event="deleteEvent"
-      />
 
       <!-- Create Event Popup -->
       <CreateEventPopup
@@ -86,7 +80,6 @@ import { useUser, setLoading, setEventId } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
-//import EventInfo from '../components/events/EventInfo.vue';
 import ItineraryInfo from '../components/itinerary/ItineraryInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
 import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
@@ -94,12 +87,10 @@ import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 import LoadingScreen from '../components/common/LoadingScreen.vue';
 import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
-import EventInfoPopup from '../components/popups/EventInfoPopup.vue';
 
 export default {
   name: 'ItineraryPage',
   components: {
-    //EventInfo,
     ItineraryInfo,
     CreateEventPopup,
     CreateNotePopup,
@@ -107,7 +98,6 @@ export default {
     CreateBudgetPopup,
     LoadingScreen,
     ItineraryHeadline,
-    EventInfoPopup,
   },
   setup() {
     const route = useRoute();
@@ -127,7 +117,6 @@ export default {
     const isOwner = ref(false);
     const isPrivate = ref(false);
     const createdBy = ref('');
-    const showEventInfoPopup = ref(false);
 
     // Check authentication and get current user
     const checkAuth = async () => {
@@ -225,7 +214,6 @@ export default {
     const selectEvent = (id) => {
       selectedEventId.value = id;
       setEventId(id);
-      showEventInfoPopup.value = true;
     };
 
     const closeCreateEventPopup = () => {
@@ -299,7 +287,6 @@ export default {
       editEvent,
       deleteEvent,
       createdBy,
-      showEventInfoPopup
     };
   },
   methods: {
