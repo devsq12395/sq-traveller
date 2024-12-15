@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full max-w-5xl mt-4">
+  <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full mt-4">
     <div class="grid grid-cols-3 gap-4">
       <!-- Column #1: Image -->
       <div class="col-span-1">
@@ -72,7 +72,15 @@
         </button>
       </div>
       <div class="mt-4 bg-white p-4 rounded shadow-inner">
-        <component :is="currentTabComponent" :eventId="event.eventId" :isOwner="isOwner" :description="event.description" :notes="notes" />
+        <component :is="currentTabComponent" 
+          :eventId="event.eventId" 
+          :isOwner="isOwner" 
+          :description="event.description" 
+          :notes="notes" 
+          :key="event.eventId"
+          @show-add-todo="$emit('show-add-todo')"
+          @show-add-budget="$emit('show-add-budget')"
+        />
       </div>
     </div>
 

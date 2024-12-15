@@ -1,7 +1,6 @@
 <template>
   <div
-    class="flex flex-col shadow-lg rounded-lg mb-4 transition-all duration-300 cursor-pointer bg-blue-100 hover:bg-blue-200"
-    @click="toggleInfo"
+    class="flex flex-col shadow-lg rounded-lg mb-4 transition-all duration-300 bg-blue-100 hover:bg-blue-300"
     style="min-height: 120px;"
   >
     <!-- Thumbnail taking 100% height and starting at 0 x position -->
@@ -35,7 +34,21 @@
       </div>
     </div>
     <div class="event-info" ref="infoSprouting">
-      <EventInfoSprouting :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" :isOwner="isOwner" class="transition-all duration-300" />
+      <EventInfoSprouting 
+        class="transition-all duration-300 w-full" 
+        :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" 
+        :isOwner="isOwner" 
+        @show-add-todo="$emit('show-add-todo')"
+        @show-add-budget="$emit('show-add-budget')"
+        @show-add-note="$emit('show-add-note')"
+        @show-create-event="$emit('show-create-event')"
+      />
+    </div>
+    <div class="arrow-container bg-blue-400 flex justify-center">
+      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700">
+        <span v-if="!isExpanded">▼</span>
+        <span v-else>▲</span>
+      </button>
     </div>
   </div>
 </template>
@@ -63,9 +76,11 @@ export default {
   },
   setup() {
     const infoSprouting = ref(null);
+    const isExpanded = ref(false);
 
     const toggleInfo = () => {
-      const targetHeight = infoSprouting.value.style.height === '0px' ? 'auto' : '0px';
+      isExpanded.value = !isExpanded.value;
+      const targetHeight = isExpanded.value ? 'auto' : '0px';
       gsap.to(infoSprouting.value, {
         height: targetHeight,
         duration: 0.5,
@@ -79,6 +94,7 @@ export default {
 
     return {
       infoSprouting,
+      isExpanded,
       toggleInfo
     };
   },
@@ -109,5 +125,19 @@ export default {
 .event-info {
   overflow: hidden;
   height: 0;
+}
+
+.arrow-container {
+  width: 100%;
+  height: 40px; /* Adjust height as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrow-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 </style>

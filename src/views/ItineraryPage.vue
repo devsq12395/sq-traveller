@@ -29,10 +29,13 @@
             :isOwner="isOwner"
             @go-to-settings="goToSettings"
             @go-to-dashboard="goToDashboard"
-            @show-create-event="showCreateEventPopup = true"
             @select-event="selectEvent"
             @edit-event="editEvent"
             @delete-event="deleteEvent"
+            @show-create-event="showCreateEventPopup = true"
+            @show-add-note="showCreateNotePopup = true"
+            @show-add-todo="showCreateTodoPopup = true"
+            @show-add-budget="showCreateBudgetPopup = true"
             class="w-7/10"
           />
         </div>
@@ -77,7 +80,6 @@ import { useUser, setLoading, setEventId } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
-//import EventInfo from '../components/events/EventInfo.vue';
 import ItineraryInfo from '../components/itinerary/ItineraryInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
 import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
@@ -89,7 +91,6 @@ import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
 export default {
   name: 'ItineraryPage',
   components: {
-    //EventInfo,
     ItineraryInfo,
     CreateEventPopup,
     CreateNotePopup,

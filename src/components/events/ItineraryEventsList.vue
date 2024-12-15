@@ -23,6 +23,10 @@
           @select-event="$emit('select-event', event.id)"
           @edit-event="$emit('edit-event', event.id)"
           @delete-event="$emit('delete-event', event.id)"
+          @show-create-event="$emit('show-create-event')"
+          @show-add-note="$emit('show-add-note')"
+          @show-add-todo="$emit('show-add-todo')"
+          @show-add-budget="$emit('show-add-budget')"
         />
       </div>
     </div>
