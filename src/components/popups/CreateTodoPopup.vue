@@ -27,9 +27,10 @@
 </template>
   
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useEvent } from '../../context/UserContext';
 import { addTodo } from '../../helpers/todo';
-import { eventPopupsState, useEvent } from '../../context/UserContext';
+import { eventPopupsState, setCreateTodoPopupShow } from '../../context/UserContext';
   
 export default {
   name: 'CreateTodoPopup',
@@ -38,11 +39,16 @@ export default {
     const { eventId } = useEvent(); // Use eventId from context
     const todoContent = ref('');
     const isShow = ref(eventPopupsState.isCreateTodoPopupShow);
-  
+
+    // Watch for changes in isCreateTodoPopupShow
+    watch(() => eventPopupsState.isCreateTodoPopupShow, (newVal) => {
+      isShow.value = newVal;
+    });
+
     // Handle adding the to-do
     const handleAddTodo = async () => {
       const { error } = await addTodo(eventId, todoContent.value);
-  
+
       if (!error) {
         emit('refresh'); // Emit refresh event to reload to-dos
         closePopup();
@@ -50,11 +56,11 @@ export default {
         console.error('Error adding to-do:', error.message);
       }
     };
-  
+
     const closePopup = () => {
-      emit('close'); // Emit close event to close the popup
+      setCreateTodoPopupShow(eventId, false);
     };
-  
+
     return {
       todoContent,
       handleAddTodo,

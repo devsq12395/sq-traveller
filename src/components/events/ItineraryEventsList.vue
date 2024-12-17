@@ -5,7 +5,7 @@
       :key="index"
       class="mb-6 bg-blue-50 rounded-lg shadow p-4"
     >
-      <h2 class="text-2xl font-bold mb-2 text-left">
+      <h2 class="text-3xl font-bold mb-2 text-left">
         Day {{ dayEvents[0].day }}
       </h2>
       <div v-for="event in dayEvents" :key="event.id" class="mb-2">
