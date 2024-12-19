@@ -2,7 +2,7 @@
   <div class="mb-4">
     <div class="flex justify-between items-center mb-5">
       <h3 class="text-xl font-semibold text-left">Event Notes:</h3>
-      <button v-if="isOwner" @click="$emit('add-note')" class="p-2 bg-green-500 text-white rounded">Add Note</button>
+      <button v-if="isOwner" @click="$emit('show-add-note')" class="p-2 bg-green-500 text-white rounded">Add Note</button>
     </div>
     <ul>
       <li v-for="note in notes" :key="note.id" class="text-left">

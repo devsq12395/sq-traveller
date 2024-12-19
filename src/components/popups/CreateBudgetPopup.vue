@@ -41,9 +41,9 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { addBudget } from '../../helpers/budgets';
-import { eventPopupsState, useEvent } from '../../context/UserContext';
+import { eventPopupsState, setCreateBudgetPopupShow, useEvent } from '../../context/UserContext';
 
 export default {
   name: 'CreateBudgetPopup',
@@ -53,6 +53,10 @@ export default {
     const budgetName = ref('');
     const budgetPrice = ref(0);
     const isShow = ref(eventPopupsState.isCreateBudgetPopupShow);
+
+    watch(() => eventPopupsState.isCreateBudgetPopupShow, (newVal) => {
+      isShow.value = newVal;
+    });
 
     // Handle adding the budget
     const handleAddBudget = async () => {
@@ -67,7 +71,9 @@ export default {
     };
 
     const closePopup = () => {
-      emit('close');
+      budgetName.value = '';
+      budgetPrice.value = 0;
+      setCreateBudgetPopupShow(eventId, false);
     };
 
     return {

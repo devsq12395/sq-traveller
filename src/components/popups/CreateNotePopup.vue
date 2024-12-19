@@ -27,9 +27,9 @@
   </template>
   
   <script>
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import { addNote } from '../../helpers/notes';
-  import { useEvent, eventPopupsState } from '../../context/UserContext';
+  import { eventPopupsState, setCreateNotePopupShow, useEvent } from '../../context/UserContext';
   
   export default {
     name: 'CreateNotePopup',
@@ -38,6 +38,10 @@
       const { eventId } = useEvent(); // Use eventId from context
       const noteContent = ref('');
       const isShow = ref(eventPopupsState.isCreateNotePopupShow);
+
+      watch(() => eventPopupsState.isCreateNotePopupShow, (newVal) => {
+        isShow.value = newVal;
+      });
   
       // Handle adding the note
       const handleAddNote = async () => {
@@ -53,8 +57,8 @@
   
       // Close the popup
       const closePopup = () => {
-        noteContent.value = ''; // Reset note content
-        emit('close'); // Emit close event
+        noteContent.value = '';
+        setCreateNotePopupShow(eventId, false);
       };
   
       return {

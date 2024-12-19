@@ -28,9 +28,8 @@
   
 <script>
 import { ref, watch } from 'vue';
-import { useEvent } from '../../context/UserContext';
 import { addTodo } from '../../helpers/todo';
-import { eventPopupsState, setCreateTodoPopupShow } from '../../context/UserContext';
+import { eventPopupsState, setCreateTodoPopupShow, useEvent } from '../../context/UserContext';
   
 export default {
   name: 'CreateTodoPopup',
@@ -58,6 +57,7 @@ export default {
     };
 
     const closePopup = () => {
+      todoContent.value = '';
       setCreateTodoPopupShow(eventId, false);
     };
 
