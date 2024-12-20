@@ -39,11 +39,19 @@
                 type="text"
                 id="location"
                 v-model="event.location"
-                placeholder="Location"
+                @input="onLocationInput"
+                @blur="onLocationBlur"
+                placeholder="Enter location"
                 maxlength="50"
                 required
                 class="col-span-2 p-2 border border-gray-300 rounded"
               />
+              <ul v-if="suggestions.length">
+                <li v-for="suggestion in suggestions" :key="suggestion.place_id" @click="selectSuggestion(suggestion)">
+                  {{ suggestion.description }}
+                </li>
+              </ul>
+              <img v-if="placePhotoUrl" :src="placePhotoUrl" alt="Place photo" />
             </div>
 
             <!-- Time Start Field -->
@@ -171,6 +179,7 @@ import { ref, computed } from 'vue';
 import { createEvent } from '../../helpers/event';
 import axios from 'axios';
 import { defaultImages } from '../../helpers/globalVariables';
+import { fetchAutocompleteSuggestions, fetchPlacePhotos } from '@/helpers/googlePlacesService';
 
 export default {
   name: 'CreateEventPopup',
@@ -198,6 +207,9 @@ export default {
 
     const uploading = ref(false);
     const uploadSuccess = ref(false);
+
+    const suggestions = ref([]);
+    const placePhotoUrl = ref('');
 
     // Computed properties for pagination
     const totalPages = computed(() => Math.ceil(defaultImages.length / itemsPerPage));
@@ -258,6 +270,28 @@ export default {
       }
     };
 
+    const onLocationInput = async () => {
+      if (event.value.location.length > 2) {
+        suggestions.value = await fetchAutocompleteSuggestions(event.value.location);
+      } else {
+        suggestions.value = [];
+      }
+    };
+
+    const onLocationBlur = async () => {
+      if (suggestions.value.length) {
+        const photoReference = suggestions.value[0].photos ? suggestions.value[0].photos[0].photo_reference : null;
+        if (photoReference) {
+          placePhotoUrl.value = await fetchPlacePhotos(photoReference);
+        }
+      }
+    };
+
+    const selectSuggestion = (suggestion) => {
+      event.value.location = suggestion.description;
+      suggestions.value = [];
+    };
+
     const handleCreateEvent = async () => {
       try {
         let finalImageUrl = event.value.img_url;
@@ -306,7 +340,12 @@ export default {
       nextPage,
       previousPage,
       uploading,
-      uploadSuccess
+      uploadSuccess,
+      suggestions,
+      placePhotoUrl,
+      onLocationInput,
+      onLocationBlur,
+      selectSuggestion
     };
   }
 };
