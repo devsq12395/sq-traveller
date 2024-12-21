@@ -49,7 +49,6 @@
             @select-event="$emit('select-event', $event)"
             @edit-event="$emit('edit-event', $event)"
             @delete-event="$emit('delete-event', $event)"
-            @show-create-event="$emit('show-create-event')"
           />
         </div>
       </div>

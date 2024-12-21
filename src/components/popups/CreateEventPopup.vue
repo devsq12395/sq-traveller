@@ -28,32 +28,6 @@
                 class="col-span-2 p-2 border border-gray-300 rounded"
               />
             </div>
-
-            <!-- Location Field -->
-            <div class="grid grid-cols-3 items-start gap-2">
-              <label for="location" class="text-gray-700 font-semibold text-left">
-                Location:
-                <span class="text-sm text-gray-500">({{ event.location.length }}/50)</span>
-              </label>
-              <input
-                type="text"
-                id="location"
-                v-model="event.location"
-                @input="onLocationInput"
-                @blur="onLocationBlur"
-                placeholder="Enter location"
-                maxlength="50"
-                required
-                class="col-span-2 p-2 border border-gray-300 rounded"
-              />
-              <ul v-if="suggestions.length">
-                <li v-for="suggestion in suggestions" :key="suggestion.place_id" @click="selectSuggestion(suggestion)">
-                  {{ suggestion.description }}
-                </li>
-              </ul>
-              <img v-if="placePhotoUrl" :src="placePhotoUrl" alt="Place photo" />
-            </div>
-
             <!-- Time Start Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="time_start" class="text-gray-700 font-semibold text-left">Start Time:</label>
@@ -66,7 +40,6 @@
                 class="col-span-2 p-2 border border-gray-300 rounded"
               />
             </div>
-
             <!-- Time End Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="time_end" class="text-gray-700 font-semibold text-left">End Time:</label>
@@ -79,7 +52,6 @@
                 class="col-span-2 p-2 border border-gray-300 rounded"
               />
             </div>
-
             <!-- Description Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="description" class="text-gray-700 font-semibold text-left">
@@ -96,7 +68,6 @@
                 class="col-span-2 p-2 border border-gray-300 rounded"
               ></textarea>
             </div>
-
             <!-- Day Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="day" class="text-gray-700 font-semibold text-left">Event Day:</label>
@@ -110,56 +81,41 @@
               />
             </div>
           </div>
-
-          <!-- Right Column - Image Selection -->
-          <div class="flex-1 space-y-4">
-            <label class="block text-gray-700 font-semibold text-left mb-2">Event Image</label>
-            <div class="space-y-4">
-              <!-- Default Images Grid -->
-              <div class="grid grid-cols-3 gap-2">
-                <div
-                  v-for="(image, index) in paginatedImages"
-                  :key="index"
-                  @click="selectDefaultImage(image)"
-                  :class="[
-                    'cursor-pointer border-2 rounded p-1 hover:border-blue-500',
-                    selectedImage === image.url ? 'border-blue-500' : 'border-gray-200'
-                  ]"
-                >
-                  <img :src="image.url" alt="Default event image" class="w-full h-16 object-cover rounded" />
-                  <span class="text-xs text-gray-500">{{ image.label }}</span>
-                </div>
-              </div>
-
-              <!-- Pagination -->
-              <div class="flex justify-between">
-                <button type="button" @click="previousPage" class="p-2 bg-gray-300 rounded">Previous</button>
-                <span class="text-gray-500 text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
-                <button type="button" @click="nextPage" class="p-2 bg-gray-300 rounded">Next</button>
-              </div>
-
-              <!-- Or Divider -->
-              <div class="flex items-center my-4">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="mx-4 text-gray-500 text-sm">or upload your own</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-              </div>
-
-              <!-- Custom Upload -->
-              <input
-                type="file"
-                id="image"
-                @change="handleImageUpload"
-                accept="image/*"
-                class="w-full p-2 border border-gray-300 rounded"
+          <!-- Right Column - Tabbed Interface for AutoSearch and Manual Input -->
+          <div class="flex-1">
+            <div class="flex border-b border-gray-200 bg-blue-50">
+              <button
+                @click="activeTab = 'auto'"
+                class="px-4 py-2 text-sm font-medium"
+                :class="[
+                  activeTab === 'auto'
+                    ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-100'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-blue-100'
+                ]"
+              >
+                AutoSearch
+              </button>
+              <button
+                @click="activeTab = 'manual'"
+                class="px-4 py-2 text-sm font-medium"
+                :class="[
+                  activeTab === 'manual'
+                    ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-100'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-blue-100'
+                ]"
+              >
+                Manual Input
+              </button>
+            </div>
+            <div v-if="activeTab === 'auto'">
+              <CreateEventAutoSearch />
+            </div>
+            <div v-if="activeTab === 'manual'">
+              <CreateEventManualInput
+                :setLocation="setLocation"
+                :setImageURL="setImageURL"
+                :uploadImage="uploadImage"
               />
-              <div v-if="uploading" class="upload-status">Uploading image...</div>
-              <div v-if="uploadSuccess" class="upload-status">Image uploaded!</div>
-
-              <!-- Preview Selected Image -->
-              <div v-if="selectedImage" class="mt-2">
-                <img :src="selectedImage" alt="Selected image" class="h-24 object-cover rounded" />
-              </div>
             </div>
           </div>
         </div>
@@ -180,9 +136,15 @@ import { createEvent } from '../../helpers/event';
 import axios from 'axios';
 import { defaultImages } from '../../helpers/globalVariables';
 import { fetchAutocompleteSuggestions, fetchPlacePhotos } from '@/helpers/googlePlacesService';
+import CreateEventAutoSearch from './CreateEventAutoSearch.vue';
+import CreateEventManualInput from './CreateEventManualInput.vue';
 
 export default {
   name: 'CreateEventPopup',
+  components: {
+    CreateEventAutoSearch,
+    CreateEventManualInput,
+  },
   props: {
     itineraryId: {
       type: String,
@@ -210,6 +172,8 @@ export default {
 
     const suggestions = ref([]);
     const placePhotoUrl = ref('');
+
+    const activeTab = ref('auto');
 
     // Computed properties for pagination
     const totalPages = computed(() => Math.ceil(defaultImages.length / itemsPerPage));
@@ -326,6 +290,14 @@ export default {
       emit('close');
     };
 
+    const setLocation = (location) => {
+      event.value.location = location;
+    };
+
+    const setImageURL = (imageUrl) => {
+      event.value.img_url = imageUrl;
+    };
+
     return {
       event,
       selectedImage,
@@ -345,7 +317,10 @@ export default {
       placePhotoUrl,
       onLocationInput,
       onLocationBlur,
-      selectSuggestion
+      selectSuggestion,
+      activeTab,
+      setLocation,
+      setImageURL
     };
   }
 };
