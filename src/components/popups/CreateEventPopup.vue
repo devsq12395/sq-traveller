@@ -108,7 +108,10 @@
               </button>
             </div>
             <div v-if="activeTab === 'auto'">
-              <CreateEventAutoSearch />
+              <CreateEventAutoSearch 
+                :setLocation="setLocation"
+                :setImageURL="setImageURL"
+              />
             </div>
             <div v-if="activeTab === 'manual'">
               <CreateEventManualInput

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-3 items-start gap-2">
+    <div class="grid grid-cols-3 items-start gap-2 mt-4">
       <label for="location" class="text-gray-700 font-semibold text-left">
         Location:
       </label>
