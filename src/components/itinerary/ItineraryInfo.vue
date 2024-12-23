@@ -53,6 +53,13 @@
         </div>
       </div>
 
+      <!-- Ratings Tab -->
+      <div v-if="activeTab === 'ratings'" class="h-full bg-blue-100">
+        <ItineraryRatings 
+          :itineraryId="itineraryId" 
+        />
+      </div>
+
       <!-- Comments Tab -->
       <div v-if="activeTab === 'comments'" class="h-full bg-blue-100">
         <ItineraryComments 
@@ -77,6 +84,7 @@
 import { fetchItineraryPrivacy, updateItineraryPrivacy, fetchItineraryWithCreator } from '../../helpers/itinerary';
 import ItinerarySettings from './ItinerarySettings.vue';
 import ItineraryComments from './ItineraryComments.vue';
+import ItineraryRatings from './ItineraryRatings.vue';
 import ItineraryEventsList from '../events/ItineraryEventsList.vue';
 
 export default {
@@ -84,6 +92,7 @@ export default {
   components: {
     ItinerarySettings,
     ItineraryComments,
+    ItineraryRatings,
     ItineraryEventsList
   },
   props: {
@@ -106,6 +115,7 @@ export default {
       commentCount: 0,
       allTabs: [
         { id: 'details', name: 'Details' },
+        { id: 'ratings', name: 'Ratings' },
         { id: 'comments', name: () => `Comments (${this.commentCount})` },
         { id: 'settings', name: 'Settings', ownerOnly: true }
       ],
