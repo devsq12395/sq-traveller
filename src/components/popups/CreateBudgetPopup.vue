@@ -60,7 +60,7 @@ export default {
 
     // Handle adding the budget
     const handleAddBudget = async () => {
-      const { error } = await addBudget(eventId, budgetName.value, budgetPrice.value);
+      const { error } = await addBudget(eventPopupsState.eventId, budgetName.value, budgetPrice.value);
 
       if (!error) {
         emit('refresh'); // Emit refresh event to reload budgets

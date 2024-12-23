@@ -19,7 +19,9 @@
         </button>
       </div>
       <div class="mt-4 bg-white p-4 rounded shadow-inner">
-        <component :is="currentTabComponent" 
+        <component 
+          :is="currentTabComponent" 
+          ref="currentTabComponentRef"
           :eventId="event.eventId" 
           :isOwner="isOwner" 
           :description="event.description" 
@@ -140,6 +142,14 @@ export default {
     },
     handleShowAddBudget() {
       setCreateBudgetPopupShow(this.event.eventId, true);
+    },
+    triggerChildUpdates() {
+      if (this.currentTab === 'Activities' && this.$refs.currentTabComponentRef) {
+        this.$refs.currentTabComponentRef.updateActivity();
+      }
+      if (this.currentTab === 'Budget' && this.$refs.currentTabComponentRef) {
+        this.$refs.currentTabComponentRef.loadBudgets();
+      }
     },
     formatTime(time) {
       if (!time) return 'N/A';

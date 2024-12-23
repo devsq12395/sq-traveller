@@ -46,7 +46,7 @@ export default {
 
     // Handle adding the to-do
     const handleAddTodo = async () => {
-      const { error } = await addTodo(eventId, todoContent.value);
+      const { error } = await addTodo(eventPopupsState.eventId, todoContent.value);
 
       if (!error) {
         emit('refresh'); // Emit refresh event to reload to-dos

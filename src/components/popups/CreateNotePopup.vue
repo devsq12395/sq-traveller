@@ -45,7 +45,7 @@
   
       // Handle adding the note
       const handleAddNote = async () => {
-        const { error } = await addNote(eventId, noteContent.value);
+        const { error } = await addNote(eventPopupsState.eventId, noteContent.value);
   
         if (!error) {
           emit('refresh'); // Emit refresh event to reload notes
