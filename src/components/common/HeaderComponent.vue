@@ -1,5 +1,5 @@
 <template>
-  <header class="fixed w-full bg-blue-200 shadow-md z-50">
+  <header class="fixed w-full bg-blue-200 shadow-md z-40">
     <div class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
         <router-link to="/dashboard" class="flex items-center space-x-2">

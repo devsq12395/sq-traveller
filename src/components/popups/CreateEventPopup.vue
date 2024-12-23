@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
     <div class="bg-gray-100 p-6 rounded shadow-lg w-[900px]">
       <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
       <div class="border-b border-gray-200 mb-6"></div>

@@ -1,18 +1,21 @@
 <template>
-  <div @click="selectResult" class="cursor-pointer border p-2 mb-2 hover:bg-gray-100">
-    <h3 class="font-semibold">{{ result.description }}</h3>
-    <p>{{ result.secondary_text }}</p>
-    <img v-if="imageUrl" :src="imageUrl" alt="Result image" class="w-full h-16 object-cover rounded mt-2" />
+  <div @click="selectResult" class="result-box flex items-center">
+    <img v-if="imageUrl" :src="imageUrl" alt="Result image" class="w-16 h-16 object-cover rounded mr-4" />
+    <div class="text-left">
+      <h3 class="font-semibold">{{ result.description }}</h3>
+      <p>{{ result.secondary_text }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 import { fetchPlaceDetails, fetchPlacePhotos } from '@/helpers/googlePlacesService';
+import gsap from 'gsap';
 
 export default {
   name: 'CreateEventAutoSearchResultBox',
   props: {
-    result: Object, // This should include the place_id from the autocomplete suggestions
+    result: Object,
     setLocation: Function,
     setImageURL: Function,
   },
@@ -28,17 +31,11 @@ export default {
         console.log('New result:', newResult);
         if (newResult.place_id) {
           try {
-            // Fetch place details using place_id
             const placeDetails = await fetchPlaceDetails(newResult.place_id);
-
-            // Check if photos are available
             if (placeDetails.photos && placeDetails.photos.length > 0) {
               const photoReference = placeDetails.photos[0].photo_reference;
-
-              // Fetch the photo URL
               this.imageUrl = await fetchPlacePhotos(photoReference);
             } else {
-              // If no photos are available, set to null or a default placeholder
               this.imageUrl = null;
             }
           } catch (error) {
@@ -48,13 +45,32 @@ export default {
       },
     },
   },
+  mounted() {
+    this.addHoverEffects();
+  },
   methods: {
+    addHoverEffects() {
+      const box = this.$el;
+      gsap.set(box, { scale: 1, backgroundColor: '#fff' });
+      box.addEventListener('mouseenter', () => {
+        gsap.to(box, { scale: 1.05, backgroundColor: '#f0f0f0', duration: 0.3 });
+      });
+      box.addEventListener('mouseleave', () => {
+        gsap.to(box, { scale: 1, backgroundColor: '#fff', duration: 0.3 });
+      });
+      box.addEventListener('mousedown', () => {
+        gsap.to(box, { backgroundColor: '#e0e0e0', duration: 0.1 });
+      });
+      box.addEventListener('mouseup', () => {
+        gsap.to(box, { backgroundColor: '#f0f0f0', duration: 0.1 });
+      });
+    },
     selectResult() {
       console.log('Selected result:', this.result);
       this.setLocation(this.result.description);
       this.$emit('complete-location', this.result.description);
-
       if (this.imageUrl) {
+        console.log('Selected image URL:', this.imageUrl);
         this.setImageURL(this.imageUrl);
       }
     },
@@ -63,5 +79,12 @@ export default {
 </script>
 
 <style scoped>
-/* Add styles here if needed */
+.result-box {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
 </style>
