@@ -63,6 +63,7 @@
 import { ref, onMounted } from 'vue';
 import SharedItinerariesEntry from './SharedItinerariesEntry.vue';
 import { fetchSharedItineraries, searchItineraries } from '../../helpers/itinerary';
+import { fetchAverageRating } from '../../helpers/itineraryRatings';
 
 export default {
   name: 'SharedItineraries',
@@ -92,7 +93,10 @@ export default {
         error.value = 'Failed to load shared itineraries';
         console.error(fetchError);
       } else {
-        itineraries.value = data;
+        itineraries.value = await Promise.all(data.map(async (itinerary) => {
+          const averageRating = await fetchAverageRating(itinerary.id);
+          return { ...itinerary, averageRating };
+        }));
         totalItems.value = pagination.total;
         totalPages.value = pagination.totalPages;
         currentPage.value = pagination.page;
@@ -121,7 +125,10 @@ export default {
         error.value = 'Failed to search itineraries';
         console.error(searchError);
       } else {
-        itineraries.value = data;
+        itineraries.value = await Promise.all(data.map(async (itinerary) => {
+          const averageRating = await fetchAverageRating(itinerary.id);
+          return { ...itinerary, averageRating };
+        }));
         totalItems.value = pagination.total;
         totalPages.value = pagination.totalPages;
       }

@@ -62,3 +62,18 @@ export async function deleteRating(ratingId, userId) {
 
   return { success: true };
 }
+
+export async function fetchAverageRating(itineraryId) {
+  const { data, error } = await supabase
+    .from('itinerary_rating')
+    .select('rating')
+    .eq('itinerary_id', itineraryId);
+
+  if (error) {
+    console.error('Error fetching average rating:', error);
+    return 0;
+  }
+
+  const total = data.reduce((sum, rating) => sum + rating.rating, 0);
+  return data.length > 0 ? total / data.length : 0;
+}
