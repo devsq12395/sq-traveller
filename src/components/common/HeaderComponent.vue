@@ -1,7 +1,7 @@
 <template>
-  <header class="fixed w-full bg-blue-200 shadow-md z-40">
+  <header class="fixed w-screen bg-blue-200 shadow-md z-40 max-w-screen">
     <div class="container mx-auto px-4 py-3">
-      <div class="flex justify-between items-center">
+      <div v-if="isDesktop" class="flex justify-between items-center">
         <router-link to="/dashboard" class="flex items-center space-x-2">
           <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-16 w-40"/>
         </router-link>
@@ -47,6 +47,52 @@
           </div>
         </div>
       </div>
+      <div v-else class="flex justify-between items-center">
+        <router-link to="/dashboard" class="flex items-center space-x-2">
+          <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-8 w-20"/>
+        </router-link>
+        
+        <div class="flex items-center space-x-2">
+          <span v-if="profile" class="text-gray-600 text-sm">
+            Welcome, {{ profile.username }}
+          </span>
+          <div class="relative">
+            <button 
+              v-if="profile"
+              @click="isMenuOpen = !isMenuOpen"
+              class="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <span class="text-lg">&#8230;</span>
+            </button>
+            
+            <button 
+              v-else
+              @click="handleLogin"
+              class="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Login
+            </button>
+            
+            <div v-if="isMenuOpen && profile" 
+              class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-50"
+            >
+              <router-link 
+                to="/settings"
+                class="block w-full text-left px-3 py-1 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                @click="isMenuOpen = false"
+              >
+                Settings
+              </router-link>
+              <button 
+                @click="handleLogout"
+                class="block w-full text-left px-3 py-1 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 </template>
@@ -66,6 +112,7 @@ export default {
     const profile = ref(null);
     const isMenuOpen = ref(false);
     const user = useUser();
+    const isDesktop = ref(window.innerWidth >= 640);
 
     const updateProfile = async () => {
       if (route.name !== 'SetUsernamePage') {
@@ -120,6 +167,11 @@ export default {
       }
     });
 
+    // Watch for window resize
+    window.addEventListener('resize', () => {
+      isDesktop.value = window.innerWidth >= 640;
+    });
+
     onMounted(async () => {
       await updateProfile();
     });
@@ -128,7 +180,8 @@ export default {
       handleLogout,
       handleLogin,
       profile,
-      isMenuOpen
+      isMenuOpen,
+      isDesktop
     };
   }
 };

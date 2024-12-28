@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDesktop" class="itinerary-headline flex border bg-blue-100 rounded-lg overflow-hidden mx-auto" style="min-height: 400px; width: 80%;">
+  <div v-if="isDesktop" class="itinerary-headline flex border bg-blue-100 rounded-lg overflow-hidden mx-auto" style="min-height: 400px; width: 100%;">
     <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-1/3 h-64 object-cover m-2" />
     <div class="p-4 w-2/3">
       <h1 class="text-3xl font-bold mb-2 text-center">{{ title }}</h1>
@@ -11,8 +11,8 @@
         <p>Created by: {{ createdBy }}</p>
       </div>
       <div class="flex items-center mt-2">
-        <span class="text-sm text-gray-600 mr-2">Ratings:</span>
-        <div class="flex space-x-1">
+        <span class="text-sm text-gray-600 mr-2">Ratings: {{ ratingsCount }}</span>
+        <div class="flex justify-center space-x-1">
           <span v-for="star in 5" :key="star">
             <svg
               :class="averageRating >= star ? 'text-yellow-500' : 'text-gray-300'"
@@ -25,13 +25,12 @@
             </svg>
           </span>
         </div>
-        <span class="ml-2 text-sm text-gray-600">({{ averageRating.toFixed(1) }})</span>
+        <span class="ml-2 text-sm text-gray-600">Average: {{ averageRating.toFixed(1) }}</span>
       </div>
     </div>
   </div>
-  <div v-else class="itinerary-headline flex flex-col items-center border bg-blue-100 rounded-lg mx-auto" style="width: 95%;">
-    <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-full h-64 object-cover m-2" />
-    <div class="p-4 w-full text-center">
+  <div v-else class="itinerary-headline flex flex-col justify-end items-center border mx-auto" :style="{ width: '100%', height: '100vh', backgroundImage: `url(${itineraryImgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
+    <div class="bg-white bg-opacity-75 p-4 w-full text-center" style="margin-top: 40%;">
       <h1 class="text-3xl font-bold mb-2">{{ title }}</h1>
       <hr class="my-2" />
       <p class="text-gray-700 mb-4">{{ description }}</p>
@@ -41,8 +40,8 @@
         <p>Created by: {{ createdBy }}</p>
       </div>
       <div class="flex items-center mt-2">
-        <span class="text-sm text-gray-600 mr-2">Ratings:</span>
-        <div class="flex space-x-1">
+        <span class="text-sm text-gray-600 mr-2">Ratings: {{ ratingsCount }}</span>
+        <div class="flex justify-center space-x-1">
           <span v-for="star in 5" :key="star">
             <svg
               :class="averageRating >= star ? 'text-yellow-500' : 'text-gray-300'"
@@ -55,7 +54,7 @@
             </svg>
           </span>
         </div>
-        <span class="ml-2 text-sm text-gray-600">({{ averageRating.toFixed(1) }})</span>
+        <span class="ml-2 text-sm text-gray-600">Average: {{ averageRating.toFixed(1) }}</span>
       </div>
     </div>
   </div>
@@ -82,7 +81,8 @@ export default {
       numberOfDays: 0,
       createdBy: '',
       itineraryImgUrl: '',
-      averageRating: 0
+      averageRating: 0,
+      ratingsCount: 0
     }
   },
   async created() {
@@ -96,6 +96,7 @@ export default {
     if (ratingsData.data) {
       const total = ratingsData.data.reduce((sum, rating) => sum + rating.rating, 0);
       this.averageRating = ratingsData.data.length > 0 ? total / ratingsData.data.length : 0;
+      this.ratingsCount = ratingsData.data.length;
     }
   },
   mounted() {
