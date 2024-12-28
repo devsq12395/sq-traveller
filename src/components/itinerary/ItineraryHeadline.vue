@@ -1,12 +1,45 @@
 <template>
-  <div class="itinerary-headline flex border bg-blue-100 rounded-lg overflow-hidden mx-auto" style="max-height: 40vh; min-height: 400px; width: 70%;">
+  <div v-if="isDesktop" class="itinerary-headline flex border bg-blue-100 rounded-lg overflow-hidden mx-auto" style="min-height: 400px; width: 80%;">
     <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-1/3 h-64 object-cover m-2" />
     <div class="p-4 w-2/3">
       <h1 class="text-3xl font-bold mb-2 text-center">{{ title }}</h1>
+      <hr class="my-2" />
       <p class="text-gray-700 mb-4 text-left">{{ description }}</p>
-      <hr class="border-t border-gray-300 my-2">
-      <p class="text-sm text-gray-600 text-left">Number of Days: {{ numberOfDays }}</p>
-      <p class="text-sm text-gray-600 text-left">Created by: {{ createdBy }}</p>
+      <hr class="my-2" />
+      <div class="text-sm text-gray-600 text-left mt-4">
+        <p>Number of Days: {{ numberOfDays }}</p>
+        <p>Created by: {{ createdBy }}</p>
+      </div>
+      <div class="flex items-center mt-2">
+        <span class="text-sm text-gray-600 mr-2">Ratings:</span>
+        <div class="flex space-x-1">
+          <span v-for="star in 5" :key="star">
+            <svg
+              :class="averageRating >= star ? 'text-yellow-500' : 'text-gray-300'"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              class="w-4 h-4"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.982a1 1 0 00.95.69h4.184c.969 0 1.371 1.24.588 1.81l-3.392 2.466a1 1 0 00-.364 1.118l1.286 3.982c.3.921-.755 1.688-1.54 1.118l-3.392-2.466a1 1 0 00-1.175 0l-3.392 2.466c-.784.57-1.839-.197-1.54-1.118l1.286-3.982a1 1 0 00-.364-1.118L2.83 9.409c-.784-.57-.38-1.81.588-1.81h4.184a1 1 0 00.95-.69l1.286-3.982z" />
+            </svg>
+          </span>
+        </div>
+        <span class="ml-2 text-sm text-gray-600">({{ averageRating.toFixed(1) }})</span>
+      </div>
+    </div>
+  </div>
+  <div v-else class="itinerary-headline flex flex-col items-center border bg-blue-100 rounded-lg mx-auto" style="width: 95%;">
+    <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-full h-64 object-cover m-2" />
+    <div class="p-4 w-full text-center">
+      <h1 class="text-3xl font-bold mb-2">{{ title }}</h1>
+      <hr class="my-2" />
+      <p class="text-gray-700 mb-4">{{ description }}</p>
+      <hr class="my-2" />
+      <div class="text-sm text-gray-600 text-left mt-4">
+        <p>Number of Days: {{ numberOfDays }}</p>
+        <p>Created by: {{ createdBy }}</p>
+      </div>
       <div class="flex items-center mt-2">
         <span class="text-sm text-gray-600 mr-2">Ratings:</span>
         <div class="flex space-x-1">
@@ -45,6 +78,7 @@ export default {
   },
   data() {
     return {
+      isDesktop: window.innerWidth >= 640,
       numberOfDays: 0,
       createdBy: '',
       itineraryImgUrl: '',
@@ -64,7 +98,18 @@ export default {
       this.averageRating = ratingsData.data.length > 0 ? total / ratingsData.data.length : 0;
     }
   },
-};
+  mounted() {
+    window.addEventListener('resize', this.checkWindowSize);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkWindowSize);
+  },
+  methods: {
+    checkWindowSize() {
+      this.isDesktop = window.innerWidth >= 640;
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -74,5 +119,19 @@ export default {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .itinerary-headline {
+    flex-direction: column;
+    align-items: center;
+  }
+  .itinerary-headline img {
+    width: 100%;
+  }
+  .itinerary-headline div {
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>

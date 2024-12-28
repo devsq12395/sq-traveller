@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen pt-20 bg-gray-500">
+  <div class="flex flex-col min-h-screen min-w-screen pt-20 bg-gray-500">
     <LoadingScreen />
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
