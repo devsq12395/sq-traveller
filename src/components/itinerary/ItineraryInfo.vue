@@ -1,8 +1,7 @@
 <template>
-  <div class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 70%;">
+  <div v-if="isDesktop" class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 70%;">
     <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
-      
       <!-- Buttons Container -->
       <div v-if="isOwner" class="flex space-x-4 mt-6">
         <button
@@ -26,7 +25,85 @@
         v-for="tab in availableTabs"
         :key="tab.id"
         @click="activeTab = tab.id"
-        class="px-4 py-2 text-sm font-medium"
+        class="px-10 py-2 text-sm font-medium"
+        :class="[
+          activeTab === tab.id
+            ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-100'
+            : 'text-gray-500 hover:text-gray-700 hover:bg-blue-100'
+        ]"
+      >
+        {{ tab.name }}
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="flex-1 overflow-y-auto">
+      <!-- Details Tab -->
+      <div v-if="activeTab === 'details'" class="h-full">
+        <div class="p-4">
+          <ItineraryEventsList
+            :eventsGroupedByDay="eventsGroupedByDay"
+            :selectedEventId="selectedEventId"
+            :isOwner="isOwner"
+            @select-event="$emit('select-event', $event)"
+            @edit-event="$emit('edit-event', $event)"
+            @delete-event="$emit('delete-event', $event)"
+          />
+        </div>
+      </div>
+
+      <!-- Ratings Tab -->
+      <div v-if="activeTab === 'ratings'" class="h-full bg-blue-100">
+        <ItineraryRatings 
+          :itineraryId="itineraryId" 
+        />
+      </div>
+
+      <!-- Comments Tab -->
+      <div v-if="activeTab === 'comments'" class="h-full bg-blue-100">
+        <ItineraryComments 
+          :itineraryId="itineraryId" 
+          @update:commentCount="commentCount = $event"
+        />
+      </div>
+
+      <!-- Settings Tab -->
+      <div v-if="activeTab === 'settings' && isOwner" class="h-full">
+        <ItinerarySettings
+          :privacySetting="privacySetting"
+          @update:privacySetting="privacySetting = $event"
+          @update-privacy="updatePrivacy"
+        />
+      </div>
+    </div>
+  </div>
+  <div v-else class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 100%;">
+    <!-- Add itinerary image and description -->
+    <div class="p-4 border-b border-gray-300 flex-shrink-0">
+      <!-- Buttons Container -->
+      <div v-if="isOwner" class="flex space-x-4 mt-6">
+        <button
+          @click="goToDashboard"
+          class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+        >
+          ← Back to Dashboard
+        </button>
+        <button
+          @click="$emit('show-create-event')"
+          class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Create Event
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex border-b border-gray-200 bg-blue-50">
+      <button
+        v-for="tab in availableTabs"
+        :key="tab.id"
+        @click="activeTab = tab.id"
+        class="px-2 py-1 text-xs font-medium"
         :class="[
           activeTab === tab.id
             ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-100'
@@ -81,6 +158,7 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue';
 import { fetchItineraryPrivacy, updateItineraryPrivacy, fetchItineraryWithCreator } from '../../helpers/itinerary';
 import ItinerarySettings from './ItinerarySettings.vue';
 import ItineraryComments from './ItineraryComments.vue';
@@ -107,6 +185,14 @@ export default {
     isOwner: {
       type: Boolean,
       default: false
+    }
+  },
+  setup(){
+    const windowWidth = ref(window.innerWidth);
+    const isDesktop = computed(() => windowWidth.value >= 768);
+
+    return {
+      isDesktop
     }
   },
   data() {

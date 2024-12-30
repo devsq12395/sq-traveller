@@ -12,6 +12,7 @@
           
           <!-- Left Column - Event Details -->
           <div class="flex-1 space-y-4">
+            <h3 class="text-lg font-semibold">Event Details</h3>
             <!-- Name Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="name" class="text-gray-700 font-semibold text-left">
@@ -82,7 +83,8 @@
             </div>
           </div>
           <!-- Right Column - Tabbed Interface for AutoSearch and Manual Input -->
-          <div class="flex-1">
+          <div class="flex-1 space-y-4">
+            <h3 class="text-lg font-semibold">Location and Image</h3>
             <div class="flex border-b border-gray-200 bg-blue-50">
               <button
                 @click="activeTab = 'auto'"

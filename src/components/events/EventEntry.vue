@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-blue-100 p-4 rounded-lg shadow-lg w-full mt-4">
+  <div v-if="isDesktop" class="bg-blue-100 p-4 rounded-lg shadow-lg w-full mt-4">
     <div class="grid grid-cols-3 gap-4 items-stretch h-48">
       <!-- Column #1: Main Texts -->
       <div class="col-span-2 bg-blue-200 p-3 rounded-lg shadow-inner">
@@ -78,6 +78,83 @@
       @eventUpdated="$emit('eventUpdated')"
     />
   </div>
+  <div v-else class="bg-blue-100 p-4 rounded-lg shadow-lg w-full mt-4">
+    <div class="grid grid-cols-1 gap-4 items-stretch">
+      <!-- Image on Top -->
+      <div class="h-48 rounded-lg overflow-hidden bg-gray-200">
+        <img 
+          :src="imgUrl" 
+          alt="Event Thumbnail" 
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <!-- Main Texts -->
+      <div class="bg-blue-200 p-3 rounded-lg shadow-inner">
+        <div class="text-left">
+          <h2 class="text-xl font-bold text-gray-800">{{ name }}</h2>
+          <p class="text-sm text-gray-600">
+            Day {{ day || 'not assigned' }}<br>
+            Time: {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
+          </p>
+          <!-- Divider -->
+          <hr class="border-black my-1" />
+          <!-- Location Section -->
+          <div class="text-left">
+            <h3 class="text-sm font-semibold text-gray-800">Location:</h3>
+            <p class="text-sm text-gray-700 truncate">{{ location }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sprouting Section -->
+    <div class="event-info" ref="infoSprouting">
+      <EventInfoSprouting 
+        class="transition-all duration-300 w-full" 
+        :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" 
+        :isOwner="isOwner" 
+      />
+    </div>
+
+    <div v-if="isOwner" class="flex space-x-4 mt-4">
+      <button 
+        @click="showEditEventPopup = true" 
+        class="p-2 px-4 bg-green-500 text-white rounded shadow text-xs"
+      >
+        Edit Details
+      </button>
+      <button 
+        @click="confirmDelete" 
+        class="p-2 px-4 bg-red-500 text-white rounded shadow text-xs"
+      >
+        Delete Event
+      </button>
+    </div>
+    <div v-if="showDeleteConfirm" class="mt-4">
+      <p>Are you sure you want to delete this event?</p>
+      <button 
+        @click="handleDelete" 
+        class="p-2 px-4 bg-red-500 text-white rounded shadow"
+      >
+        Yes, delete event
+      </button>
+      <button 
+        @click="showDeleteConfirm = false" 
+        class="p-2 px-4 bg-gray-500 text-white rounded shadow"
+      >
+        Cancel
+      </button>
+    </div>
+
+    <!-- EditEventPopup -->
+    <EditEventPopup 
+      v-if="showEditEventPopup" 
+      :eventId="eventId" 
+      @close="showEditEventPopup = false"
+      @refresh="$emit('refresh')" 
+      @eventUpdated="$emit('eventUpdated')"
+    />
+  </div>
 
   <!-- Arrow Button -->
   <div class="arrow-container bg-blue-400 flex justify-center">
@@ -89,7 +166,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import gsap from 'gsap';
 import EventInfoSprouting from './EventInfoSprouting.vue';
 import { deleteEvent } from '../../helpers/event';
@@ -117,6 +194,9 @@ export default {
     const isExpanded = ref(false);
     const showEditEventPopup = ref(false);
     const showDeleteConfirm = ref(false);
+
+    const windowWidth = ref(window.innerWidth);
+    const isDesktop = computed(() => windowWidth.value >= 768);
 
     const toggleInfo = () => {
       isExpanded.value = !isExpanded.value;
@@ -153,7 +233,8 @@ export default {
       showEditEventPopup,
       showDeleteConfirm,
       confirmDelete,
-      handleDelete
+      handleDelete,
+      isDesktop
     };
   },
   methods: {
