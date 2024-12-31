@@ -44,32 +44,11 @@ export async function fetchItinerary(itineraryId, currentUserId) {
   try {
     console.log('Fetching itinerary with ID:', itineraryId, 'for user:', currentUserId);
 
-    // Fetch the privacy setting, create a default if not found
-    let { data: privacyData, error: privacyError } = await supabase
-      .from('itinerary_privacy')
-      .select('privacy')
-      .eq('itinerary_id', itineraryId)
-      .single();
+    const { data: privacyData, error: privacyError } = await fetchItineraryPrivacy(itineraryId);
 
     if (privacyError) {
-      if (privacyError.code === 'PGRST116') { // No rows returned error
-        console.log('No privacy setting found, creating default privacy setting.');
-        const { data: defaultPrivacy, error: insertError } = await supabase
-          .from('itinerary_privacy')
-          .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error('Error creating default privacy setting:', insertError.message);
-          return { error: insertError };
-        }
-
-        privacyData = defaultPrivacy; // Assign the newly created privacy setting
-      } else {
-        console.error('Error fetching privacy setting:', privacyError.message);
-        return { error: privacyError };
-      }
+      console.error('Error fetching privacy setting:', privacyError.message);
+      return { error: privacyError };
     }
 
     const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
@@ -131,6 +110,16 @@ export async function fetchItineraryWithCreator(itineraryId) {
   }
 
   try {
+    const { data: privacyData, error: privacyError } = await fetchItineraryPrivacy(itineraryId);
+
+    if (privacyError) {
+      console.error('Error fetching privacy setting:', privacyError.message);
+      return { error: privacyError };
+    }
+
+    const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
+    console.log('Privacy data:', privacy);
+
     const { data, error } = await supabase
       .from('itinerary')
       .select(`
@@ -151,7 +140,8 @@ export async function fetchItineraryWithCreator(itineraryId) {
     const adjustedData = { 
       ...data, 
       img_url,
-      creatorName
+      creatorName,
+      privacy
     };
 
     return { data: adjustedData };
@@ -167,6 +157,72 @@ export async function fetchItineraryWithCreator(itineraryId) {
       }, 
       error: error.message 
     };
+  }
+}
+
+// Fetch privacy setting for an itinerary
+export async function fetchItineraryPrivacy(itineraryId) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to fetch privacy settings.' };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('itinerary_privacy')
+      .select('privacy')
+      .eq('itinerary_id', itineraryId);
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is the "no rows returned" error
+      console.error('Error fetching itinerary privacy:', error.message);
+      return { error };
+    }
+
+    // If no privacy setting exists, create one with default 'private' setting
+    if (!data || data.length === 0) {
+      console.log('Creating default privacy setting for itineraryId:', itineraryId);
+      const { data: existingData, error: existingError } = await supabase
+        .from('itinerary_privacy')
+        .select('privacy')
+        .eq('itinerary_id', itineraryId);
+
+      if (existingError) {
+        console.error('Error checking existing privacy setting:', existingError.message);
+        return { error: existingError };
+      }
+
+      if (!existingData || existingData.length === 0) {
+        try {
+          const { data: newData, error: insertError } = await supabase
+            .from('itinerary_privacy')
+            .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
+            .select();
+
+          if (insertError) {
+            // Handle unique constraint violation
+            if (insertError.code === '23505') { // Unique violation error code
+              console.warn('Privacy setting already exists for itineraryId:', itineraryId);
+              return fetchItineraryPrivacy(itineraryId); // Retry fetching
+            }
+            console.error('Error creating default privacy setting:', insertError.message);
+            return { error: insertError };
+          }
+
+          return { data: newData };
+        } catch (insertError) {
+          console.error('Error in transaction:', insertError.message);
+          return { error: insertError };
+        }
+      } else {
+        console.log('Privacy setting already exists for itineraryId:', itineraryId);
+        return { data: existingData[0] };
+      }
+    }
+
+    return { data: data[0] };
+  } catch (error) {
+    console.error('Error in fetchItineraryPrivacy:', error.message);
+    return { error };
   }
 }
 
@@ -214,48 +270,6 @@ export async function saveItineraryImage(itineraryId, imgUrl) {
   }
 }
 
-// Fetch privacy setting for an itinerary
-export async function fetchItineraryPrivacy(itineraryId) {
-  if (!itineraryId) {
-    console.error('Itinerary ID is null or undefined');
-    return { error: 'Itinerary ID is required to fetch privacy settings.' };
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from('itinerary_privacy')
-      .select('privacy')
-      .eq('itinerary_id', itineraryId)
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 is the "no rows returned" error
-      console.error('Error fetching itinerary privacy:', error.message);
-      return { error };
-    }
-
-    // If no privacy setting exists, create one with default 'private' setting
-    if (!data) {
-      const { data: newData, error: insertError } = await supabase
-        .from('itinerary_privacy')
-        .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
-        .select()
-        .single();
-
-      if (insertError) {
-        console.error('Error creating default privacy setting:', insertError.message);
-        return { error: insertError };
-      }
-
-      return { data: newData };
-    }
-
-    return { data };
-  } catch (error) {
-    console.error('Error in fetchItineraryPrivacy:', error.message);
-    return { error };
-  }
-}
-
 // Update privacy setting for an itinerary
 export async function updateItineraryPrivacy(itineraryId, privacy) {
   if (!itineraryId) {
@@ -273,8 +287,7 @@ export async function updateItineraryPrivacy(itineraryId, privacy) {
     const { data: existingPrivacy, error: checkError } = await supabase
       .from('itinerary_privacy')
       .select('id')
-      .eq('itinerary_id', itineraryId)
-      .single();
+      .eq('itinerary_id', itineraryId);
 
     if (checkError && checkError.code !== 'PGRST116') {
       console.error('Error checking existing privacy:', checkError);

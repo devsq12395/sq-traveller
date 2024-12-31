@@ -4,7 +4,7 @@
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Private Itinerary</h2>
-        <p class="text-gray-600">This itinerary is private. Only the owner can view it.</p>
+        <p class="text-gray-600">This itinerary is private or does not exist.</p>
       </div>
     </template>
     <template v-else>
