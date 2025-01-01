@@ -2,7 +2,7 @@
   <div v-if="showPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-70">
     <div class="bg-white rounded-lg shadow-xl w-full" style="height: calc(100vh - 5vh); margin-top: 10vh; position: relative; bottom: 0;">
       <!-- Close Button -->
-      <button @click="closePopup" class="absolute top-4 left-4 text-gray-500 hover:text-gray-700 z-10 bg-white bg-opacity-25 rounded-full w-5 h-5 flex items-center justify-center">
+      <button @click="closePopup" class="absolute top-12 left-4 text-gray-500 hover:text-gray-700 z-10 bg-white bg-opacity-25 rounded-full w-5 h-5 flex items-center justify-center">
         <span class="text-2xl">&times;</span>
       </button>
       <!-- Image and Event Name -->
@@ -11,13 +11,14 @@
           <img :src="eventImage" alt="Event Image" class="w-full h-64 object-cover" />
           <div class="p-4">
             <h2 class="text-2xl font-bold mb-2 text-left">{{ eventName }}</h2>
+            <p class="text-sm text-gray-500 text-left">Location: {{ eventLocation }}</p>
             <p class="text-sm text-gray-500 text-left">Day {{ eventDate }}</p>
             <p class="text-sm text-gray-500 text-left">{{ eventTime }}</p>
           </div>
         </div>
 
         <!-- Tabs Section -->
-        <div>
+        <div class="overflow-x-auto">
           <div class="flex border-b border-gray-300">
             <button
               v-for="tab in tabs"
@@ -27,7 +28,7 @@
                 'border-b-2 border-blue-500 text-blue-600': currentTab === tab,
                 'hover:text-blue-500': true
               }"
-              class="flex-1 px-6 py-1 text-center text-xs font-medium text-gray-600"
+              class="flex-1 px-3 py-1 text-center text-xs font-medium text-gray-600 whitespace-nowrap"
             >
               {{ tab }}
             </button>
@@ -79,6 +80,7 @@ export default {
     const eventDate = ref('');
     const eventTime = ref('');
     const eventDesc = ref('');
+    const eventLocation = ref('');
 
     const currentTabComponent = computed(() => {
       switch (currentTab.value) {
@@ -104,6 +106,7 @@ export default {
           console.log (event.data);
           eventImage.value = event.data.img_url;
           eventDesc.value = event.data.description;
+          eventLocation.value = event.data.location;
           eventName.value = event.data.name;
           eventDate.value = event.data.day;
           eventTime.value = event.data.time_start + ' - ' + event.data.time_end;
@@ -122,7 +125,8 @@ export default {
       eventDate,
       eventTime,
       eventImage,
-      eventDesc
+      eventDesc,
+      eventLocation
     };
   },
   methods: {

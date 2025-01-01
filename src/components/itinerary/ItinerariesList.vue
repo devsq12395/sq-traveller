@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDesktop" class="bg-blue-100 rounded-lg shadow-lg p-6">
+  <div v-if="isDesktop" :class="{'overflow-hidden': showCreatePopup}" class="bg-blue-100 rounded-lg shadow-lg p-6">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-4xl font-bold text-left">My Itineraries</h1>
       <button
@@ -50,7 +50,7 @@
       </div>
     </div>
   </div>
-  <div v-else class="bg-blue-100 rounded-lg shadow-lg p-6 w-full md:w-3/4 mx-auto">
+  <div v-else :class="{'overflow-hidden': showCreatePopup}" class="bg-blue-100 rounded-lg shadow-lg p-6 w-full md:w-3/4 mx-auto">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold text-left">My Itineraries</h1>
       <button
@@ -178,5 +178,8 @@ export default {
 .grid {
   display: grid;
   gap: 0.5rem; /* Reduce the gap between thumbnails */
+}
+.overflow-hidden {
+  overflow: hidden;
 }
 </style>

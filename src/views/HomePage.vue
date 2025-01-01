@@ -1,8 +1,41 @@
 <template>
-  <div class="home">
+  <div v-if="isDesktop" class="home">
     <div class="main-section">
       <!-- Adjusted Central Box -->
       <div class="absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-blue-100 bg-opacity-95 shadow-xl p-8 rounded-lg flex flex-col items-center z-30">
+        <img 
+          src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
+          alt="Logo" 
+          class="h-20 mb-5"
+        />
+        <p class="text-4xl font-bold text-gray-800 mb-4 text-center">Your Adventure Begins Here</p>
+        <p class="text-base text-gray-600 mb-6 text-center">Simple and Efficient Itinerary Planner</p>
+        <button 
+          v-if="!profile" 
+          @click="handleLogin" 
+          class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+        >
+          Login / Sign up
+        </button>
+        <router-link 
+          v-else 
+          to="/dashboard" 
+          class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+        >
+          Go To Dashboard
+        </router-link>
+      </div>
+      
+      <!-- Background Image -->
+      <div class="background-container"></div>
+    </div>
+    <hr class="section-divider" />
+    <SharedItineraries />
+  </div>
+  <div v-else class="home">
+    <div class="main-section">
+      <!-- Adjusted Central Box -->
+      <div class="absolute top-1/3 transform -translate-y-1/4 bg-blue-100 bg-opacity-95 shadow-xl p-8 rounded-lg flex flex-col items-center z-30">
         <img 
           src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
           alt="Logo" 
@@ -36,7 +69,7 @@
 
 <script>
 import SharedItineraries from '@/components/itinerary/SharedItineraries.vue'
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { getProfileData } from '@/helpers/authService';
 import { useUser, setLoginPopupShow } from '@/context/UserContext';
 
@@ -48,6 +81,11 @@ export default {
   setup() {
     const profile = ref(null);
     const user = useUser();
+    const isDesktop = ref(window.innerWidth >= 640);
+
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
 
     const updateProfile = async () => {
       profile.value = await getProfileData();
@@ -68,11 +106,16 @@ export default {
 
     onMounted(async () => {
       await updateProfile();
+      window.addEventListener('resize', checkWindowSize);
+    });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
     });
 
     return {
       profile,
-      handleLogin
+      handleLogin,
+      isDesktop
     };
   }
 }
