@@ -24,7 +24,7 @@
           @click="selectDefaultImage(image)"
           :class="[
             'cursor-pointer border-2 rounded p-1 hover:border-blue-500',
-            selectedImage === image.url ? 'border-blue-500' : 'border-gray-200'
+            selectedImage === image.url ? 'border-blue-500 bg-blue-100' : 'border-gray-200'
           ]"
         >
           <img :src="image.url" alt="Default event image" class="w-full h-16 object-cover rounded" />
@@ -59,7 +59,8 @@
 
       <!-- Preview Selected Image -->
       <div v-if="selectedImage" class="mt-2">
-        <img :src="selectedImage" alt="Selected image" class="h-24 object-cover rounded" />
+        <h4 class="text-sm font-semibold">Image Preview:</h4>
+        <img :src="selectedImage" alt="Selected image preview" class="h-24 object-cover rounded" />
       </div>
     </div>
   </div>
@@ -96,6 +97,7 @@ export default {
   methods: {
     selectDefaultImage(image) {
       this.setImageURL(image.url);
+      this.selectedImage = image.url;
       this.imageFile = null; // Clear any uploaded file
     },
     async handleImageUpload(event) {
@@ -122,6 +124,7 @@ export default {
         this.setImageURL(response.data.secure_url);
 
         this.uploadSuccess = true;
+        this.selectedImage = response.data.secure_url;
       } catch (error) {
         console.error("Error uploading image:", error);
       } finally {

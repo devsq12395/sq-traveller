@@ -24,7 +24,7 @@ export async function fetchItineraries(user_id) {
   // Adjust time fields and handle nested itinerary_img data
   const adjustedData = data.map(itinerary => {
     // Access the first img_url from the itinerary_img array or use the placeholder
-    const img_url = itinerary.itinerary_img ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150';
+    const img_url = itinerary.itinerary_img && itinerary.itinerary_img.length > 0 ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
     return {
       ...itinerary,
       img_url,
@@ -43,38 +43,18 @@ export async function fetchItinerary(itineraryId, currentUserId) {
 
   try {
     console.log('Fetching itinerary with ID:', itineraryId, 'for user:', currentUserId);
-    
-    // First, fetch the privacy setting
-    const { data: privacyData, error: privacyError } = await supabase
-      .from('itinerary_privacy')
-      .select('privacy')
-      .eq('itinerary_id', itineraryId)
-      .single();
+
+    const { data: privacyData, error: privacyError } = await fetchItineraryPrivacy(itineraryId);
 
     if (privacyError) {
-      if (privacyError.code === 'PGRST116') { // No rows returned error
-        // Create a default privacy setting if none exists
-        const { error: insertError } = await supabase
-          .from('itinerary_privacy')
-          .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
-          .single();
-
-        if (insertError) {
-          console.error('Error creating default privacy setting:', insertError.message);
-          return { error: insertError };
-        }
-
-        return { data: { privacy: 'private' } };
-      } else {
-        console.error('Error fetching privacy setting:', privacyError.message);
-        return { error: privacyError };
-      }
+      console.error('Error fetching privacy setting:', privacyError.message);
+      return { error: privacyError };
     }
 
-    console.log('Privacy data:', privacyData);
-    const privacy = privacyData?.privacy || 'private'; // Default to private if no setting found
+    const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
+    console.log('Privacy data:', privacy);
 
-    // Then fetch the itinerary details
+    // Fetch the itinerary details
     const { data: itinerary, error: itineraryError } = await supabase
       .from('itinerary')
       .select(`
@@ -90,14 +70,13 @@ export async function fetchItinerary(itineraryId, currentUserId) {
       return { error: itineraryError };
     }
 
-    // If no itinerary found
     if (!itinerary) {
       console.log('No itinerary found with ID:', itineraryId);
       return { error: 'Itinerary not found' };
     }
 
     console.log('Raw itinerary data:', itinerary);
-    
+
     const isOwner = currentUserId ? itinerary.user_id === currentUserId : false;
     console.log('Is owner check:', { currentUserId, itineraryUserId: itinerary.user_id, isOwner });
 
@@ -109,8 +88,8 @@ export async function fetchItinerary(itineraryId, currentUserId) {
 
     // Format the response
     const formattedData = {
-      ... itinerary,
-      img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
+      ...itinerary,
+      img_url: (itinerary.itinerary_img && itinerary.itinerary_img.length > 0) ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
       privacy: privacy,
       isOwner: isOwner
@@ -131,6 +110,16 @@ export async function fetchItineraryWithCreator(itineraryId) {
   }
 
   try {
+    const { data: privacyData, error: privacyError } = await fetchItineraryPrivacy(itineraryId);
+
+    if (privacyError) {
+      console.error('Error fetching privacy setting:', privacyError.message);
+      return { error: privacyError };
+    }
+
+    const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
+    console.log('Privacy data:', privacy);
+
     const { data, error } = await supabase
       .from('itinerary')
       .select(`
@@ -145,13 +134,14 @@ export async function fetchItineraryWithCreator(itineraryId) {
     if (error) throw error;
 
     // Access the first img_url from the itinerary_img or use the placeholder
-    const img_url = data.itinerary_img.img_url ? data.itinerary_img.img_url : 'https://via.placeholder.com/150';
+    const img_url = data.itinerary_img && data.itinerary_img.length > 0 ? data.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
     const creatorName = data.profiles?.username || 'Unknown User';
     
     const adjustedData = { 
       ...data, 
       img_url,
-      creatorName
+      creatorName,
+      privacy
     };
 
     return { data: adjustedData };
@@ -167,6 +157,72 @@ export async function fetchItineraryWithCreator(itineraryId) {
       }, 
       error: error.message 
     };
+  }
+}
+
+// Fetch privacy setting for an itinerary
+export async function fetchItineraryPrivacy(itineraryId) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to fetch privacy settings.' };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('itinerary_privacy')
+      .select('privacy')
+      .eq('itinerary_id', itineraryId);
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is the "no rows returned" error
+      console.error('Error fetching itinerary privacy:', error.message);
+      return { error };
+    }
+
+    // If no privacy setting exists, create one with default 'private' setting
+    if (!data || data.length === 0) {
+      console.log('Creating default privacy setting for itineraryId:', itineraryId);
+      const { data: existingData, error: existingError } = await supabase
+        .from('itinerary_privacy')
+        .select('privacy')
+        .eq('itinerary_id', itineraryId);
+
+      if (existingError) {
+        console.error('Error checking existing privacy setting:', existingError.message);
+        return { error: existingError };
+      }
+
+      if (!existingData || existingData.length === 0) {
+        try {
+          const { data: newData, error: insertError } = await supabase
+            .from('itinerary_privacy')
+            .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
+            .select();
+
+          if (insertError) {
+            // Handle unique constraint violation
+            if (insertError.code === '23505') { // Unique violation error code
+              console.warn('Privacy setting already exists for itineraryId:', itineraryId);
+              return fetchItineraryPrivacy(itineraryId); // Retry fetching
+            }
+            console.error('Error creating default privacy setting:', insertError.message);
+            return { error: insertError };
+          }
+
+          return { data: newData };
+        } catch (insertError) {
+          console.error('Error in transaction:', insertError.message);
+          return { error: insertError };
+        }
+      } else {
+        console.log('Privacy setting already exists for itineraryId:', itineraryId);
+        return { data: existingData[0] };
+      }
+    }
+
+    return { data: data[0] };
+  } catch (error) {
+    console.error('Error in fetchItineraryPrivacy:', error.message);
+    return { error };
   }
 }
 
@@ -214,48 +270,6 @@ export async function saveItineraryImage(itineraryId, imgUrl) {
   }
 }
 
-// Fetch privacy setting for an itinerary
-export async function fetchItineraryPrivacy(itineraryId) {
-  if (!itineraryId) {
-    console.error('Itinerary ID is null or undefined');
-    return { error: 'Itinerary ID is required to fetch privacy settings.' };
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from('itinerary_privacy')
-      .select('privacy')
-      .eq('itinerary_id', itineraryId)
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 is the "no rows returned" error
-      console.error('Error fetching itinerary privacy:', error.message);
-      return { error };
-    }
-
-    // If no privacy setting exists, create one with default 'private' setting
-    if (!data) {
-      const { data: newData, error: insertError } = await supabase
-        .from('itinerary_privacy')
-        .insert([{ itinerary_id: itineraryId, privacy: 'private' }])
-        .select()
-        .single();
-
-      if (insertError) {
-        console.error('Error creating default privacy setting:', insertError.message);
-        return { error: insertError };
-      }
-
-      return { data: newData };
-    }
-
-    return { data };
-  } catch (error) {
-    console.error('Error in fetchItineraryPrivacy:', error.message);
-    return { error };
-  }
-}
-
 // Update privacy setting for an itinerary
 export async function updateItineraryPrivacy(itineraryId, privacy) {
   if (!itineraryId) {
@@ -273,8 +287,7 @@ export async function updateItineraryPrivacy(itineraryId, privacy) {
     const { data: existingPrivacy, error: checkError } = await supabase
       .from('itinerary_privacy')
       .select('id')
-      .eq('itinerary_id', itineraryId)
-      .single();
+      .eq('itinerary_id', itineraryId);
 
     if (checkError && checkError.code !== 'PGRST116') {
       console.error('Error checking existing privacy:', checkError);
@@ -346,7 +359,7 @@ export async function fetchSharedItineraries({ page = 1, pageSize = 12 } = {}) {
     // Format the response
     const formattedData = data.map(itinerary => ({
       ...itinerary,
-      img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
+      img_url: itinerary.itinerary_img && itinerary.itinerary_img.length > 0 ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
     }));
 
@@ -405,7 +418,7 @@ export async function searchItineraries(searchTerm, { page = 1, pageSize = 12 } 
     // Format the response
     const formattedData = data.map(itinerary => ({
       ...itinerary,
-      img_url: itinerary.itinerary_img.img_url ? itinerary.itinerary_img.img_url : 'https://via.placeholder.com/150',
+      img_url: itinerary.itinerary_img && itinerary.itinerary_img.length > 0 ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150',
       creatorName: itinerary.profiles?.username || 'Unknown User',
     }));
 

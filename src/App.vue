@@ -49,4 +49,10 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
+@media (max-width: 639px) {
+  html, body {
+    overflow-x: hidden;
+  }
+}
 </style>

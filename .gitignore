@@ -2,10 +2,10 @@
 node_modules
 /dist
 
-
 # local env files
 .env
 .env.local
+.env.download
 .env.production
 .env.*.local
 

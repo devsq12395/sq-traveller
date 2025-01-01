@@ -20,6 +20,7 @@ export const eventPopupsState = reactive({
   isCreateTodoPopupShow: false,
   isCreateNotePopupShow: false,
   isCreateBudgetPopupShow: false,
+  isEventInfoPopupShow: false
 });
 
 const loadingState = reactive({
@@ -72,6 +73,11 @@ export function setCreateNotePopupShow(eventId, isShow) {
 export function setCreateBudgetPopupShow(eventId, isShow) {
   eventPopupsState.eventId = eventId;
   eventPopupsState.isCreateBudgetPopupShow = isShow;
+}
+
+export function setEventInfoPopupShow(eventId, isShow) {
+  eventPopupsState.eventId = eventId;
+  eventPopupsState.isEventInfoPopupShow = isShow;
 }
 
 // Function to clear user data and local storage

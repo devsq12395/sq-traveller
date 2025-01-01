@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 bg-blue-100 rounded-lg shadow">
+  <div v-if="isDesktop" class="p-4 bg-blue-100 rounded-lg shadow">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Shared Itineraries</h2>
       <div class="flex items-center">
@@ -57,6 +57,64 @@
       </div>
     </div>
   </div>
+  <div v-else class="p-4 bg-blue-100 rounded-lg shadow">
+    <div class="mb-4">
+      <h2 class="text-2xl font-bold">Shared Itineraries</h2>
+    </div>
+    <div class="flex items-center mb-4">
+      <input
+        type="text"
+        v-model="searchTerm"
+        @input="handleSearch"
+        placeholder="Search itineraries..."
+        class="w-full px-3 py-2 border rounded"
+      />
+      <button @click="handleSearch" class="ml-2 p-2 bg-gray-200 rounded hover:bg-gray-300">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 5.65a7.5 7.5 0 010 10.7z" />
+        </svg>
+      </button>
+    </div>
+    <div v-if="loading" class="text-center py-4">
+      <p>Loading shared itineraries...</p>
+    </div>
+    <div v-else-if="error" class="text-center py-4 text-red-600">
+      <p>{{ error }}</p>
+    </div>
+    <div v-else-if="itineraries.length === 0" class="text-center py-4 text-gray-600">
+      <p>No shared itineraries available.</p>
+    </div>
+    <div v-else>
+      <div class="flex flex-col space-y-4 mb-4">
+        <SharedItinerariesEntry
+          v-for="itinerary in itineraries"
+          :key="itinerary.id"
+          :itinerary="itinerary"
+        />
+      </div>
+      
+      <!-- Pagination Controls -->
+      <div class="mt-6 flex justify-center items-center space-x-2">
+        <button 
+          type="button"
+          @click="changePage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button 
+          type="button"
+          @click="changePage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -79,6 +137,7 @@ export default {
     const totalItems = ref(0);
     const totalPages = ref(0);
     const searchTerm = ref('');
+    const isDesktop = ref(window.innerWidth >= 768);
 
     const loadItineraries = async (page = 1) => {
       loading.value = true;
@@ -136,7 +195,12 @@ export default {
       loading.value = false;
     };
 
-    onMounted(() => loadItineraries(1));
+    onMounted(() => {
+      loadItineraries(1);
+      window.addEventListener('resize', () => {
+        isDesktop.value = window.innerWidth >= 768;
+      });
+    });
 
     return {
       itineraries,
@@ -146,7 +210,8 @@ export default {
       totalPages,
       changePage,
       searchTerm,
-      handleSearch
+      handleSearch,
+      isDesktop
     };
   }
 };

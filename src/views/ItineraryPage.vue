@@ -4,7 +4,7 @@
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Private Itinerary</h2>
-        <p class="text-gray-600">This itinerary is private. Only the owner can view it.</p>
+        <p class="text-gray-600">This itinerary is private or does not exist.</p>
       </div>
     </template>
     <template v-else>
@@ -60,6 +60,13 @@
       <CreateBudgetPopup
         @refresh="loadEvents"
       />
+
+      <!-- Event Info Popup -->
+      <EventInfoPopup
+        :eventId="selectedEventId"
+        :isOwner="isOwner"
+        @close="showEventInfoPopup = false"
+      />
     </template>
   </div>
 </template>
@@ -78,6 +85,7 @@ import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 import LoadingScreen from '../components/common/LoadingScreen.vue';
 import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
+import EventInfoPopup from '@/components/events/EventInfoPopup.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -89,6 +97,7 @@ export default {
     CreateBudgetPopup,
     LoadingScreen,
     ItineraryHeadline,
+    EventInfoPopup
   },
   setup() {
     const route = useRoute();
