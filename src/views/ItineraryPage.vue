@@ -60,6 +60,14 @@
       <CreateBudgetPopup
         @refresh="loadEvents"
       />
+
+      <!-- Event Info Popup -->
+      <EventInfoPopup
+        :eventId="selectedEventId"
+        :eventDescription="selectedEventDescription"
+        :isOwner="isOwner"
+        @close="showEventInfoPopup = false"
+      />
     </template>
   </div>
 </template>
@@ -78,6 +86,7 @@ import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 import LoadingScreen from '../components/common/LoadingScreen.vue';
 import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
+import EventInfoPopup from '@/components/events/EventInfoPopup.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -89,6 +98,7 @@ export default {
     CreateBudgetPopup,
     LoadingScreen,
     ItineraryHeadline,
+    EventInfoPopup
   },
   setup() {
     const route = useRoute();

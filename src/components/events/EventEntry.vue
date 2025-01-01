@@ -38,7 +38,7 @@
         :isOwner="isOwner" 
       />
     </div>
-
+    
     <div v-if="isOwner" class="flex space-x-4 mt-4">
       <button 
         @click="showEditEventPopup = true" 
@@ -77,6 +77,14 @@
       @refresh="$emit('refresh')" 
       @eventUpdated="$emit('eventUpdated')"
     />
+
+    <!-- Arrow Button -->
+    <div class="arrow-container bg-blue-400 flex justify-center">
+      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700 w-full">
+        <span v-if="!isExpanded">▼</span>
+        <span v-else>▲</span>
+      </button>
+    </div>
   </div>
   <div v-else class="bg-blue-100 p-4 rounded-lg shadow-lg w-full mt-4">
     <div class="grid grid-cols-1 gap-4 items-stretch">
@@ -107,29 +115,30 @@
       </div>
     </div>
 
-    <!-- Sprouting Section -->
-    <div class="event-info" ref="infoSprouting">
-      <EventInfoSprouting 
-        class="transition-all duration-300 w-full" 
-        :event="{ eventId, name, location, day, description, imgUrl, time_start, time_end }" 
-        :isOwner="isOwner" 
-      />
+    <div class="flex-col mt-4">
+      <button 
+        @click="showEventInfoPopup(eventId)" 
+        class="p-3 px-6 bg-orange-400 text-white rounded shadow text-sm"
+      >
+        View Event Details
+      </button>
+
+      <div v-if="isOwner" class="flex space-x-4 mt-4">
+        <button 
+          @click="showEditEventPopup = true" 
+          class="p-2 px-4 bg-green-500 text-white rounded shadow text-xs"
+        >
+          Edit Details
+        </button>
+        <button 
+          @click="confirmDelete" 
+          class="p-2 px-4 bg-red-500 text-white rounded shadow text-xs"
+        >
+          Delete Event
+        </button>
+      </div>
     </div>
 
-    <div v-if="isOwner" class="flex space-x-4 mt-4">
-      <button 
-        @click="showEditEventPopup = true" 
-        class="p-2 px-4 bg-green-500 text-white rounded shadow text-xs"
-      >
-        Edit Details
-      </button>
-      <button 
-        @click="confirmDelete" 
-        class="p-2 px-4 bg-red-500 text-white rounded shadow text-xs"
-      >
-        Delete Event
-      </button>
-    </div>
     <div v-if="showDeleteConfirm" class="mt-4">
       <p>Are you sure you want to delete this event?</p>
       <button 
@@ -155,22 +164,15 @@
       @eventUpdated="$emit('eventUpdated')"
     />
   </div>
-
-  <!-- Arrow Button -->
-  <div class="arrow-container bg-blue-400 flex justify-center">
-    <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700 w-full">
-      <span v-if="!isExpanded">▼</span>
-      <span v-else>▲</span>
-    </button>
-  </div>
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import gsap from 'gsap';
 import EventInfoSprouting from './EventInfoSprouting.vue';
 import { deleteEvent } from '../../helpers/event';
 import EditEventPopup from '../popups/EditEventPopup.vue';
+import { setEventInfoPopupShow } from '../../context/UserContext';
 
 export default {
   name: 'EventEntry',
@@ -195,10 +197,15 @@ export default {
     const showEditEventPopup = ref(false);
     const showDeleteConfirm = ref(false);
 
-    const windowWidth = ref(window.innerWidth);
-    const isDesktop = computed(() => windowWidth.value >= 768);
+    const isDesktop = ref(window.innerWidth >= 640);
+
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
 
     const toggleInfo = () => {
+      if (!infoSprouting.value) return;
+
       isExpanded.value = !isExpanded.value;
       const targetHeight = isExpanded.value ? 'auto' : '0px';
       gsap.to(infoSprouting.value, {
@@ -222,8 +229,19 @@ export default {
       }
     };
 
+    const showEventInfoPopup = (eventId) => {
+      setEventInfoPopupShow(eventId, true);
+    };
+
     onMounted(() => {
+      if (!infoSprouting.value) return;
       infoSprouting.value.style.height = '0px';
+      window.addEventListener('resize', checkWindowSize);
+      checkWindowSize();
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
     });
 
     return {
@@ -234,7 +252,8 @@ export default {
       showDeleteConfirm,
       confirmDelete,
       handleDelete,
-      isDesktop
+      isDesktop,
+      showEventInfoPopup
     };
   },
   methods: {
