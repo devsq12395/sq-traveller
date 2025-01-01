@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import EventEntry from './EventEntry.vue';
 
 export default {
@@ -67,13 +67,23 @@ export default {
     EventEntry
   },
   setup(){
-    const windowWidth = ref(window.innerWidth);
-    const isDesktop = computed(() => windowWidth.value >= 768);
+    const isDesktop = ref(window.innerWidth >= 640);
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+    onMounted(() => {
+      window.addEventListener('resize', checkWindowSize);
+      checkWindowSize();
+    });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
+    });
 
     return {
       isDesktop
     }
   },
+  
   props: {
     eventsGroupedByDay: {
       type: Array,

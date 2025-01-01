@@ -191,7 +191,7 @@ export default {
     time_end: { type: String, required: true },
     isOwner: { type: Boolean, default: false }
   },
-  setup() {
+  setup(props, {emit}) {
     const infoSprouting = ref(null);
     const isExpanded = ref(false);
     const showEditEventPopup = ref(false);
@@ -225,12 +225,13 @@ export default {
         console.error('Error deleting event:', error);
       } else {
         showDeleteConfirm.value = false;
-        this.$emit('refresh');
+        emit('refresh');
       }
     };
 
     const showEventInfoPopup = (eventId) => {
       setEventInfoPopupShow(eventId, true);
+      emit('select-event', eventId);
     };
 
     onMounted(() => {
@@ -256,6 +257,7 @@ export default {
       showEventInfoPopup
     };
   },
+  emits: ['select-event', 'refresh', 'eventUpdated'],
   methods: {
     formatTime(time) {
       if (!time) return 'N/A';

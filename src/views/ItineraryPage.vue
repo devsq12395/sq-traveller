@@ -64,7 +64,6 @@
       <!-- Event Info Popup -->
       <EventInfoPopup
         :eventId="selectedEventId"
-        :eventDescription="selectedEventDescription"
         :isOwner="isOwner"
         @close="showEventInfoPopup = false"
       />
