@@ -6,6 +6,7 @@ import UserSettingsPage from '../views/UserSettingsPage.vue';
 import HomePage from '../views/HomePage.vue';
 import SetUsernamePage from '../views/SetUsernamePage.vue';
 import DataDeletionPage from '../views/DataDeletionPage.vue';
+import AboutUsPage from '../views/AboutUsPage.vue';
 
 const routes = [
   {
@@ -49,6 +50,12 @@ const routes = [
     name: 'DataDeletionPage',
     component: DataDeletionPage,
     meta: { title: 'GoAgenda' },
+  },
+  {
+    path: '/about',
+    name: 'AboutUs',
+    component: AboutUsPage,
+    meta: { title: 'About Us' },
   },
 ];
 

@@ -31,6 +31,12 @@ const loginPopupState = reactive({
   isLoginPopupShow: false,
 });
 
+const cookieState = reactive({
+  necessary: true,
+  analytics: false,
+  preferences: false,
+});
+
 // Initialize user state from local storage
 function loadUserFromStorage() {
   const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -121,5 +127,27 @@ export function useLoginPopup() {
   return loginPopupState;
 }
 
+export function useCookies() {
+  return cookieState;
+}
+
+export function setCookies(cookies) {
+  cookieState.necessary = cookies.necessary;
+  cookieState.analytics = cookies.analytics;
+  cookieState.preferences = cookies.preferences;
+
+  localStorage.setItem('cookies', JSON.stringify(cookieState));
+}
+
+function loadCookiesFromStorage() {
+  const storedCookies = JSON.parse(localStorage.getItem('cookies'));
+  if (storedCookies) {
+    cookieState.necessary = storedCookies.necessary;
+    cookieState.analytics = storedCookies.analytics;
+    cookieState.preferences = storedCookies.preferences;
+  }
+}
+
 // Load user data from storage on app initialization
 loadUserFromStorage();
+loadCookiesFromStorage();

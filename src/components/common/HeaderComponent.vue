@@ -2,7 +2,7 @@
   <header class="fixed w-screen bg-blue-200 shadow-md z-40 max-w-screen">
     <div class="container mx-auto px-4 py-3">
       <div v-if="isDesktop" class="flex justify-between items-center">
-        <router-link to="/dashboard" class="flex items-center space-x-2">
+        <router-link to="/" class="flex items-center space-x-2">
           <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-16 w-40"/>
         </router-link>
         
@@ -48,7 +48,7 @@
         </div>
       </div>
       <div v-else class="flex justify-between items-center">
-        <router-link to="/dashboard" class="flex items-center space-x-2">
+        <router-link to="/" class="flex items-center space-x-2">
           <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-8 w-20"/>
         </router-link>
         

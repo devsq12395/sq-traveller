@@ -4,6 +4,7 @@
     <HeaderComponent />
     <router-view></router-view>
     <LoginPopup v-if="loginPopupState.isLoginPopupShow" @close="closeLoginPopup" />
+    <CookieConsent />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import { useUser } from './context/UserContext';
 import HeaderComponent from './components/common/HeaderComponent.vue'; 
 import LoadingScreen from './components/common/LoadingScreen.vue';
 import LoginPopup from './components/auth/LoginPopup.vue';
+import CookieConsent from './components/common/CookieConsent.vue';
 import { useLoginPopup, setLoginPopupShow } from './context/UserContext';
 
 export default {
@@ -20,6 +22,7 @@ export default {
     HeaderComponent,
     LoadingScreen,
     LoginPopup,
+    CookieConsent,
   },
   setup() {
     // Provide user state globally
