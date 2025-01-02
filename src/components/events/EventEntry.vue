@@ -43,6 +43,7 @@
       <button 
         @click="showEditEventPopup = true" 
         class="p-2 px-4 bg-green-500 text-white rounded shadow"
+        style="margin-right: 16px;"
       >
         Edit Details
       </button>
@@ -127,6 +128,7 @@
         <button 
           @click="showEditEventPopup = true" 
           class="p-2 px-4 bg-green-500 text-white rounded shadow text-xs"
+          style="margin-right: 16px;"
         >
           Edit Details
         </button>

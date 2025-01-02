@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen min-w-screen pt-20 bg-gray-500">
+  <div class="itinerary-container flex flex-col min-h-screen min-w-screen pt-20 bg-gray-500">
     <LoadingScreen />
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
@@ -8,7 +8,7 @@
       </div>
     </template>
     <template v-else>
-      <div class="flex flex-col items-center p-8">
+      <div class="flex flex-row items-start p-8 space-x-4">
         <ItineraryHeadline
           :itineraryId="itineraryId"
           :image="itineraryImgUrl"
@@ -16,6 +16,7 @@
           :description="itineraryDescription"
           :numberOfDays="eventsGroupedByDay"
           :createdBy="createdBy"
+          class="w-3/10"
         />
 
         <div class="flex justify-center w-full">
@@ -33,7 +34,7 @@
             @edit-event="editEvent"
             @delete-event="deleteEvent"
             @show-create-event="showCreateEventPopup = true"
-            class="w-7/10"
+            class="w-full"
           />
         </div>
       </div>
@@ -299,7 +300,10 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles for fixed sections and scrollable content */
+.itinerary-container {
+  display: flex;
+  min-height: 100vh;
+}
 .overflow-y-auto {
   max-height: calc(100vh - 16rem); /* Adjust to ensure scrolling within the center */
 }
