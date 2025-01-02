@@ -84,6 +84,7 @@
               <h3 class="text-lg font-semibold">Location and Image</h3>
               <div class="flex border-b border-gray-200 bg-blue-50">
                 <button
+                  type="button"
                   @click="activeTab = 'auto'"
                   class="px-4 py-2 text-sm font-medium"
                   :class="[
@@ -95,6 +96,7 @@
                   AutoSearch
                 </button>
                 <button
+                  type="button"
                   @click="activeTab = 'manual'"
                   class="px-4 py-2 text-sm font-medium"
                   :class="[
@@ -121,11 +123,11 @@
               </div>
             </div>
           </div>
+          <div class="actions mt-4 flex justify-between space-x-2">
+            <button type="button" @click="closePopup" @click.stop class="p-2 bg-gray-300 rounded flex-1">Cancel</button>
+            <button type="submit" class="p-2 bg-blue-500 text-white rounded flex-1">Create</button>
+          </div>
         </form>
-      </div>
-      <div class="actions mt-4 flex justify-between space-x-2">
-        <button type="button" @click="closePopup" class="p-2 bg-gray-300 rounded flex-1">Cancel</button>
-        <button type="submit" class="p-2 bg-blue-500 text-white rounded flex-1">Create</button>
       </div>
     </div>
   </div>

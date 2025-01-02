@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDesktop" class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 70%;">
+  <div v-if="isDesktop" class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 100%;">
     <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
       <!-- Buttons Container -->

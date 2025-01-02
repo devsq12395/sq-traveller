@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen min-w-screen pt-20 bg-gray-500">
+  <div class="itinerary-container flex flex-col min-h-screen min-w-screen pt-20 bg-gray-500">
     <LoadingScreen />
     <template v-if="isPrivate">
       <div class="flex flex-col items-center justify-center p-8">
@@ -8,7 +8,7 @@
       </div>
     </template>
     <template v-else>
-      <div class="flex flex-col items-center p-8">
+      <div :class="isDesktop ? 'flex space-x-4 pt-10' : 'flex flex-col'" class="justify-center w-full">
         <ItineraryHeadline
           :itineraryId="itineraryId"
           :image="itineraryImgUrl"
@@ -16,26 +16,25 @@
           :description="itineraryDescription"
           :numberOfDays="eventsGroupedByDay"
           :createdBy="createdBy"
+          class="w-3/10"
         />
 
-        <div class="flex justify-center w-full">
-          <ItineraryInfo
-            :itineraryId="itineraryId"
-            :itineraryImgUrl="itineraryImgUrl"
-            :itineraryName="itineraryName"
-            :itineraryDescription="itineraryDescription"
-            :eventsGroupedByDay="eventsGroupedByDay"
-            :selectedEventId="selectedEventId"
-            :isOwner="isOwner"
-            @go-to-settings="goToSettings"
-            @go-to-dashboard="goToDashboard"
-            @select-event="selectEvent"
-            @edit-event="editEvent"
-            @delete-event="deleteEvent"
-            @show-create-event="showCreateEventPopup = true"
-            class="w-7/10"
-          />
-        </div>
+        <ItineraryInfo
+          :itineraryId="itineraryId"
+          :itineraryImgUrl="itineraryImgUrl"
+          :itineraryName="itineraryName"
+          :itineraryDescription="itineraryDescription"
+          :eventsGroupedByDay="eventsGroupedByDay"
+          :selectedEventId="selectedEventId"
+          :isOwner="isOwner"
+          @go-to-settings="goToSettings"
+          @go-to-dashboard="goToDashboard"
+          @select-event="selectEvent"
+          @edit-event="editEvent"
+          @delete-event="deleteEvent"
+          @show-create-event="showCreateEventPopup = true"
+          class="w-full"
+        />
       </div>
 
       <!-- Create Event Popup -->
@@ -72,7 +71,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUser, setLoading, setEventId } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
@@ -117,6 +116,7 @@ export default {
     const isOwner = ref(false);
     const isPrivate = ref(false);
     const createdBy = ref('');
+    const isDesktop = ref(window.innerWidth >= 640);
 
     // Check authentication and get current user
     const checkAuth = async () => {
@@ -195,6 +195,10 @@ export default {
       }
     };
 
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+
     onMounted(() => {
       setLoading(true); // Show loading on start
       loadItinerary().then(() => {
@@ -209,6 +213,10 @@ export default {
       }).catch(() => {
         setLoading(false); // Hide loading if there's an error
       });
+      window.addEventListener('resize', checkWindowSize);
+    });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
     });
 
     const selectEvent = (id) => {
@@ -287,6 +295,7 @@ export default {
       editEvent,
       deleteEvent,
       createdBy,
+      isDesktop
     };
   },
   methods: {
@@ -299,8 +308,20 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles for fixed sections and scrollable content */
+.itinerary-container {
+  display: flex;
+  min-height: 100vh;
+}
 .overflow-y-auto {
   max-height: calc(100vh - 16rem); /* Adjust to ensure scrolling within the center */
+}
+.tabs {
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .tabs {
+    font-size: 0.875rem;
+  }
 }
 </style>

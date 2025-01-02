@@ -1,10 +1,9 @@
 <template>
-  <div v-if="isDesktop" class="itinerary-headline flex border bg-blue-100 rounded-lg overflow-hidden mx-auto" style="min-height: 400px; width: 100%;">
-    <img :src="itineraryImgUrl" alt="Itinerary Image" class="w-1/3 h-64 object-cover m-2" />
-    <div class="p-4 w-2/3">
-      <h1 class="text-3xl font-bold mb-2 text-center">{{ title }}</h1>
+  <div v-if="isDesktop" class="itinerary-headline flex flex-col justify-end items-center border mx-auto sticky top-0 z-10" :style="{ width: '30%', height: '50vh', backgroundImage: `url(${itineraryImgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
+    <div class="bg-white bg-opacity-75 p-4 w-full text-center" style="margin-top: 40%;">
+      <h1 class="text-3xl font-bold mb-2">{{ title }}</h1>
       <hr class="my-2" />
-      <p class="text-gray-700 mb-4 text-left">{{ description }}</p>
+      <p class="text-gray-700 mb-4">{{ description }}</p>
       <hr class="my-2" />
       <div class="text-sm text-gray-600 text-left mt-4">
         <p>Number of Days: {{ numberOfDays }}</p>
@@ -61,6 +60,7 @@
 </template>
 
 <script>
+import { ref, onMounted, onUnmounted } from 'vue';
 import { fetchItineraryWithCreator } from '../../helpers/itinerary';
 import { fetchRatings } from '../../helpers/itineraryRatings';
 
@@ -77,12 +77,28 @@ export default {
   },
   data() {
     return {
-      isDesktop: window.innerWidth >= 640,
       numberOfDays: 0,
       createdBy: '',
       itineraryImgUrl: '',
       averageRating: 0,
       ratingsCount: 0
+    }
+  },
+  setup() {
+    const isDesktop = ref(window.innerWidth >= 640);
+
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+    onMounted(() => {
+      window.addEventListener('resize', checkWindowSize);
+    });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
+    });
+
+    return {
+      isDesktop
     }
   },
   async created() {
@@ -97,17 +113,6 @@ export default {
       const total = ratingsData.data.reduce((sum, rating) => sum + rating.rating, 0);
       this.averageRating = ratingsData.data.length > 0 ? total / ratingsData.data.length : 0;
       this.ratingsCount = ratingsData.data.length;
-    }
-  },
-  mounted() {
-    window.addEventListener('resize', this.checkWindowSize);
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.checkWindowSize);
-  },
-  methods: {
-    checkWindowSize() {
-      this.isDesktop = window.innerWidth >= 640;
     }
   }
 }
