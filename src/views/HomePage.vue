@@ -143,7 +143,6 @@ export default {
   background-size: cover;
   background-position: center;
   filter: brightness(0.8); /* Slight overlay for readability */
-  z-index: 1;
 }
 
 .section-divider {
