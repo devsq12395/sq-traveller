@@ -8,7 +8,7 @@
       </div>
     </template>
     <template v-else>
-      <div class="flex flex-row items-start p-8 space-x-4">
+      <div :class="isDesktop ? 'flex space-x-4 pt-10' : 'flex flex-col'" class="justify-center w-full">
         <ItineraryHeadline
           :itineraryId="itineraryId"
           :image="itineraryImgUrl"
@@ -19,24 +19,22 @@
           class="w-3/10"
         />
 
-        <div class="flex justify-center w-full">
-          <ItineraryInfo
-            :itineraryId="itineraryId"
-            :itineraryImgUrl="itineraryImgUrl"
-            :itineraryName="itineraryName"
-            :itineraryDescription="itineraryDescription"
-            :eventsGroupedByDay="eventsGroupedByDay"
-            :selectedEventId="selectedEventId"
-            :isOwner="isOwner"
-            @go-to-settings="goToSettings"
-            @go-to-dashboard="goToDashboard"
-            @select-event="selectEvent"
-            @edit-event="editEvent"
-            @delete-event="deleteEvent"
-            @show-create-event="showCreateEventPopup = true"
-            class="w-full"
-          />
-        </div>
+        <ItineraryInfo
+          :itineraryId="itineraryId"
+          :itineraryImgUrl="itineraryImgUrl"
+          :itineraryName="itineraryName"
+          :itineraryDescription="itineraryDescription"
+          :eventsGroupedByDay="eventsGroupedByDay"
+          :selectedEventId="selectedEventId"
+          :isOwner="isOwner"
+          @go-to-settings="goToSettings"
+          @go-to-dashboard="goToDashboard"
+          @select-event="selectEvent"
+          @edit-event="editEvent"
+          @delete-event="deleteEvent"
+          @show-create-event="showCreateEventPopup = true"
+          class="w-full"
+        />
       </div>
 
       <!-- Create Event Popup -->
@@ -73,7 +71,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUser, setLoading, setEventId } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
@@ -118,6 +116,7 @@ export default {
     const isOwner = ref(false);
     const isPrivate = ref(false);
     const createdBy = ref('');
+    const isDesktop = ref(window.innerWidth >= 640);
 
     // Check authentication and get current user
     const checkAuth = async () => {
@@ -196,6 +195,10 @@ export default {
       }
     };
 
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+
     onMounted(() => {
       setLoading(true); // Show loading on start
       loadItinerary().then(() => {
@@ -210,6 +213,10 @@ export default {
       }).catch(() => {
         setLoading(false); // Hide loading if there's an error
       });
+      window.addEventListener('resize', checkWindowSize);
+    });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
     });
 
     const selectEvent = (id) => {
@@ -288,6 +295,7 @@ export default {
       editEvent,
       deleteEvent,
       createdBy,
+      isDesktop
     };
   },
   methods: {
@@ -306,5 +314,14 @@ export default {
 }
 .overflow-y-auto {
   max-height: calc(100vh - 16rem); /* Adjust to ensure scrolling within the center */
+}
+.tabs {
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .tabs {
+    font-size: 0.875rem;
+  }
 }
 </style>
