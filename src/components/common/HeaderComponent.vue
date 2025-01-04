@@ -7,9 +7,12 @@
         </router-link>
         
         <div class="flex items-center space-x-4">
-          <span v-if="profile" class="text-gray-600">
-            Welcome, {{ profile.username }}
-          </span>
+          <div v-if="profile" class="flex items-center space-x-2">
+            <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Avatar" class="h-10 w-10 rounded-full"/>
+            <router-link :to="`/user/${profile.username}`" class="text-gray-600">
+              Welcome, {{ profile.username }}
+            </router-link>
+          </div>
           <div class="relative">
             <button 
               v-if="profile"
@@ -53,9 +56,12 @@
         </router-link>
         
         <div class="flex items-center space-x-2">
-          <span v-if="profile" class="text-gray-600 text-sm">
-            Welcome, {{ profile.username }}
-          </span>
+          <div v-if="profile" class="flex items-center space-x-2">
+            <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Avatar" class="h-8 w-8 rounded-full"/>
+            <router-link :to="`/user/${profile.username}`" class="text-gray-600 text-sm">
+              Welcome, {{ profile.username }}
+            </router-link>
+          </div>
           <div class="relative">
             <button 
               v-if="profile"
@@ -113,6 +119,7 @@ export default {
     const isMenuOpen = ref(false);
     const user = useUser();
     const isDesktop = ref(window.innerWidth >= 640);
+    const username = ref('your-username-here');
 
     const updateProfile = async () => {
       if (route.name !== 'SetUsernamePage') {
@@ -125,17 +132,15 @@ export default {
         } else {
           const { data: getUser } = await supabase.auth.getUser();
           console.log ('Current user:', getUser);
-          const { hasProfile, errorHasProfile } = await getUserHasProfile();
-          if (errorHasProfile) {
-            console.error('Error checking user profile:', errorHasProfile.message);
-          } else if (hasProfile) {
-            profile.value = await getProfileData();
-          }
+          profile.value = await getProfileData();
+          console.log ('Profile data:', profile.value);
 
           setUser({
-            username: (hasProfile) ? profile.value.username : null,
+            username: profile.value.username,
             email: getUser.user.email,
             user_id: getUser.user.id,
+            avatar_url: profile.value.avatar_url,
+            bio: profile.value.bio
           });
         }
       }
@@ -181,7 +186,8 @@ export default {
       handleLogin,
       profile,
       isMenuOpen,
-      isDesktop
+      isDesktop,
+      username
     };
   }
 };

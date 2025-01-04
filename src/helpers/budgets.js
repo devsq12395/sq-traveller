@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { fetchItineraryEvents } from './event';
 
 // Fetch budget items for a specific event
 export async function fetchEventBudgets(eventId) {
@@ -25,4 +26,23 @@ export async function addBudget(eventId, budgetName, budgetPrice) {
     return { error };
   }
   return { data };
+}
+
+// Calculate total budget for all events in an itinerary
+export async function calculateTotalBudget(itineraryId) {
+  const { data: events, error: eventsError } = await fetchItineraryEvents(itineraryId);
+  if (eventsError) {
+    return { error: eventsError };
+  }
+
+  let total = 0;
+  for (const event of events) {
+    const { data: budgets, error: budgetError } = await fetchEventBudgets(event.id);
+    if (budgetError) {
+      return { error: budgetError };
+    }
+    total += budgets.reduce((sum, item) => sum + item.budget_price, 0);
+  }
+
+  return { total };
 }

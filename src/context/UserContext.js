@@ -5,6 +5,9 @@ const userState = reactive({
   username: null,
   email: null,
   user_id: null,
+  
+  avatar_url: null,
+  bio: null
 });
 
 const itineraryState = reactive({
@@ -52,6 +55,8 @@ export function setUser(user) {
   userState.username = user.username;
   userState.email = user.email;
   userState.user_id = user.user_id;
+  userState.avatar_url = user.avatar_url;
+  userState.bio = user.bio;
 
   // Save user data to local storage
   localStorage.setItem('user', JSON.stringify(user));

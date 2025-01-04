@@ -17,7 +17,7 @@ export async function login(email, password) {
   // Fetch user profile from Supabase
   const { data: profile, error: profileError } = await supabase
     .from('profile')
-    .select('username')
+    .select('username','avatar_url','bio')
     .eq('user_id', data.user.id)
     .single();
 
@@ -30,6 +30,8 @@ export async function login(email, password) {
     username: profile.username,
     email: data.user.email,
     user_id: data.user.id,
+    avatar_url: data.user.avatar_url || 'https://example.com/default-avatar.png',
+    bio:data.user.bio
   });
 
   return null;
@@ -115,9 +117,16 @@ export async function getProfileData() {
 
     const { data: profile, error } = await supabase
       .from('profile')
-      .select('username')
+      .select('username','avatar_url','bio')
       .eq('user_id', user.id)
       .maybeSingle();
+
+
+    // Assign a default avatar URL if it doesn't exist
+    const defaultAvatarUrl = 'https://example.com/default-avatar.png';
+    profile.avatar_url = profile.avatar_url || defaultAvatarUrl;
+
+    console.log (`profile data: ${JSON.stringify(profile)}`);
 
     if (error) {
       console.error('Error fetching profile:', error);
@@ -136,12 +145,40 @@ export async function loginWithGoogle() {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo:
+          window.location.origin === 'http://localhost:8080'
+            ? 'http://localhost:8080'
+            : 'https://goagenda.net',
+      },
     });
 
     if (error) {
       console.error('Error logging in with Google:', error.message);
       return { error };
     }
+
+    // Fetch user profile from Supabase
+    const { data: profile, error: profileError } = await supabase
+      .from('profile')
+      .select('username','avatar_url','bio')
+      .eq('user_id', data.user.id)
+      .single();
+
+    if (profileError) {
+      return profileError;
+    }
+
+    console.log (`profile data: ${JSON.stringify(profile)}`);
+
+    // Set user data in context and local storage
+    setUser({
+      username: profile.username,
+      email: data.user.email,
+      user_id: data.user.id,
+      avatar_url: data.user.avatar_url || 'https://example.com/default-avatar.png',
+      bio:data.user.bio
+    });
 
     // The data object will contain the redirect URL to the Google login page
     return { data };
