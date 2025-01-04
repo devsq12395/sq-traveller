@@ -7,7 +7,7 @@ import HomePage from '../views/HomePage.vue';
 import SetUsernamePage from '../views/SetUsernamePage.vue';
 import DataDeletionPage from '../views/DataDeletionPage.vue';
 import AboutUsPage from '../views/AboutUsPage.vue';
-import ProfilePage from '@/components/user/ProfilePage.vue';
+import ProfilePage from '../views/ProfilePage.vue';
 
 const routes = [
   {

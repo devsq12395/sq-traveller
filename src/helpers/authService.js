@@ -17,7 +17,7 @@ export async function login(email, password) {
   // Fetch user profile from Supabase
   const { data: profile, error: profileError } = await supabase
     .from('profile')
-    .select('username','avatar_url','bio')
+    .select('username','avatar_url','banner_url','bio')
     .eq('user_id', data.user.id)
     .single();
 
@@ -30,7 +30,8 @@ export async function login(email, password) {
     username: profile.username,
     email: data.user.email,
     user_id: data.user.id,
-    avatar_url: data.user.avatar_url || 'https://example.com/default-avatar.png',
+    avatar_url: data.user.avatar_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984918/sq-traveller/d1smxewhudxzqaw2v0br.png',
+    banner_url: data.user.banner_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984919/sq-traveller/fee8n8wqws5ly6rvtkt6.jpg',
     bio:data.user.bio
   });
 
@@ -117,15 +118,12 @@ export async function getProfileData() {
 
     const { data: profile, error } = await supabase
       .from('profile')
-      .select('username','avatar_url','bio')
+      .select('username','avatar_url','banner_url','bio')
       .eq('user_id', user.id)
       .maybeSingle();
 
-
-    // Assign a default avatar URL if it doesn't exist
-    const defaultAvatarUrl = 'https://example.com/default-avatar.png';
-    profile.avatar_url = profile.avatar_url || defaultAvatarUrl;
-
+    profile.avatar_url = profile.avatar_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984918/sq-traveller/d1smxewhudxzqaw2v0br.png';
+    profile.banner_url = profile.banner_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984919/sq-traveller/fee8n8wqws5ly6rvtkt6.jpg';
     console.log (`profile data: ${JSON.stringify(profile)}`);
 
     if (error) {
@@ -161,7 +159,7 @@ export async function loginWithGoogle() {
     // Fetch user profile from Supabase
     const { data: profile, error: profileError } = await supabase
       .from('profile')
-      .select('username','avatar_url','bio')
+      .select('username','avatar_url','banner_url','bio')
       .eq('user_id', data.user.id)
       .single();
 
@@ -176,7 +174,8 @@ export async function loginWithGoogle() {
       username: profile.username,
       email: data.user.email,
       user_id: data.user.id,
-      avatar_url: data.user.avatar_url || 'https://example.com/default-avatar.png',
+      avatar_url: data.user.avatar_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984918/sq-traveller/d1smxewhudxzqaw2v0br.png',
+      banner_url: data.user.banner_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984919/sq-traveller/fee8n8wqws5ly6rvtkt6.jpg',
       bio:data.user.bio
     });
 

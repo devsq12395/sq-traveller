@@ -133,7 +133,6 @@ export default {
           const { data: getUser } = await supabase.auth.getUser();
           console.log ('Current user:', getUser);
           profile.value = await getProfileData();
-          console.log ('Profile data:', profile.value);
 
           setUser({
             username: profile.value.username,

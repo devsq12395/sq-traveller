@@ -436,3 +436,27 @@ export async function searchItineraries(searchTerm, { page = 1, pageSize = 12 } 
     return { error: error.message };
   }
 }
+
+// Fetch all shared itineraries of a user
+export async function getAllsharedItinerariesOfUser(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('itinerary')
+      .select(`
+        id, name, description, created_at, days,
+        itinerary_privacy (privacy)
+      `)
+      .eq('user_id', userId)
+      .eq('itinerary_privacy.privacy', 'shared');
+
+    if (error) {
+      console.error('Error fetching shared itineraries:', error.message);
+      return { error };
+    }
+
+    return { data, error: null };
+  } catch (error) {
+    console.error('Unexpected error fetching shared itineraries:', error);
+    return { error };
+  }
+}
