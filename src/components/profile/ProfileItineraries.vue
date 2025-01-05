@@ -1,9 +1,9 @@
 <template>
-  <div class="profile-itineraries h-full rounded-lg w-full p-5">
+  <div class="profile-itineraries rounded-lg w-full p-5">
     <h2 class="text-4xl font-bold mb-4 text-left p-5">{{user.username}}'s Public Itineraries</h2>
-    <div class="flex flex-wrap">
-      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id" class="mb-2 max-w-md flex-1">
-        <SharedItinerariesEntry :itinerary="itinerary" />
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
+      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id">
+        <SharedItinerariesEntry :itinerary="itinerary" class="h-full"/>
       </div>
     </div>
     <div class="flex justify-center items-center mt-4 space-x-4">
@@ -37,9 +37,11 @@ export default {
       return Math.ceil(this.itineraries.length / this.itemsPerPage);
     },
     paginatedItineraries() {
+      const sortedItineraries = [...this.itineraries].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      return this.itineraries.slice(start, end);
+      return sortedItineraries.slice(start, end);
     },
   },
   methods: {
@@ -58,4 +60,9 @@ export default {
 </script>
 
 <style scoped>
+.profile-itineraries .flex-wrap > div {
+  flex: 1 0 21%; /* Adjust the percentage as needed for spacing */
+  max-width: 21%;
+  box-sizing: border-box;
+}
 </style>

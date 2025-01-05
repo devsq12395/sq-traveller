@@ -5,9 +5,10 @@
       <ProfileHeadline :user="user" />
 
       <!-- Profile Contents -->
-      <div class="profile-contents w-full h-screen bg-blue-50 rounded-lg flex flex-col items-center mt-40">
+      <div class="profile-contents w-full bg-cyan-100 rounded-lg flex flex-col items-center mt-40">
         <!-- Tabs Section -->
-        <div class="flex border-b border-gray-300 w-full">
+        <!-- Will comment out for now-->
+        <!-- <div class="flex border-b border-gray-300 w-full">
           <button
             v-for="tab in tabs"
             :key="tab"
@@ -20,10 +21,10 @@
           >
             {{ tab }}
           </button>
-        </div>
+        </div> -->
 
         <!-- Current Tab Component -->
-        <div class="mt-4 w-full h-full">
+        <div class="mt-4 w-full h-1/2">
           <component 
             :is="currentTabComponent" 
             ref="currentTabComponentRef"
@@ -84,6 +85,7 @@ export default {
     const { data: itineraries, error } = await getAllsharedItinerariesOfUser(this.user.user_id);
     if (!error) {
       this.sharedItineraries = itineraries;
+      console.log ('Shared itineraries:', this.sharedItineraries);
     } else {
       console.error('Error fetching shared itineraries:', error.message);
     }
