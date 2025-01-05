@@ -2,23 +2,32 @@
   <div v-if="isDesktop" class="bg-blue-100 p-4 rounded-lg shadow-lg w-full mt-4">
     <div class="grid grid-cols-3 gap-4 items-stretch h-48">
       <!-- Column #1: Main Texts -->
-      <div class="col-span-2 bg-blue-200 p-3 rounded-lg shadow-inner">
-        <div class="text-left">
-          <h2 class="text-2xl font-bold text-gray-800">{{ name }}</h2>
-          <p class="text-gray-600">
-            Day {{ day || 'not assigned' }}<br>
-            Time: {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
-          </p>
-          <!-- Divider -->
-          <hr class="border-black my-1" />
-          <!-- Location Section -->
-          <div class="text-left">
-            <h3 class="text-base font-semibold text-gray-800">Location:</h3>
-            <p class="text-gray-700 truncate">{{ location }}</p>
+      <div class="col-span-2 bg-blue-200 p-4 rounded-lg shadow-inner w-full">
+        <div class="grid grid-cols-12 gap-4 items-start">
+          <!-- Left Column: Main Text  -->
+          <div class="col-span-7 flex flex-col justify-start">
+            <h2 class="text-2xl font-bold text-gray-800 text-left">{{ name }}</h2>
+            <p class="text-gray-600 text-left mt-2">{{ short_description }}</p>
+          </div>
+
+          <!-- Divider Line -->
+          <div class="col-span-1 flex items-center justify-center">
+            <div class="w-1 bg-gray-500 h-full"></div>
+          </div>
+
+          <!-- Right Column: Details -->
+          <div class="col-span-4 text-right text-sm">
+            <p class="text-gray-600">Day {{ day || 'not assigned' }}</p>
+            <p class="text-gray-600">
+              Time: {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
+            </p>
+            <br>
+            <p class="text-gray-700 overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+              <strong>Location:</strong> {{ location.length > 4 * 20 ? location.substring(0, 4 * 20) + '...' : location }}
+            </p>
           </div>
         </div>
       </div>
-
 
       <!-- Column #2: Image -->
       <div class="col-span-1 h-full rounded-lg overflow-hidden bg-gray-200">
@@ -105,12 +114,18 @@
             Day {{ day || 'not assigned' }}<br>
             Time: {{ formatTime(time_start) || 'N/A' }} - {{ formatTime(time_end) || 'N/A' }}
           </p>
-          <!-- Divider -->
-          <hr class="border-black my-1" />
           <!-- Location Section -->
           <div class="text-left">
             <h3 class="text-sm font-semibold text-gray-800">Location:</h3>
             <p class="text-sm text-gray-700 truncate">{{ location }}</p>
+          </div>
+          
+          <!-- Divider -->
+          <hr class="border-black mt-2 mb-3" />
+
+          <!-- Short Description -->
+          <div class="text-left">
+            <p class="text-m text-gray-700 truncate">{{ short_description || 'asdasd' }}</p>
           </div>
         </div>
       </div>
@@ -187,6 +202,7 @@ export default {
     name: { type: String, required: true },
     location: { type: String, required: true },
     day: { type: String, required: true, default: 'No day assigned' },
+    short_description: { type: String, required: true },
     description: { type: String, required: true },
     imgUrl: { type: String, required: true },
     time_start: { type: String, required: true },

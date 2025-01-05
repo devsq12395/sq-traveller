@@ -69,17 +69,34 @@
               />
             </div>
 
+            <!-- Short Description Field -->
+            <div class="grid grid-cols-3 items-start gap-2">
+              <label for="description" class="text-gray-700 font-semibold text-left">
+                Short Description:
+                <span class="text-sm text-gray-500">({{ event.shortDescription.length }}/100)</span>
+              </label>
+              <textarea
+                id="shortDescription"
+                v-model="event.shortDescription"
+                placeholder="Short Description"
+                maxlength="100"
+                required
+                rows="2"
+                class="col-span-2 p-2 border border-gray-300 rounded"
+              ></textarea>
+            </div>
+
             <!-- Description Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="description" class="text-gray-700 font-semibold text-left">
                 Description:
-                <span class="text-sm text-gray-500">({{ event.description.length }}/500)</span>
+                <span class="text-sm text-gray-500">({{ event.description.length }}/1000)</span>
               </label>
               <textarea
                 id="description"
                 v-model="event.description"
                 placeholder="Description"
-                maxlength="500"
+                maxlength="1000"
                 required
                 rows="4"
                 class="col-span-2 p-2 border border-gray-300 rounded"
@@ -181,6 +198,7 @@ export default {
       name: '',
       location: '',
       description: '',
+      shortDescription: '',
       day: 0,
       time_start: '',
       time_end: ''
@@ -223,9 +241,10 @@ export default {
         const { data, error } = await fetchEvent(props.eventId);
         if (!error && data) {
           event.value = {
-            name: data.name,
-            location: data.location,
-            description: data.description,
+            name: data.name || '',
+            location: data.location || '',
+            description: data.description || '',
+            shortDescription: data.short_description || '',
             day: data.day || 0,
             time_start: data.time_start || '',
             time_end: data.time_end || '',
@@ -275,6 +294,7 @@ export default {
           name: event.value.name,
           location: event.value.location,
           description: event.value.description,
+          short_description: event.value.shortDescription,
           day: event.value.day,
           time_start: event.value.time_start,
           time_end: event.value.time_end

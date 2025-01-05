@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useUser } from '../../context/UserContext';
 import { createItinerary, saveItineraryImage } from '../../helpers/itinerary';
 import axios from 'axios';
@@ -99,6 +99,20 @@ export default {
     const user = useUser();
     const isUploading = ref(false);
     const uploadSuccess = ref(false);
+
+    const isDesktop = ref(window.innerWidth >= 640);
+
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+    onMounted(() => {
+      window.addEventListener('resize', checkWindowSize);
+      checkWindowSize();
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
+    });
 
     const handleImageUpload = async (event) => {
       const file = event.target.files[0];
@@ -179,7 +193,8 @@ export default {
       closePopup,
       imageUrl,
       isUploading,
-      uploadSuccess
+      uploadSuccess,
+      isDesktop
     };
   },
 };

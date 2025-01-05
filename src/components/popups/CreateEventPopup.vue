@@ -1,6 +1,6 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-30">
-    <div class="bg-gray-100 p-6 rounded shadow-lg w-full md:w-[900px]" style="max-height: 90vh; margin-top: 5vh;">
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+    <div class="bg-gray-100 p-6 rounded shadow-lg w-full md:w-[900px]" style="max-height: 92vh; margin-top: 5vh;">
       <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
       <div class="border-b border-gray-200 mb-6"></div>
       <div class="overflow-auto" style="max-height: calc(100vh - 300px);">
@@ -50,17 +50,33 @@
                   class="col-span-2 p-2 border border-gray-300 rounded"
                 />
               </div>
-              <!-- Description Field -->
+              <!-- Short Description Field -->
               <div class="grid grid-cols-3 items-start gap-2">
                 <label for="description" class="text-gray-700 font-semibold text-left">
-                  Description:
-                  <span class="text-sm text-gray-500">({{ event.description.length }}/500)</span>
+                  Short Description:
+                  <span class="text-sm text-gray-500">({{ event.shortDescription.length }}/100)</span>
+                </label>
+                <textarea
+                  id="shortDescription"
+                  v-model="event.shortDescription"
+                  placeholder="Short Description"
+                  maxlength="100"
+                  required
+                  rows="2"
+                  class="col-span-2 p-2 border border-gray-300 rounded"
+                ></textarea>
+              </div>
+              <!-- Long Description Field -->
+              <div class="grid grid-cols-3 items-start gap-2">
+                <label for="description" class="text-gray-700 font-semibold text-left">
+                  Long Description:
+                  <span class="text-sm text-gray-500">({{ event.description.length }}/1000)</span>
                 </label>
                 <textarea
                   id="description"
                   v-model="event.description"
                   placeholder="Description"
-                  maxlength="500"
+                  maxlength="1000"
                   required
                   rows="4"
                   class="col-span-2 p-2 border border-gray-300 rounded"
@@ -160,6 +176,7 @@ export default {
       location: '',
       time_start: '',
       time_end: '',
+      shortDescription: '',
       description: '',
       day: 1,
       img_url: ''

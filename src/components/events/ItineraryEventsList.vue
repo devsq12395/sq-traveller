@@ -15,6 +15,7 @@
           :location="event.location"
           :day="event.day"
           :description="event.description"
+          :short_description="event.short_description"
           :isSelected="selectedEventId === event.id"
           :imgUrl="event.img_url"
           :time_start="event.time_start"

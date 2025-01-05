@@ -1,13 +1,14 @@
 import { supabase } from './supabaseClient';
 
 // Create a new event for a specific itinerary
-export async function createEvent(itinerary_id, { location, name, description, day, time_start, time_end, img_url }) {
+export async function createEvent(itinerary_id, { location, name, description, short_description, day, time_start, time_end, img_url }) {
   // First create the event
   const { data, error } = await supabase.from('event').insert({
     itinerary_id,
     name,
     location,
     description,
+    short_description,
     day,
     time_start,
     time_end
@@ -47,7 +48,7 @@ export async function fetchItineraryEvents(itinerary_id) {
     const { data, error } = await supabase
       .from('event')
       .select(`
-          id, name, location, description, day, time_start, time_end,
+          id, name, location, description, short_description, day, time_start, time_end,
           itinerary (name), 
           event_img (img_url)
       `)
@@ -90,7 +91,7 @@ export async function fetchEvent(eventId) {
     const { data, error } = await supabase
       .from('event')
       .select(`
-        id, name, location, description, day, time_start, time_end,
+        id, name, location, description, short_description, day, time_start, time_end,
         event_img (img_url)
       `)
       .eq('id', eventId)
