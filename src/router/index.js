@@ -7,6 +7,7 @@ import HomePage from '../views/HomePage.vue';
 import SetUsernamePage from '../views/SetUsernamePage.vue';
 import DataDeletionPage from '../views/DataDeletionPage.vue';
 import AboutUsPage from '../views/AboutUsPage.vue';
+import ProfilePage from '../views/ProfilePage.vue';
 
 const routes = [
   {
@@ -56,6 +57,12 @@ const routes = [
     name: 'AboutUs',
     component: AboutUsPage,
     meta: { title: 'About Us' },
+  },
+  {
+    path: '/user/:username',
+    name: 'ProfilePage',
+    component: ProfilePage,
+    meta: { title: 'User Profile' },
   },
 ];
 

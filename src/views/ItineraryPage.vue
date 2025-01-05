@@ -62,6 +62,7 @@
 
       <!-- Event Info Popup -->
       <EventInfoPopup
+        v-if="!isDesktop"
         :eventId="selectedEventId"
         :isOwner="isOwner"
         @close="showEventInfoPopup = false"

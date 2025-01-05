@@ -15,7 +15,7 @@
 
 <script>
 import { useCookies, setCookies } from '../../context/UserContext';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 export default {
   name: 'CookieConsent',
@@ -23,10 +23,18 @@ export default {
     const cookies = useCookies();
     const show = ref(true);
 
+    onMounted(() => {
+      const consent = localStorage.getItem('cookieConsent');
+      if (consent) {
+        show.value = false;
+      }
+    });
+
     const acceptAll = () => {
       setCookies({ necessary: true, analytics: true, preferences: true });
       cookies.analytics = true;
       cookies.preferences = true;
+      localStorage.setItem('cookieConsent', 'accepted');
       show.value = false;
     };
 
@@ -34,6 +42,7 @@ export default {
       setCookies({ necessary: true, analytics: false, preferences: false });
       cookies.analytics = false;
       cookies.preferences = false;
+      localStorage.setItem('cookieConsent', 'rejected');
       show.value = false;
     };
 

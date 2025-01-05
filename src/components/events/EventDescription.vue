@@ -1,6 +1,6 @@
 <template>
     <div class="mb-4">
-      <p class="text-left">{{ description }}</p>
+      <p class="text-left" v-html="description.replace(/\n/g, '<br>')"></p>
     </div>
   </template>
 

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { fetchAverageRating } from './itineraryRatings';
 
 // Fetch all itineraries for a specific user
 export async function fetchItineraries(user_id) {
@@ -434,5 +435,42 @@ export async function searchItineraries(searchTerm, { page = 1, pageSize = 12 } 
   } catch (error) {
     console.error('Error in searchItineraries:', error);
     return { error: error.message };
+  }
+}
+
+// Fetch all shared itineraries of a user
+export async function getAllsharedItinerariesOfUser(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('itinerary')
+      .select(`
+        id, name, description, created_at, days,
+        itinerary_img (img_url),
+        itinerary_privacy (privacy)
+      `)
+      .eq('user_id', userId)
+      .eq('itinerary_privacy.privacy', 'shared');
+
+    if (error) {
+      console.error('Error fetching shared itineraries:', error.message);
+      return { error };
+    }
+
+    // Adjust time fields and handle nested itinerary_img data
+    const adjustedData = await Promise.all(data.map(async itinerary => {
+      // Access the first img_url from the itinerary_img array or use the placeholder
+      const img_url = itinerary.itinerary_img && itinerary.itinerary_img.length > 0 ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
+      const averageRating = await fetchAverageRating(itinerary.id);
+      return {
+        ...itinerary,
+        img_url,
+        averageRating
+      };
+    }));
+
+    return { data: adjustedData, error: null };
+  } catch (error) {
+    console.error('Unexpected error fetching shared itineraries:', error);
+    return { error };
   }
 }
