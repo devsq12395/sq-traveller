@@ -1,5 +1,6 @@
 <template>
-  <div class="profile-page flex flex-row items-center">
+  <!-- Desktop View -->
+  <div v-if="isDesktop" class="profile-page flex flex-row items-center">
     <div class="mt-20 flex flex-col mx-auto bg-blue-100 rounded-lg w-[90%] p-5 min-h-screen">
       <!-- Profile Headline -->
       <ProfileHeadline :user="user" />
@@ -36,10 +37,49 @@
       </div>
     </div>
   </div>
+
+  <!-- Mobile View -->
+  <div v-else class="profile-page flex flex-row items-center">
+    <div class="mt-10 flex flex-col mx-auto bg-blue-100 rounded-lg w-[90%] p-5 min-h-screen">
+      <!-- Profile Headline -->
+      <ProfileHeadline :user="user" />
+
+      <!-- Profile Contents -->
+      <div class="profile-contents w-full bg-cyan-100 rounded-lg flex flex-col items-center mt-28">
+        <!-- Tabs Section -->
+        <!-- Will comment out for now-->
+        <!-- <div class="flex border-b border-gray-300 w-full">
+          <button
+            v-for="tab in tabs"
+            :key="tab"
+            @click="currentTab = tab"
+            :class="{
+              'border-b-2 border-blue-500 text-blue-600': currentTab === tab,
+              'hover:text-blue-500': true
+            }"
+            class="flex-1 px-6 py-2 text-center text-sm font-medium text-gray-600 w-1/4"
+          >
+            {{ tab }}
+          </button>
+        </div> -->
+
+        <!-- Current Tab Component -->
+        <div class="w-full h-1/2">
+          <component 
+            :is="currentTabComponent" 
+            ref="currentTabComponentRef"
+            :user="user" 
+            :itineraries="sharedItineraries" 
+          />
+        </div>
+
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import ProfileHeadline from '../components/profile/ProfileHeadline.vue';
 import ProfileItineraries from '../components/profile/ProfileItineraries.vue';
 import { getUserDetails } from '../helpers/profile';
@@ -61,6 +101,7 @@ export default {
   setup() {
     const tabs = ['Itineraries', 'Following'];
     const currentTab = ref('Itineraries');
+    const isDesktop = ref(window.innerWidth >= 640);
 
     const currentTabComponent = computed(() => {
       switch (currentTab.value) {
@@ -71,10 +112,22 @@ export default {
       }
     });
 
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+    onMounted(() => {
+      window.addEventListener('resize', checkWindowSize);
+      checkWindowSize();
+    });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
+    });
+
     return {
       tabs,
       currentTab,
-      currentTabComponent
+      currentTabComponent,
+      isDesktop
     };
   },
   async created() {
