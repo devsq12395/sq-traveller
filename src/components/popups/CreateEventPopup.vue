@@ -134,14 +134,13 @@
                 <CreateEventManualInput
                   :setLocation="setLocation"
                   :setImageURL="setImageURL"
-                  :uploadImage="uploadImage"
                 />
               </div>
             </div>
           </div>
           <div class="actions mt-4 flex justify-between space-x-2">
-            <button type="button" @click="closePopup" @click.stop class="p-2 bg-gray-300 rounded flex-1">Cancel</button>
-            <button type="submit" class="p-2 bg-blue-500 text-white rounded flex-1">Create</button>
+            <button :disabled="uploading" type="button" @click="closePopup" @click.stop class="p-2 bg-gray-300 rounded flex-1">Cancel</button>
+            <button :disabled="uploading" type="submit" class="p-2 bg-blue-500 text-white rounded flex-1">Create</button>
           </div>
         </form>
       </div>

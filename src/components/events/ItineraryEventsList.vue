@@ -1,7 +1,17 @@
 <template>
   <div v-if="isDesktop" class="flex-1 overflow-y-auto p-4 bg-blue-100">
+    <!-- <div class="pagination-controls">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
+    <div class="day-buttons">
+      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+        Day {{ index + 1 }}
+      </button>
+    </div> -->
     <div
-      v-for="(dayEvents, index) in eventsGroupedByDay"
+      v-for="(dayEvents, index) in paginatedEvents"
       :key="index"
       class="mb-6 bg-blue-50 rounded-lg shadow p-4"
     >
@@ -27,10 +37,30 @@
         />
       </div>
     </div>
+    <!-- <div class="pagination-controls">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
+    <div class="day-buttons">
+      <button v-for="(dayEvents, index) in eventsGroupedByDay" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+        Day {{ index + 1 }}
+      </button>
+    </div> -->
   </div>
   <div v-else class="flex-1 overflow-y-auto bg-blue-100 w-full">
+    <!-- <div class="pagination-controls">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
+    <div class="day-buttons">
+      <button v-for="(dayEvents, index) in eventsGroupedByDay" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+        Day {{ index + 1 }}
+      </button>
+    </div> -->
     <div
-      v-for="(dayEvents, index) in eventsGroupedByDay"
+      v-for="(dayEvents, index) in paginatedEvents"
       :key="index"
       class="bg-blue-50 rounded-lg shadow p-3 w-full"
     >
@@ -55,11 +85,21 @@
         />
       </div>
     </div>
+    <!-- <div class="pagination-controls">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
+    <div class="day-buttons">
+      <button v-for="(dayEvents, index) in eventsGroupedByDay" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+        Day {{ index + 1 }}
+      </button>
+    </div> -->
   </div>
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, toRefs } from 'vue';
 import EventEntry from './EventEntry.vue';
 
 export default {
@@ -67,10 +107,28 @@ export default {
   components: {
     EventEntry
   },
-  setup(){
+  setup(props){
+    const { eventsGroupedByDay, itineraryDays } = toRefs(props);
     const isDesktop = ref(window.innerWidth >= 640);
+    const currentPage = ref(1);
+    const paginatedEvents = computed(() => {
+      const start = (currentPage.value - 1) * itineraryDays.value;
+      const end = start + itineraryDays.value;
+      return eventsGroupedByDay.value.slice(start, end);
+    });
+    const totalPages = computed(() => Math.ceil(eventsGroupedByDay.value.length / itineraryDays.value));
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
+    };
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+      }
+    };
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--;
+      }
     };
     onMounted(() => {
       window.addEventListener('resize', checkWindowSize);
@@ -81,7 +139,12 @@ export default {
     });
 
     return {
-      isDesktop
+      isDesktop,
+      paginatedEvents,
+      currentPage,
+      totalPages,
+      nextPage,
+      prevPage
     }
   },
   
@@ -97,7 +160,50 @@ export default {
     isOwner: {
       type: Boolean,
       default: false
+    },
+    itineraryDays: {
+      type: Number,
+      required: true
     }
   }
 };
 </script>
+
+<style>
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+.pagination-controls button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.pagination-controls button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.day-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+.day-buttons button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.day-buttons button.active {
+  background-color: #007BFF;
+  color: white;
+}
+</style>

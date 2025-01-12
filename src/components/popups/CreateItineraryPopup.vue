@@ -5,7 +5,7 @@
       <form @submit.prevent="handleCreateItinerary" class="space-y-4">
         <!-- Itinerary Name Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label for="name" class="text-gray-700 font-semibold text-left">Itinerary Name:</label>
+          <label for="name" class="text-gray-700 font-semibold text-left">Itinerary Name: <span class="text-gray-500">({{ itinerary.name.length }}/80)</span></label>
           <input
             type="text"
             id="name"
@@ -13,24 +13,26 @@
             placeholder="Itinerary Name"
             required
             class="col-span-2 p-2 border border-gray-300 rounded"
+            maxlength="80"
           />
         </div>
 
         <!-- Itinerary Description Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label for="description" class="text-gray-700 font-semibold text-left">Description:</label>
+          <label for="description" class="text-gray-700 font-semibold text-left">Description: <span class="text-gray-500">({{ itinerary.description.length }}/500)</span></label>
           <textarea
             id="description"
             v-model="itinerary.description"
             placeholder="Itinerary Description"
             required
             class="col-span-2 p-2 border border-gray-300 rounded"
+            maxlength="500"
           ></textarea>
         </div>
 
         <!-- Number of Days Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label for="days" class="text-gray-700 font-semibold text-left">Number of Days:</label>
+          <label for="days" class="text-gray-700 font-semibold text-left">Number of Days:<span class="text-gray-500"> (Up to 15 days)</span></label>
           <input
             type="number"
             id="days"
@@ -43,7 +45,7 @@
 
         <!-- Image Upload Field -->
         <div class="grid grid-cols-3 items-start gap-2">
-          <label class="text-gray-700 font-semibold text-left">Image (4:3 ratio recommended):</label>
+          <label class="text-gray-700 font-semibold text-left">Image <span class="text-gray-500">(4:3 ratio recommended)</span>:</label>
           <div class="col-span-2 space-y-2">
             <input
               type="file"

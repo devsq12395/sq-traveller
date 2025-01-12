@@ -49,6 +49,7 @@ export default {
   components: { CreateEventAutoSearchResultBox },
   props: {
     setLocation: Function,
+    setImageURL: Function
   },
   setup() {
     const searchInput = ref('');
@@ -68,17 +69,12 @@ export default {
       searchInput.value = description;
     };
 
-    const setImageURL = (url) => {
-      selectedImage.value = url;
-    };
-
     return {
       searchInput,
       suggestions,
       fetchSuggestions,
       completeLocation,
-      selectedImage,
-      setImageURL,
+      selectedImage
     };
   },
 };
@@ -86,8 +82,8 @@ export default {
 
 <style scoped>
 .result-container {
-  min-height: 650px;
-  max-height: 650px;
+  min-height: 450px;
+  max-height: 450px;
   overflow-y: auto;
   overflow-x: hidden;
 }

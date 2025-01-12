@@ -48,21 +48,42 @@
       />
     </div>
     
-    <div v-if="isOwner" class="flex space-x-4 mt-4">
-      <button 
-        @click="showEditEventPopup = true" 
-        class="p-2 px-4 bg-green-500 text-white rounded shadow"
-        style="margin-right: 16px;"
-      >
-        Edit Details
-      </button>
-      <button 
-        @click="confirmDelete" 
-        class="p-2 px-4 bg-red-500 text-white rounded shadow"
-      >
-        Delete Event
-      </button>
+    <!-- Event Buttons -->
+    <div class="flex justify-between items-center mt-3">
+      <!-- Arrow Button -->
+      <div class="arrow-container bg-blue-400 flex justify-center mt-3">
+        <button @click="toggleInfo" class="arrow-button bg-blue-400 text-white hover:text-gray-300 w-full rounded-full text-lg">
+          <span v-if="!isExpanded">▼ More Details</span>
+          <span v-else>▲ More Details</span>
+        </button>
+      </div>
+
+      <div v-if="isOwner" class="flex space-x-4">
+        <button 
+          @click="showEditEventPopup = true" 
+          class="p-2 px-4 bg-green-500 text-white rounded shadow"
+        >
+          Edit Details
+        </button>
+        <button 
+          @click="confirmDelete" 
+          class="p-2 px-4 bg-red-500 text-white rounded shadow"
+        >
+          Delete Event
+        </button>
+      </div>
     </div>
+
+    <!-- EditEventPopup -->
+    <EditEventPopup 
+      v-if="showEditEventPopup" 
+      :eventId="eventId" 
+      @close="showEditEventPopup = false"
+      @refresh="$emit('refresh')" 
+      @eventUpdated="$emit('eventUpdated')"
+    />
+
+    <!-- Delete Event Popup -->
     <div v-if="showDeleteConfirm" class="mt-4">
       <p>Are you sure you want to delete this event?</p>
       <button 
@@ -76,23 +97,6 @@
         class="p-2 px-4 bg-gray-500 text-white rounded shadow"
       >
         Cancel
-      </button>
-    </div>
-
-    <!-- EditEventPopup -->
-    <EditEventPopup 
-      v-if="showEditEventPopup" 
-      :eventId="eventId" 
-      @close="showEditEventPopup = false"
-      @refresh="$emit('refresh')" 
-      @eventUpdated="$emit('eventUpdated')"
-    />
-
-    <!-- Arrow Button -->
-    <div class="arrow-container bg-blue-400 flex justify-center">
-      <button @click="toggleInfo" class="arrow-button text-blue-500 hover:text-blue-700 w-full">
-        <span v-if="!isExpanded">▼</span>
-        <span v-else>▲</span>
       </button>
     </div>
   </div>
@@ -293,7 +297,7 @@ export default {
 }
 
 .arrow-container {
-  width: 100%;
+  width: 25%;
   height: 40px;
   display: flex;
   align-items: center;
@@ -302,7 +306,6 @@ export default {
 .arrow-button {
   background: none;
   border: none;
-  font-size: 24px;
   cursor: pointer;
 }
 </style>

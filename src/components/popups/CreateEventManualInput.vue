@@ -73,7 +73,6 @@ import { defaultImages } from '../../helpers/globalVariables';
 export default {
   name: 'CreateEventManualInput',
   props: {
-    uploadImage: Function,
     setLocation: Function,
     setImageURL: Function,
   },

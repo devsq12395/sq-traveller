@@ -45,6 +45,7 @@
             :eventsGroupedByDay="eventsGroupedByDay"
             :selectedEventId="selectedEventId"
             :isOwner="isOwner"
+            :itineraryDays="itineraryDays"
             @select-event="$emit('select-event', $event)"
             @edit-event="$emit('edit-event', $event)"
             @delete-event="$emit('delete-event', $event)"
@@ -200,7 +201,7 @@ export default {
       activeTab: 'details',
       commentCount: 0,
       allTabs: [
-        { id: 'details', name: 'Details' },
+        { id: 'details', name: 'Daily Events' },
         { id: 'ratings', name: 'Ratings' },
         { id: 'comments', name: () => `Comments (${this.commentCount})` },
         { id: 'settings', name: 'Settings', ownerOnly: true }
