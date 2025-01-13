@@ -2,10 +2,28 @@
   <header class="fixed w-screen bg-blue-200 shadow-md z-40 max-w-screen">
     <div class="container mx-auto px-4 py-3">
       <div v-if="isDesktop" class="flex justify-between items-center">
+        <!-- Logo -->
         <router-link to="/" class="flex items-center space-x-2">
           <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-16 w-40"/>
         </router-link>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 flex justify-center space-x-4 w-1/2 h-full">
+          <router-link to="/" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors">
+            Home
+          </router-link>
+          <router-link to="/browse" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors">
+            Browse
+          </router-link>
+          <router-link to="/dashboard" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors">
+            Create
+          </router-link>
+          <router-link to="/about" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors">
+            About
+          </router-link>
+        </nav>
         
+        <!-- Profile -->
         <div class="flex items-center space-x-4">
           <div v-if="profile" class="flex items-center space-x-2">
             <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Avatar" class="h-10 w-10 rounded-full"/>
@@ -198,5 +216,30 @@ export default {
   .relative:focus-within > div {
     display: block;
   }
+}
+
+.router-link-active {
+  border-bottom: 2px solid black;
+}
+
+nav a {
+  position: relative;
+  overflow: hidden;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+nav a:hover::after {
+  transform: scaleX(1);
 }
 </style>

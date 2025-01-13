@@ -6,7 +6,7 @@
       <div class="overflow-auto" style="max-height: calc(100vh - 300px);">
         <form @submit.prevent="handleCreateEvent" class="space-y-6">
           <!-- Content Container -->
-          <div :class="{'flex': isDesktop, 'block': !isDesktop}">
+          <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
             <!-- Left Column - Event Details -->
             <div class="event-details w-full md:w-1/2">
               <h3 class="text-lg font-semibold">Event Details</h3>

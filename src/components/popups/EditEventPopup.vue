@@ -5,7 +5,7 @@
       <div class="border-b border-gray-200 mb-6"></div>
 
       <form @submit.prevent="handleEditEvent" class="space-y-6">
-        <div class="flex gap-6 relative">
+        <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
           <!-- Vertical Divider Line -->
           <div class="absolute left-1/2 top-0 bottom-0 border-l border-gray-200"></div>
           <!-- Left Column - Event Details -->
@@ -117,53 +117,46 @@
             </div>
           </div>
 
-          <!-- Right Column - Image Upload -->
-          <div class="flex-1 space-y-4">
-            <label class="block text-gray-700 font-semibold text-left mb-2">Event Image</label>
-            <div class="space-y-4">
-              <!-- Default Images Grid -->
-              <div class="grid grid-cols-3 gap-2">
-                <div
-                  v-for="(image, index) in paginatedImages"
-                  :key="index"
-                  @click="selectDefaultImage(image)"
-                  :class="[
-                    'cursor-pointer border-2 rounded p-1 hover:border-blue-500',
-                    selectedImage === image.url ? 'border-blue-500' : 'border-gray-200'
-                  ]"
-                >
-                  <img :src="image.url" alt="Default event image" class="w-full h-16 object-cover rounded" />
-                  <span class="text-xs text-gray-500">{{ image.label }}</span>
-                </div>
-              </div>
-
-              <!-- Pagination -->
-              <div class="flex justify-between">
-                <button @click="previousPage" class="p-2 bg-gray-300 rounded">Previous</button>
-                <span class="text-gray-500 text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
-                <button @click="nextPage" class="p-2 bg-gray-300 rounded">Next</button>
-              </div>
-
-              <!-- Or Divider -->
-              <div class="flex items-center my-4">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="mx-4 text-gray-500 text-sm">or upload your own</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-              </div>
-
-              <!-- Custom Upload -->
-              <input
-                type="file"
-                id="image"
-                @change="handleImageUpload"
-                accept="image/*"
-                class="w-full p-2 border border-gray-300 rounded"
+          <!-- Right Column - Tabbed Interface for AutoSearch and Manual Input -->
+          <div class="location-image w-full md:w-1/2">
+            <h3 class="text-lg font-semibold">Location and Image</h3>
+            <div class="flex border-b border-gray-200 bg-blue-50">
+              <button
+                type="button"
+                @click="activeTab = 'auto'"
+                class="px-4 py-2 text-sm font-medium"
+                :class="[
+                  activeTab === 'auto'
+                    ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-100'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-blue-100'
+                ]"
+              >
+                AutoSearch
+              </button>
+              <button
+                type="button"
+                @click="activeTab = 'manual'"
+                class="px-4 py-2 text-sm font-medium"
+                :class="[
+                  activeTab === 'manual'
+                    ? 'border-b-2 border-blue-500 text-blue-600 bg-blue-100'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-blue-100'
+                ]"
+              >
+                Manual Input
+              </button>
+            </div>
+            <div v-if="activeTab === 'auto'">
+              <CreateEventAutoSearch 
+                :setLocation="setLocation"
+                :setImageURL="setImageURL"
               />
-
-              <!-- Preview Selected Image -->
-              <div v-if="selectedImage" class="mt-2">
-                <img :src="selectedImage" alt="Selected image" class="h-24 object-cover rounded" />
-              </div>
+            </div>
+            <div v-if="activeTab === 'manual'">
+              <CreateEventManualInput
+                :setLocation="setLocation"
+                :setImageURL="setImageURL"
+              />
             </div>
           </div>
         </div>
@@ -179,13 +172,20 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { updateEvent, saveEventImage, fetchEvent } from '../../helpers/event';
 import { defaultImages } from '../../helpers/globalVariables';
+import { fetchAutocompleteSuggestions, fetchPlacePhotos } from '@/helpers/googlePlacesService';
+import CreateEventAutoSearch from './CreateEventAutoSearch.vue';
+import CreateEventManualInput from './CreateEventManualInput.vue';
 import axios from 'axios';
 
 export default {
   name: 'EditEventPopup',
+  components: {
+    CreateEventAutoSearch,
+    CreateEventManualInput,
+  },
   props: {
     eventId: {
       type: String,
@@ -203,11 +203,18 @@ export default {
       time_start: '',
       time_end: ''
     });
+    const isDesktop = ref(window.innerWidth >= 640);
+
     const imageUrl = ref('');
     const selectedImage = ref(null);
     const imageFile = ref(null);
     const currentPage = ref(1);
     const itemsPerPage = 6; // Show 6 images per page (2 rows of 3)
+    
+    const suggestions = ref([]);
+    const placePhotoUrl = ref('');
+
+    const activeTab = ref('auto');
 
     // Computed properties for pagination
     const totalPages = computed(() => Math.ceil(defaultImages.length / itemsPerPage));
@@ -237,6 +244,8 @@ export default {
     };
 
     onMounted(async () => {
+      window.addEventListener('resize', checkWindowSize);
+
       if (props.eventId) {
         const { data, error } = await fetchEvent(props.eventId);
         if (!error && data) {
@@ -257,6 +266,29 @@ export default {
         }
       }
     });
+    onUnmounted(() => {
+      window.removeEventListener('resize', checkWindowSize);
+    });
+    const checkWindowSize = () => {
+      isDesktop.value = window.innerWidth >= 640;
+    };
+
+    const onLocationInput = async () => {
+      if (event.value.location.length > 2) {
+        suggestions.value = await fetchAutocompleteSuggestions(event.value.location);
+      } else {
+        suggestions.value = [];
+      }
+    };
+
+    const onLocationBlur = async () => {
+      if (suggestions.value.length) {
+        const photoReference = suggestions.value[0].photos ? suggestions.value[0].photos[0].photo_reference : null;
+        if (photoReference) {
+          placePhotoUrl.value = await fetchPlacePhotos(photoReference);
+        }
+      }
+    };
 
     const handleImageUpload = async (e) => {
       const file = e.target.files[0];
@@ -330,6 +362,14 @@ export default {
       emit('close');
     };
 
+    const setLocation = (location) => {
+      event.value.location = location;
+    };
+
+    const setImageURL = (imgUrl) => {
+      imageUrl.value = imgUrl;
+    };
+
     return {
       event,
       handleEditEvent,
@@ -342,6 +382,13 @@ export default {
       selectDefaultImage,
       currentPage,
       totalPages,
+      onLocationInput,
+      onLocationBlur,
+      placePhotoUrl,
+      activeTab,
+      setLocation,
+      setImageURL,
+      isDesktop
     };
   },
 };

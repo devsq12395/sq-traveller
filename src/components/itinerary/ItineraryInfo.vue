@@ -124,6 +124,7 @@
             :eventsGroupedByDay="eventsGroupedByDay"
             :selectedEventId="selectedEventId"
             :isOwner="isOwner"
+            :itineraryDays="itineraryDays"
             @select-event="$emit('select-event', $event)"
             @edit-event="$emit('edit-event', $event)"
             @delete-event="$emit('delete-event', $event)"
