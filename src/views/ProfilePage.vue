@@ -99,13 +99,15 @@ export default {
     };
   },
   setup() {
-    const tabs = ['Itineraries', 'Following'];
+    const tabs = ['Itineraries', 'Following', 'Memories'];
     const currentTab = ref('Itineraries');
     const isDesktop = ref(window.innerWidth >= 640);
 
     const currentTabComponent = computed(() => {
       switch (currentTab.value) {
         case 'Following':
+          return ProfileItineraries;
+        case 'Memories':
           return ProfileItineraries;
         default:
           return ProfileItineraries;

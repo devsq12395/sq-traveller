@@ -33,6 +33,7 @@
           @edit-event="editEvent"
           @delete-event="deleteEvent"
           @show-create-event="showCreateEventPopup = true"
+          @refresh="loadEvents"
           class="w-full"
         />
       </div>

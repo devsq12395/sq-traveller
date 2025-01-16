@@ -32,6 +32,7 @@
             @select-event="$emit('select-event', event.id)"
             @edit-event="$emit('edit-event', event.id)"
             @delete-event="$emit('delete-event', event.id)"
+            @refresh="$emit('refresh')" 
           />
         </div>
       </div>

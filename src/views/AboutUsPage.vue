@@ -1,14 +1,17 @@
 <template>
   <div class="about-us">
-    <h1>About Us</h1>
-    <p>Welcome to our website! We are dedicated to providing the best travel experiences.</p>
-    <!-- Add more content here -->
+    <AboutPolicies />
   </div>
 </template>
 
 <script>
+import AboutPolicies from '@/components/about/AboutPolicies.vue';
+
 export default {
   name: 'AboutUsPage',
+  components: {
+    AboutPolicies
+  }
 };
 </script>
 
