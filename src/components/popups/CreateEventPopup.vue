@@ -260,11 +260,7 @@ export default {
     };
 
     const onLocationInput = async () => {
-      if (event.value.location.length > 2) {
-        suggestions.value = await fetchAutocompleteSuggestions(event.value.location);
-      } else {
-        suggestions.value = [];
-      }
+      suggestions.value = await fetchAutocompleteSuggestions(event.value.location);
     };
 
     const onLocationBlur = async () => {

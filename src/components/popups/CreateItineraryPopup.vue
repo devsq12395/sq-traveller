@@ -51,7 +51,7 @@
 
           <!-- Right Side: Location and Image -->
           <div class="w-full md:w-1/2">
-            <h3 class="text-lg font-semibold">Location and Image</h3>
+            <h3 class="text-lg font-semibold">Thumbnail Image</h3>
             <div class="flex border-b border-gray-200 bg-blue-50">
                 <button
                   type="button"
@@ -90,35 +90,6 @@
                   :setImageURL="setImageURL"
                 />
               </div>
-          </div>
-        </div>
-
-        <!-- Image Upload Field -->
-        <div class="grid grid-cols-3 items-start gap-2">
-          <label class="text-gray-700 font-semibold text-left">Image <span class="text-gray-500">(4:3 ratio recommended)</span>:</label>
-          <div class="col-span-2 space-y-2">
-            <input
-              type="file"
-              id="image"
-              @change="handleImageUpload"
-              accept="image/*"
-              class="p-2 border border-gray-300 rounded w-full"
-            />
-            <div v-if="!uploadSuccess && !isUploading" class="flex items-center gap-2">
-              <span class="text-gray-600">or</span>
-              <input
-                type="url"
-                v-model="imageUrl"
-                placeholder="Enter image URL"
-                class="flex-1 p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div v-if="isUploading" class="flex items-center gap-2">
-              <span class="text-gray-600">Uploading image...</span>
-            </div>
-            <div v-if="uploadSuccess" class="flex items-center gap-2">
-              <span class="text-gray-600">Image uploaded successfully!</span>
-            </div>
           </div>
         </div>
 
@@ -163,6 +134,8 @@ export default {
     const placePhotoUrl = ref('');
 
     const isDesktop = ref(window.innerWidth >= 640);
+    const activeTab = ref('auto');
+    const location = ref('');
 
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
@@ -207,6 +180,10 @@ export default {
       }
     };
 
+    const onLocationInput = async () => {
+      suggestions.value = await fetchAutocompleteSuggestions(location.value);
+    };
+
     const onLocationBlur = async () => {
       if (suggestions.value.length) {
         const photoReference = suggestions.value[0].photos ? suggestions.value[0].photos[0].photo_reference : null;
@@ -217,7 +194,7 @@ export default {
     };
 
     const selectSuggestion = (suggestion) => {
-      itinerary.value.location = suggestion.description;
+      location.value = suggestion.description;
       suggestions.value = [];
     };
 
@@ -257,8 +234,13 @@ export default {
       }
     };
 
-    const setImageURL = (imageUrl) => {
-      itinerary.value.img_url = imageUrl;
+    const setLocation = (loc) => {
+      location.value = loc;
+    };
+
+    const setImageURL = (url) => {
+      console.log ('Image URL:', url);
+      imageUrl.value = url;
     };
 
     const closePopup = () => {
@@ -277,7 +259,10 @@ export default {
       isDesktop,
       setImageURL,
       onLocationBlur,
-      selectSuggestion
+      selectSuggestion,
+      onLocationInput,
+      setLocation,
+      activeTab
     };
   },
 };
