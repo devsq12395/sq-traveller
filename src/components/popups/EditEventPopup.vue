@@ -27,23 +27,6 @@
               />
             </div>
 
-            <!-- Location Field -->
-            <div class="grid grid-cols-3 items-start gap-2">
-              <label for="location" class="text-gray-700 font-semibold text-left">
-                Location:
-                <span class="text-sm text-gray-500">({{ event.location.length }}/50)</span>
-              </label>
-              <input
-                type="text"
-                id="location"
-                v-model="event.location"
-                placeholder="Location"
-                maxlength="50"
-                required
-                class="col-span-2 p-2 border border-gray-300 rounded"
-              />
-            </div>
-
             <!-- Time Start Field -->
             <div class="grid grid-cols-3 items-start gap-2">
               <label for="time_start" class="text-gray-700 font-semibold text-left">Start Time:</label>
