@@ -5,7 +5,7 @@
       <form @submit.prevent="handleCreateItinerary" class="space-y-4">
         <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
           <!-- Left Side: Itinerary Details -->
-          <div class="w-full md:w-1/2">
+          <div class="w-full md:w-1/2 flex flex-col gap-4">
             <h3 class="text-lg font-semibold">Itinerary Details</h3>
 
             <!-- Itinerary Name Field -->

@@ -353,7 +353,7 @@ export async function fetchSharedItineraries({ page = 1, pageSize = 12 } = {}) {
       .range(from, to);
 
     if (error) {
-      console.error('Error fetching shared itineraries:', error);
+      console.error('Error fetching public itineraries:', error);
       return { error };
     }
 
@@ -452,7 +452,7 @@ export async function getAllsharedItinerariesOfUser(userId) {
       .eq('itinerary_privacy.privacy', 'shared');
 
     if (error) {
-      console.error('Error fetching shared itineraries:', error.message);
+      console.error('Error fetching public itineraries:', error.message);
       return { error };
     }
 
@@ -470,7 +470,7 @@ export async function getAllsharedItinerariesOfUser(userId) {
 
     return { data: adjustedData, error: null };
   } catch (error) {
-    console.error('Unexpected error fetching shared itineraries:', error);
+    console.error('Unexpected error fetching public itineraries:', error);
     return { error };
   }
 }

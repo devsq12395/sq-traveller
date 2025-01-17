@@ -140,9 +140,9 @@ export default {
     const { data: itineraries, error } = await getAllsharedItinerariesOfUser(this.user.user_id);
     if (!error) {
       this.sharedItineraries = itineraries;
-      console.log ('Shared itineraries:', this.sharedItineraries);
+      console.log ('Public itineraries:', this.sharedItineraries);
     } else {
-      console.error('Error fetching shared itineraries:', error.message);
+      console.error('Error fetching public itineraries:', error.message);
     }
   },
 };

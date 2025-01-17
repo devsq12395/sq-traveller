@@ -1,7 +1,7 @@
 <template>
   <div v-if="isDesktop" class="p-4 bg-blue-100 rounded-lg shadow">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold">Shared Itineraries</h2>
+      <h2 class="text-2xl font-bold">Public Itineraries</h2>
       <div class="flex items-center">
         <input
           type="text"
@@ -18,13 +18,13 @@
       </div>
     </div>
     <div v-if="loading" class="text-center py-4">
-      <p>Loading shared itineraries...</p>
+      <p>Loading public itineraries...</p>
     </div>
     <div v-else-if="error" class="text-center py-4 text-red-600">
       <p>{{ error }}</p>
     </div>
     <div v-else-if="itineraries.length === 0" class="text-center py-4 text-gray-600">
-      <p>No shared itineraries available.</p>
+      <p>No public itineraries available.</p>
     </div>
     <div v-else>
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
@@ -149,7 +149,7 @@ export default {
       });
       
       if (fetchError) {
-        error.value = 'Failed to load shared itineraries';
+        error.value = 'Failed to load public itineraries';
         console.error(fetchError);
       } else {
         itineraries.value = await Promise.all(data.map(async (itinerary) => {

@@ -28,7 +28,7 @@
               class="mt-1 mr-3"
             />
             <div class="text-left">
-              <span class="font-medium block">Public</span>
+              <span class="font-medium block">Sharable</span>
               <span class="text-sm text-gray-500">Anyone with the link can view this itinerary</span>
             </div>
           </label>
@@ -42,8 +42,8 @@
               class="mt-1 mr-3"
             />
             <div class="text-left">
-              <span class="font-medium block">Shared</span>
-              <span class="text-sm text-gray-500">Anyone can view this itinerary and will be shared on the "Shared Itineraries" list</span>
+              <span class="font-medium block">Public</span>
+              <span class="text-sm text-gray-500">Anyone can view this itinerary and will be shared on the "Public Itineraries" list</span>
             </div>
           </label>
           <!-- Message Component -->

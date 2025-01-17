@@ -1,16 +1,19 @@
 <template>
   <div class="about-us">
+    <AboutUs />
     <AboutPolicies />
   </div>
 </template>
 
 <script>
 import AboutPolicies from '@/components/about/AboutPolicies.vue';
+import AboutUs from '@/components/about/AboutUs.vue';
 
 export default {
   name: 'AboutUsPage',
   components: {
-    AboutPolicies
+    AboutPolicies,
+    AboutUs
   }
 };
 </script>
