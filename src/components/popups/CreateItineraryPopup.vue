@@ -2,7 +2,8 @@
   <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
     <div class="bg-white p-6 rounded shadow-lg w-[900px]">
       <h2 class="text-2xl font-bold mb-4">Create an Itinerary</h2>
-      <form @submit.prevent="handleCreateItinerary" class="space-y-4">
+      <form @submit.prevent="handleCreateItinerary" class="space-y-6">
+        <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
         <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
           <!-- Left Side: Itinerary Details -->
           <div class="w-full md:w-1/2 flex flex-col gap-4">
@@ -136,6 +137,7 @@ export default {
     const isDesktop = ref(window.innerWidth >= 640);
     const activeTab = ref('auto');
     const location = ref('');
+    const errorMessage = ref('');
 
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
@@ -209,7 +211,13 @@ export default {
         );
 
         if (error) {
+          errorMessage.value = 'Error creating itinerary. Please ensure all fields are filled correctly and try again.';
           console.error('Error creating itinerary:', error);
+          return;
+        }
+
+        if (itinerary.value.days < 1 || itinerary.value.days > 15) {
+          errorMessage.value = 'Number of days must be less than or equal to 15.';
           return;
         }
 
@@ -262,7 +270,8 @@ export default {
       selectSuggestion,
       onLocationInput,
       setLocation,
-      activeTab
+      activeTab,
+      errorMessage
     };
   },
 };

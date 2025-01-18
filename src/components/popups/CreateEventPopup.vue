@@ -5,6 +5,7 @@
       <div class="border-b border-gray-200 mb-6"></div>
       <div class="overflow-auto" style="max-height: calc(100vh - 300px);">
         <form @submit.prevent="handleCreateEvent" class="space-y-6">
+          <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
           <!-- Content Container -->
           <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
             <!-- Left Column - Event Details -->
@@ -54,11 +55,11 @@
               <div class="grid grid-cols-3 items-start gap-2">
                 <label for="description" class="text-gray-700 font-semibold text-left">
                   Short Description:
-                  <span class="text-sm text-gray-500">({{ event.shortDescription.length }}/100)</span>
+                  <span class="text-sm text-gray-500">({{ event.short_description.length }}/100)</span>
                 </label>
                 <textarea
-                  id="shortDescription"
-                  v-model="event.shortDescription"
+                  id="short_description"
+                  v-model="event.short_description"
                   placeholder="Short Description"
                   maxlength="100"
                   required
@@ -149,7 +150,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { createEvent } from '../../helpers/event';
 import axios from 'axios';
 import { defaultImages } from '../../helpers/globalVariables';
@@ -164,6 +165,7 @@ export default {
     CreateEventManualInput,
   },
   props: {
+    itineraryData: {type: Object, required: true},
     itineraryId: {
       type: String,
       required: true
@@ -175,7 +177,7 @@ export default {
       location: '',
       time_start: '',
       time_end: '',
-      shortDescription: '',
+      short_description: '',
       description: '',
       day: 1,
       img_url: ''
@@ -186,7 +188,6 @@ export default {
     const selectedImage = ref(null);
     const imageFile = ref(null);
     const currentPage = ref(1);
-    const itemsPerPage = 6; // Show 6 images per page (2 rows of 3)
 
     const uploading = ref(false);
     const uploadSuccess = ref(false);
@@ -196,29 +197,10 @@ export default {
 
     const activeTab = ref('auto');
 
-    // Computed properties for pagination
-    const totalPages = computed(() => Math.ceil(defaultImages.length / itemsPerPage));
+    const errorMessage = ref('');
 
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
-    };
-    
-    const paginatedImages = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      return defaultImages.slice(start, end);
-    });
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
     };
 
     const selectDefaultImage = (image) => {
@@ -279,15 +261,12 @@ export default {
 
     const handleCreateEvent = async () => {
       try {
-        let finalImageUrl = event.value.img_url;
-
-        // If a file was uploaded, handle the upload
-        if (imageFile.value) {
-          const formData = new FormData();
-          formData.append('image', imageFile.value);
-          const response = await axios.post('YOUR_UPLOAD_URL', formData);
-          finalImageUrl = response.data.url;
+        if (event.value.day < 1 || props.itineraryData.days < event.value.day) {
+          errorMessage.value = 'Day must be less than or equal to the number of days in the itinerary';
+          return;
         }
+
+        let finalImageUrl = event.value.img_url;
 
         // Create event with the image URL
         const { error: eventError } = await createEvent(
@@ -298,7 +277,10 @@ export default {
           }
         );
 
-        if (eventError) throw eventError;
+        if (eventError) {
+          errorMessage.value = 'Error occurred while creating the event. Please try again.';
+          throw eventError;
+        }
 
         emit('close');
         emit('refresh');
@@ -331,14 +313,10 @@ export default {
       selectedImage,
       defaultImages,
       currentPage,
-      totalPages,
-      paginatedImages,
       handleImageUpload,
       selectDefaultImage,
       handleCreateEvent,
       closePopup,
-      nextPage,
-      previousPage,
       uploading,
       uploadSuccess,
       suggestions,
@@ -349,7 +327,8 @@ export default {
       activeTab,
       setLocation,
       setImageURL,
-      isDesktop
+      isDesktop,
+      errorMessage
     };
   }
 };

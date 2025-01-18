@@ -49,7 +49,7 @@ export default {
     const report = ref({
       description: '',
     });
-    const { user } = useUser();
+    const user = useUser();
 
     const handleReportEvent = async () => {
         console.log (user);

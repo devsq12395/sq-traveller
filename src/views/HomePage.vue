@@ -1,68 +1,92 @@
 <template>
-  <div v-if="isDesktop" class="home">
-    <div class="main-section">
+  <div v-if="isDesktop" class="w-full min-h-screen">
+    <div class="relative h-screen w-full">
       <!-- Adjusted Central Box -->
-      <div class="absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-blue-100 bg-opacity-95 shadow-xl p-8 rounded-lg flex flex-col items-center z-30">
-        <img 
-          src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
-          alt="Logo" 
-          class="h-20 mb-5"
-        />
-        <p class="text-4xl font-bold text-gray-800 mb-4 text-center">Your Adventure Begins Here</p>
-        <p class="text-base text-gray-600 mb-6 text-center">Simple and Efficient Itinerary Planner</p>
-        <button 
-          v-if="!profile" 
-          @click="handleLogin" 
-          class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-        >
-          Login / Sign up
-        </button>
-        <router-link 
-          v-else 
-          to="/dashboard" 
-          class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-        >
-          Go To Dashboard
-        </router-link>
+      <div class="bg-white p-10 rounded shadow-lg w-[1000px] absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
+        <div class="flex justify-center w-full">
+          <img 
+            src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
+            alt="Logo" 
+            class="h-20 mb-5"
+          />
+        </div>
+        
+        <!-- Subtitles -->
+        <div  class="flex flex-col gap-2 text-4xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
+              style="font-family: 'Raleway', sans-serif; font-weight: 200;" :class="{'opacity-100': subtitleVisible}">
+          <p>Create Informative Itineraries</p>
+          <p>in just a few clicks</p>
+        </div>
+
+        <hr class="my-6 w-full border-gray-300 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}" />
+
+        <!-- Bullet Points -->
+        <ul class="text-base text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+          <li class="flex items-center mb-2">
+            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+            Simple and Efficient Itinerary Planner
+          </li>
+          <li class="flex items-center mb-2">
+            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+            Plan out your trip budget
+          </li>
+          <li class="flex items-center mb-2">
+            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+            Browse other users' itineraries
+          </li>
+        </ul>
+        
+        <div class="flex justify-center w-full transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+          <button 
+            v-if="!profile" 
+            @click="handleLogin" 
+            class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg"
+          >
+            Login / Sign up
+          </button>
+          <router-link 
+            v-else 
+            to="/dashboard" 
+            class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg"
+          >
+            Go To Dashboard
+          </router-link>
+        </div>
       </div>
-      
-      <!-- Background Image -->
-      <div class="background-container"></div>
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg'); filter: brightness(0.8);"></div>
     </div>
-    <hr class="section-divider" />
+    <hr class="w-full border-gray-300 my-6" />
     <SharedItineraries />
   </div>
-  <div v-else class="home">
-    <div class="main-section">
+  <div v-else class="w-full min-h-screen">
+    <div class="relative h-screen w-full">
       <!-- Adjusted Central Box -->
-      <div class="absolute top-1/3 transform -translate-y-1/4 bg-blue-100 bg-opacity-95 shadow-xl p-8 rounded-lg flex flex-col items-center z-30">
+      <div class="absolute top-1/3 transform -translate-y-1/4 bg-blue-100 bg-opacity-95 shadow-xl p-8 rounded-lg flex flex-col items-center z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
         <img 
           src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
           alt="Logo" 
           class="h-20 mb-5"
         />
-        <p class="text-4xl font-bold text-gray-800 mb-4 text-center">Your Adventure Begins Here</p>
-        <p class="text-base text-gray-600 mb-6 text-center">Simple and Efficient Itinerary Planner</p>
+        <p class="text-4xl font-bold text-gray-800 mb-4 text-center transition-opacity duration-1000 opacity-0 delay-500" :class="{'opacity-100': subtitleVisible}">Your Adventure Begins Here</p>
+        <p class="text-base text-gray-600 mb-6 text-center transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">Simple and Efficient Itinerary Planner</p>
         <button 
           v-if="!profile" 
           @click="handleLogin" 
-          class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}"
         >
           Login / Sign up
         </button>
         <router-link 
           v-else 
           to="/dashboard" 
-          class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+          class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}"
         >
           Go To Dashboard
         </router-link>
       </div>
-      
-      <!-- Background Image -->
-      <div class="background-container"></div>
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg'); filter: brightness(0.8);"></div>
     </div>
-    <hr class="section-divider" />
+    <hr class="w-full border-gray-300 my-6" />
     <SharedItineraries />
   </div>
 </template>
@@ -82,6 +106,10 @@ export default {
     const profile = ref(null);
     const user = useUser();
     const isDesktop = ref(window.innerWidth >= 640);
+
+    const boxVisible = ref(false);
+    const subtitleVisible = ref(false);
+    const restVisible = ref(false);
 
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
@@ -107,6 +135,18 @@ export default {
     onMounted(async () => {
       await updateProfile();
       window.addEventListener('resize', checkWindowSize);
+
+      setTimeout(() => {
+        boxVisible.value = true;
+      }, 500);
+
+      setTimeout(() => {
+        subtitleVisible.value = true;
+      }, 1000);
+
+      setTimeout(() => {
+        restVisible.value = true;
+      }, 1500);
     });
     onUnmounted(() => {
       window.removeEventListener('resize', checkWindowSize);
@@ -115,44 +155,16 @@ export default {
     return {
       profile,
       handleLogin,
-      isDesktop
+      isDesktop,
+      boxVisible,
+      subtitleVisible,
+      restVisible
     };
   }
 }
 </script>
 
 <style scoped>
-.home {
-  width: 100%;
-  min-height: 100vh;
-}
-
-.main-section {
-  position: relative;
-  height: 100vh;
-  width: 100%;
-}
-
-.background-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg');
-  background-size: cover;
-  background-position: center;
-  filter: brightness(0.8); /* Slight overlay for readability */
-}
-
-.section-divider {
-  width: 100%;
-  border: none;
-  height: 2px;
-  background-color: #333;
-  margin: 20px 0;
-}
-
 button:hover, a:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }

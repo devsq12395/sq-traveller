@@ -43,6 +43,7 @@
       <CreateEventPopup
         v-if="showCreateEventPopup"
         :itineraryId="itineraryId"
+        :itineraryData="itineraryData"
         @close="closeCreateEventPopup"
         @refresh="loadEvents"
       />
@@ -119,6 +120,7 @@ export default {
     const itineraryName = ref('');
     const itineraryDescription = ref('');
     const itineraryImgUrl = ref('');
+    const itineraryData = ref(null);
     const events = ref([]);
     const selectedEventId = ref(null);
     const showCreateEventPopup = ref(false);
@@ -187,6 +189,7 @@ export default {
       console.log('Itinerary loaded:', data);
       console.log('Is owner:', data.isOwner);
       
+      itineraryData.value = data;
       itineraryName.value = data.name;
       itineraryDescription.value = data.description;
       itineraryImgUrl.value = data.img_url;
@@ -295,6 +298,7 @@ export default {
       itineraryName,
       itineraryDescription,
       itineraryImgUrl,
+      itineraryData,
       eventsGroupedByDay,
       selectedEventId,
       showCreateEventPopup,
