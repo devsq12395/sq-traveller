@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { checkIfUsernameExists } from './profile';
 import { setUser, clearUser } from '../context/UserContext';
 
 // Login function
@@ -41,6 +42,12 @@ export async function login(email, password) {
 // Signup function
 export async function signup(email, password, username) {
   try {
+    // Check if the username already exists
+    const usernameExists = await checkIfUsernameExists(username);
+    if (usernameExists) {
+      return { error: { message: 'Username already taken. Please choose a different username.' } };
+    }
+
     // First, create the auth user
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
@@ -248,6 +255,13 @@ export async function createProfile(username) {
   try {
     // Get the currently logged-in user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    // Check if the username already exists
+    const usernameExists = await checkIfUsernameExists(username);
+    if (usernameExists) {
+      console.warn('Username already taken. Please choose a different username.');
+      return { success: false, error: { message: 'Username already taken. Please choose a different username.' } };
+    }
     
     if (userError) {
       console.error('Error getting user:', userError.message);
