@@ -3,6 +3,7 @@
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-4xl font-bold text-left">My Itineraries</h1>
       <button
+        v-if="isLoggedIn"
         @click="showCreatePopup = true"
         class="p-3 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
@@ -16,7 +17,8 @@
       @refresh="loadItineraries" 
     />
 
-    <div v-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
+    <div v-if="!isLoggedIn" class="text-gray-500">Log in to view your itineraries.</div>
+    <div v-else-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
     <div v-else>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
         <ItineraryEntry
@@ -122,6 +124,7 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = 6; // Number of items to show per page
     const user = useUser();
+    const isLoggedIn = ref(false);
     const windowWidth = ref(window.innerWidth);
     const isDesktop = computed(() => windowWidth.value >= 768);
 
@@ -144,6 +147,7 @@ export default {
 
       if (!error) {
         itineraries.value = data;
+        isLoggedIn.value = true;
       } else {
         console.error('Error fetching itineraries:', error.message);
       }
@@ -168,6 +172,7 @@ export default {
       totalPages,
       paginatedItineraries,
       isDesktop,
+      isLoggedIn
     };
   },
 };

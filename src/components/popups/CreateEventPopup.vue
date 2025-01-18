@@ -8,7 +8,7 @@
           <!-- Content Container -->
           <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
             <!-- Left Column - Event Details -->
-            <div class="event-details w-full md:w-1/2">
+            <div class="event-details w-full md:w-1/2 flex flex-col gap-4">
               <h3 class="text-lg font-semibold">Event Details</h3>
               <!-- Name Field -->
               <div class="grid grid-cols-3 items-start gap-2">

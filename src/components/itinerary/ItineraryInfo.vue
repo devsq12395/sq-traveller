@@ -1,21 +1,30 @@
 <template>
   <div v-if="isDesktop" class="itinerary-info mx-auto bg-blue-100 rounded-lg" style="width: 100%;">
-    <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
       <!-- Buttons Container -->
-      <div v-if="isOwner" class="flex space-x-4 mt-6">
+      <div class="flex justify-between space-x-4 mt-6">
         <button
           @click="goToDashboard"
           class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
         >
           ← Back to Dashboard
         </button>
-        <button
-          @click="$emit('show-create-event')"
-          class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Create Event
-        </button>
+        <div v-if="isOwner">
+          <button
+            @click="$emit('show-create-event')"
+            class="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Create Event
+          </button>
+        </div>
+        <div v-else>
+          <button
+            @click="$emit('show-report-event')"
+            class="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Report Event
+          </button>
+        </div>
       </div>
     </div>
 
@@ -82,19 +91,29 @@
     <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
       <!-- Buttons Container -->
-      <div v-if="isOwner" class="flex space-x-4 mt-6">
+      <div v-if="isOwner" class="flex justify-between space-x-4 mt-6">
         <button
           @click="goToDashboard"
           class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
         >
           ← Back to Dashboard
         </button>
-        <button
-          @click="$emit('show-create-event')"
-          class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Create Event
-        </button>
+        <div v-if="isOwner">
+          <button
+            @click="$emit('show-create-event')"
+            class="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Create Event
+          </button>
+        </div>
+        <div v-else>
+          <button
+            @click="$emit('show-report-event')"
+            class="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Report Event
+          </button>
+        </div>
       </div>
     </div>
 

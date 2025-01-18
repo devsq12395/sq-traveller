@@ -61,7 +61,7 @@
       <div v-if="isOwner" class="flex space-x-4">
         <button 
           @click="showEditEventPopup = true" 
-          class="p-2 px-4 bg-green-500 text-white rounded shadow"
+          class="p-2 px-4 bg-blue-500 text-white rounded shadow"
         >
           Edit Details
         </button>

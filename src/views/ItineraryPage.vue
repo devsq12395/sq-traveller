@@ -33,6 +33,7 @@
           @edit-event="editEvent"
           @delete-event="deleteEvent"
           @show-create-event="showCreateEventPopup = true"
+          @show-report-event="showReportEventPopup = true"
           @refresh="loadEvents"
           class="w-full"
         />
@@ -43,6 +44,14 @@
         v-if="showCreateEventPopup"
         :itineraryId="itineraryId"
         @close="closeCreateEventPopup"
+        @refresh="loadEvents"
+      />
+
+      <!-- Report Event Popup -->
+      <ReportEventPopup
+        v-if="showReportEventPopup"
+        :itineraryId="itineraryId"
+        @close="closeReportEventPopup"
         @refresh="loadEvents"
       />
 
@@ -81,6 +90,7 @@ import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
 import ItineraryInfo from '../components/itinerary/ItineraryInfo.vue';
 import CreateEventPopup from '../components/popups/CreateEventPopup.vue';
+import ReportEventPopup from '../components/popups/ReportEventPopup.vue';
 import CreateNotePopup from '../components/popups/CreateNotePopup.vue';
 import CreateTodoPopup from '../components/popups/CreateTodoPopup.vue';
 import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
@@ -93,6 +103,7 @@ export default {
   components: {
     ItineraryInfo,
     CreateEventPopup,
+    ReportEventPopup,
     CreateNotePopup,
     CreateTodoPopup,
     CreateBudgetPopup,
@@ -111,6 +122,7 @@ export default {
     const events = ref([]);
     const selectedEventId = ref(null);
     const showCreateEventPopup = ref(false);
+    const showReportEventPopup = ref(false);
     const showCreateNotePopup = ref(false);
     const showCreateTodoPopup = ref(false);
     const showCreateBudgetPopup = ref(false);
@@ -230,6 +242,10 @@ export default {
       showCreateEventPopup.value = false;
     };
 
+    const closeReportEventPopup = () => {
+      showReportEventPopup.value = false;
+    };
+
     const goToDashboard = () => {
       router.push('/dashboard');
     };
@@ -282,12 +298,14 @@ export default {
       eventsGroupedByDay,
       selectedEventId,
       showCreateEventPopup,
+      showReportEventPopup,
       showCreateNotePopup,
       showCreateTodoPopup,
       showCreateBudgetPopup,
       showSettingsPopup,
       loadEvents,
       closeCreateEventPopup,
+      closeReportEventPopup,
       selectEvent,
       selectedEvent,
       goToDashboard,
