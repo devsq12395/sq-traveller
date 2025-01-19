@@ -8,6 +8,8 @@ async function getAllFeaturedItineraries() {
             .select('itinerary(*)');
 
         const itinerariesCompleteData = await Promise.all(data.map(async (itinerary) => {
+            itinerary = itinerary.itinerary;
+
             const { data: completeData, error } = await fetchItineraryWithCreator(itinerary.id);
             if (error) {
                 console.error(`Error fetching complete data for itinerary ID ${itinerary.id}:`, error);

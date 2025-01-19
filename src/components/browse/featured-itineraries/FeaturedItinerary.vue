@@ -1,14 +1,14 @@
 <template>
-  <div class="featured-itinerary" @click="goToItinerary">
-    <img :src="itinerary.img_url" alt="Itinerary Image" class="itinerary-image" />
-    <div class="itinerary-details">
-      <h2>{{ itinerary.name }}</h2>
-      <p>{{ itinerary.description }}</p>
-      <ul>
-        <li><strong>Days:</strong> {{ itinerary.days }}</li>
-        <li><strong>Budget:</strong> {{ itinerary.budget }}</li>
-        <li><strong>Created by:</strong> {{ itinerary.profiles.username }}</li>
-        <li><strong>Ratings:</strong> {{ itinerary.ratings }}</li>
+  <div class="featured-itinerary flex items-center bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:-translate-y-1 hover:shadow-lg">
+    <img :src="itinerary.img_url" alt="Itinerary Image" class="w-2/5 object-cover" />
+    <div class="flex-1 p-5">
+      <h2 class="text-xl font-bold text-gray-800 mb-2">{{ itinerary.name }}</h2>
+      <p class="text-sm text-gray-600 mb-4">{{ itinerary.description }}</p>
+      <ul class="list-none p-0">
+        <li class="text-sm text-gray-700 mb-1"><strong>Days:</strong> {{ itinerary.days }}</li>
+        <li class="text-sm text-gray-700 mb-1"><strong>Budget:</strong> {{ itinerary.budget }}</li>
+        <li class="text-sm text-gray-700 mb-1"><strong>Created by:</strong> {{ itinerary.profiles.username }}</li>
+        <li class="text-sm text-gray-700"><strong>Ratings:</strong> {{ itinerary.ratings || "No ratings yet" }}</li>
       </ul>
     </div>
   </div>
@@ -26,27 +26,5 @@ export default {
 </script>
 
 <style scoped>
-.featured-itinerary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.itinerary-image {
-  width: 40%;
-  height: auto;
-  border-radius: 8px;
-  margin-right: 20px;
-}
-.itinerary-details {
-  width: 60%;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+/* Tailwind CSS is used directly in the template */
 </style>

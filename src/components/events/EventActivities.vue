@@ -34,6 +34,7 @@ export default {
 
     const loadActivities = async () => {
       const { data } = await fetchEventTodos(props.eventId);
+      console.log ('refreshing activities...');
       activities.value = data;
     };
 

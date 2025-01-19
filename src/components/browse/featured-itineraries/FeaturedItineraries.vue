@@ -1,27 +1,24 @@
 <template>
-  <div class="flex flex-col justify-between items-center mb-4 p-4 bg-blue-100 rounded-lg shadow">
-    <h2 class="text-2xl font-bold">Featured Itineraries</h2>
+  <div class="featured-itineraries flex flex-col items-center my-5">
+    <h2 class="text-lg font-bold mb-3">Featured Itineraries</h2>
 
-    <div v-if="loading" class="text-center py-4">
+    <div v-if="loading" class="loading-state">
       <p>Loading public itineraries...</p>
     </div>
-    <div v-else-if="error" class="text-center py-4 text-red-600">
+    <div v-else-if="error" class="error-state">
       <p>{{ error }}</p>
     </div>
-    <div v-else-if="itineraries.length === 0" class="text-center py-4 text-gray-600">
+    <div v-else-if="itineraries.length === 0" class="empty-state">
       <p>No featured itineraries available.</p>
     </div>
-
     <div v-else>
-      <div class="featured-itineraries">
-        <FeaturedItinerary :itinerary="currentItinerary" />
-        <div class="pagination">
-          <button @click="prevItinerary">&lt;</button>
-          <span v-for="(dot, index) in itineraries" :key="index" :class="{'active-dot': index === currentIndex}">
-            •
-          </span>
-          <button @click="nextItinerary">&gt;</button>
-        </div>
+      <FeaturedItinerary :itinerary="currentItinerary" />
+      <div class="pagination flex items-center mt-3">
+        <button @click="prevItinerary" class="bg-white border rounded-full p-2 mx-2 shadow hover:bg-gray-100">&lt;</button>
+        <span v-for="(dot, index) in itineraries" :key="index" :class="{'text-black text-lg': index === currentIndex, 'text-gray-400': index !== currentIndex}">
+          •
+        </span>
+        <button @click="nextItinerary" class="bg-white border rounded-full p-2 mx-2 shadow hover:bg-gray-100">&gt;</button>
       </div>
     </div>
   </div>
@@ -50,11 +47,8 @@ export default {
     this.loading = true;
     try {
       this.itineraries = await getAllFeaturedItineraries();
-      console.log ('featured itineraries');
-      console.log (this.itineraries);
     } catch (error) {
-      this.error = 'Failed to load itineraries';
-      console.error('Failed to load itineraries:', error);
+      this.error = "Failed to load itineraries";
     } finally {
       this.loading = false;
     }
@@ -75,26 +69,5 @@ export default {
 </script>
 
 <style scoped>
-.featured-itineraries {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px 0;
-}
-.pagination {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-button {
-  background-color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  margin: 0 10px;
-}
-.active-dot {
-  color: black;
-  font-size: 24px;
-}
+/* Tailwind CSS is used directly in the template */
 </style>

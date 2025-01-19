@@ -203,6 +203,8 @@ export default {
         console.log('Not loading events - itinerary is private');
         return;
       }
+
+      console.log ('refreshing...');
       
       const { data, error } = await fetchItineraryEvents(itineraryId);
       if (!error) {
