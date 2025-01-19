@@ -1,13 +1,13 @@
 <template>
   <div class="featured-itinerary" @click="goToItinerary">
-    <img :src="itinerary.image" alt="Itinerary Image" class="itinerary-image" />
+    <img :src="itinerary.img_url" alt="Itinerary Image" class="itinerary-image" />
     <div class="itinerary-details">
       <h2>{{ itinerary.name }}</h2>
       <p>{{ itinerary.description }}</p>
       <ul>
         <li><strong>Days:</strong> {{ itinerary.days }}</li>
         <li><strong>Budget:</strong> {{ itinerary.budget }}</li>
-        <li><strong>Created by:</strong> {{ itinerary.createdBy }}</li>
+        <li><strong>Created by:</strong> {{ itinerary.profiles.username }}</li>
         <li><strong>Ratings:</strong> {{ itinerary.ratings }}</li>
       </ul>
     </div>

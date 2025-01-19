@@ -1,6 +1,5 @@
 <template>
-  <div class="p-4 bg-blue-100 rounded-lg shadow"></div>
-  <div class="flex justify-between items-center mb-4">
+  <div class="flex flex-col justify-between items-center mb-4 p-4 bg-blue-100 rounded-lg shadow">
     <h2 class="text-2xl font-bold">Featured Itineraries</h2>
 
     <div v-if="loading" class="text-center py-4">
@@ -51,6 +50,8 @@ export default {
     this.loading = true;
     try {
       this.itineraries = await getAllFeaturedItineraries();
+      console.log ('featured itineraries');
+      console.log (this.itineraries);
     } catch (error) {
       this.error = 'Failed to load itineraries';
       console.error('Failed to load itineraries:', error);
