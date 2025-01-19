@@ -7,6 +7,11 @@
             <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
           </div>
         </div>
+
+        <!-- Featured Itineraries Section -->
+        <div class="pb-6">
+          <FeaturedItineraries />
+        </div>
         
         <!-- Itineraries Section -->
         <div class="border-b border-gray-300 pb-6">
@@ -23,6 +28,7 @@
   
   <script>
   import { ref, watch } from 'vue';
+  import FeaturedItineraries from '../components/browse/featured-itineraries/FeaturedItineraries.vue';
   import ItinerariesList from '../components/itinerary/ItinerariesList.vue';
   import SharedItineraries from '../components/itinerary/SharedItineraries.vue';
   import { useUser } from '../context/UserContext';
@@ -32,6 +38,7 @@
     components: {
       ItinerariesList,
       SharedItineraries,
+      FeaturedItineraries
     },
     setup() {
       const itinerariesListRef = ref(null);
