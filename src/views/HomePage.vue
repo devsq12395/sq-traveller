@@ -3,6 +3,7 @@
     <div class="relative h-screen w-full">
       <!-- Adjusted Central Box -->
       <div class="bg-white p-10 rounded shadow-lg w-[1000px] absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
+        <!-- Logo -->
         <div class="flex justify-center w-full">
           <img 
             src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
@@ -12,7 +13,7 @@
         </div>
         
         <!-- Subtitles -->
-        <div  class="flex flex-col gap-2 text-4xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
+        <div  class="flex flex-col gap-2 text-5xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
               style="font-family: 'Raleway', sans-serif; font-weight: 200;" :class="{'opacity-100': subtitleVisible}">
           <p>Create Informative Itineraries</p>
           <p>in just a few clicks</p>
@@ -21,10 +22,10 @@
         <hr class="my-6 w-full border-gray-300 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}" />
 
         <!-- Bullet Points -->
-        <ul class="text-base text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+        <ul class="text-base text-xl text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
           <li class="flex items-center mb-2">
             <i class="material-icons text-blue-500 mr-2">play_arrow</i>
-            Simple and Efficient Itinerary Planner
+            Clean, Simple and Efficient Itinerary Planner
           </li>
           <li class="flex items-center mb-2">
             <i class="material-icons text-blue-500 mr-2">play_arrow</i>
@@ -61,14 +62,42 @@
   <div v-else class="w-full min-h-screen">
     <div class="relative h-screen w-full">
       <!-- Adjusted Central Box -->
-      <div class="absolute top-1/3 transform -translate-y-1/4 bg-blue-100 bg-opacity-95 shadow-xl p-8 rounded-lg flex flex-col items-center z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
-        <img 
-          src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
-          alt="Logo" 
-          class="h-20 mb-5"
-        />
-        <p class="text-4xl font-bold text-gray-800 mb-4 text-center transition-opacity duration-1000 opacity-0 delay-500" :class="{'opacity-100': subtitleVisible}">Your Adventure Begins Here</p>
-        <p class="text-base text-gray-600 mb-6 text-center transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">Simple and Efficient Itinerary Planner</p>
+      <div class="absolute top-1/3 transform -translate-y-1/4 bg-blue-100 bg-opacity-85 shadow-xl p-8 rounded-lg flex flex-col items-center z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
+        <!-- Logo -->
+        <div class="flex justify-center w-full">
+          <img 
+            src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
+            alt="Logo" 
+            class="h-20 mb-5"
+          />
+        </div>
+
+        <!-- Subtitles -->
+        <div  class="flex flex-col gap-2 text-3xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
+              style="font-family: 'Raleway', sans-serif; font-weight: 200;" :class="{'opacity-100': subtitleVisible}">
+          <p>Create Informative Itineraries</p>
+          <p>in just a few clicks</p>
+        </div>
+        
+        <!-- Horizontal Line -->
+        <hr class="my-6 w-full border-gray-300 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}" />
+
+        <!-- Bullet Points -->
+        <ul class="text-base text-m text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+          <li class="flex items-center mb-2">
+            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+            Clean, Simple and Efficient Itinerary Planner
+          </li>
+          <li class="flex items-center mb-2">
+            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+            Plan out your trip budget
+          </li>
+          <li class="flex items-center mb-2">
+            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+            Browse other users' itineraries
+          </li>
+        </ul>
+        
         <button 
           v-if="!profile" 
           @click="handleLogin" 

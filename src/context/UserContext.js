@@ -12,6 +12,7 @@ const userState = reactive({
 
 const itineraryState = reactive({
   id: null,
+  lastRefresh: 0
 });
 
 const eventState = reactive({
@@ -64,6 +65,11 @@ export function setUser(user) {
 
 export function setItinerary(id) {
   itineraryState.id = id;
+  itineraryState.lastRefresh = new Date().getTime();
+}
+
+export function refreshItinerary() {
+  itineraryState.lastRefresh = new Date().getTime();
 }
 
 export function setEventId(eventId) {

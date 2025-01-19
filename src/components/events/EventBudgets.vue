@@ -19,8 +19,9 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { fetchEventBudgets } from '../../helpers/budgets';
+import { useItinerary } from '../../context/UserContext';
 
 export default {
   name: 'EventBudgets',
@@ -36,6 +37,7 @@ export default {
   },
   setup(props) {
     const budgets = ref([]);
+    const itineraryState = useItinerary();
 
     const loadBudgets = async () => {
       const { data } = await fetchEventBudgets(props.eventId);
@@ -45,6 +47,12 @@ export default {
     const totalBudget = computed(() => budgets.value.reduce((acc, budget) => acc + budget.budget_price, 0));
 
     onMounted(loadBudgets);
+
+    watch(() => itineraryState.lastRefresh, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        loadBudgets();
+      }
+    }, { immediate: true });
 
     return {
       budgets,

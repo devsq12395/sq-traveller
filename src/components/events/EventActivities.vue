@@ -16,10 +16,12 @@
 import { ref, onMounted, watch } from 'vue';
 import { updateActivityStatus } from '../../helpers/activities';
 import { fetchEventTodos, addTodo } from '../../helpers/todo';
+import { useItinerary } from '../../context/UserContext';
 
 export default {
   name: 'EventActivities',
   props: {
+    lastRefresh: {type: Number, required: true},
     eventId: {
       type: String,
       required: true,
@@ -31,6 +33,7 @@ export default {
   },
   setup(props) {
     const activities = ref([]);
+    const itineraryState = useItinerary();
 
     const loadActivities = async () => {
       const { data } = await fetchEventTodos(props.eventId);
@@ -51,13 +54,17 @@ export default {
       }
     };
 
-    watch(() => props.eventId, {
-      immediate: true,
-      handler(newEventId) {
-        if (newEventId) {
-          loadActivities();
-        }
-      },
+    watch(() => itineraryState.lastRefresh, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        loadActivities();
+      }
+    }, { immediate: true });
+
+    watch(() => props.lastRefresh, (newVal, oldVal) => {
+      console.log('lastRefresh changed:', newVal);
+      if (newVal !== oldVal) {
+        loadActivities();
+      }
     });
 
     onMounted(loadActivities);

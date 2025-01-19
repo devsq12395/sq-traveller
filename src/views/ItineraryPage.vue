@@ -85,7 +85,7 @@
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUser, setLoading, setEventId } from '../context/UserContext';
+import { useUser, setLoading, setEventId, refreshItinerary } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
@@ -203,8 +203,6 @@ export default {
         console.log('Not loading events - itinerary is private');
         return;
       }
-
-      console.log ('refreshing...');
       
       const { data, error } = await fetchItineraryEvents(itineraryId);
       if (!error) {
@@ -212,6 +210,9 @@ export default {
       } else {
         console.error('Error fetching events:', error.message);
       }
+
+      console.log ('refreshing...');
+      refreshItinerary();
     };
 
     const checkWindowSize = () => {

@@ -68,7 +68,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="flex justify-between items-center">
+      <div v-else class="flex justify-between items-center w-full w-max-full">
         <router-link to="/" class="flex items-center space-x-2">
           <img src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" alt="Logo" class="h-8 w-20"/>
         </router-link>

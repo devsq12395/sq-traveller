@@ -1,7 +1,5 @@
 <template>
   <div class="bg-gray-50 p-6 rounded-lg shadow-lg w-full mt-4">
-    
-
     <!-- Tabs Section -->
     <div>
       <div class="flex border-b border-gray-300">
@@ -27,6 +25,7 @@
           :description="event.description" 
           :notes="notes" 
           :key="event.eventId"
+          :lastRefresh="lastRefresh"
           @show-add-todo="handleShowAddTodo"
           @show-add-budget="handleShowAddBudget"
           @show-add-note="handleShowAddNote"
