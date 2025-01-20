@@ -104,12 +104,20 @@ export default {
     const totalPages = ref(0);
 
     watch([eventsGroupedByDay, itineraryDays], () => {
-      paginatedEvents.value = eventsGroupedByDay.value.slice(0, itineraryDays.value);
-      totalPages.value = itineraryDays.value;
-
+      paginatedEvents.value = [];
+      
       while (paginatedEvents.value.length < totalPages.value) {
         paginatedEvents.value.push([]);
       }
+
+      eventsGroupedByDay.value.forEach((events) => {
+        events.forEach((event) => {
+          if (event.day - 1 < paginatedEvents.value.length) {
+            paginatedEvents.value[event.day - 1].push(event);
+          }
+        });
+      });
+      totalPages.value = itineraryDays.value;
     });
 
     const checkWindowSize = () => {

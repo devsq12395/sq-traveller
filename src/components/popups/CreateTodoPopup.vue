@@ -12,8 +12,10 @@
             v-model="todoContent"
             placeholder="Enter your to-do item"
             required
+            maxlength="200"
             class="col-span-2 p-2 border border-gray-300 rounded"
           ></textarea>
+          <p class="col-span-3 text-right text-sm text-gray-500">{{ todoContent.length }}/200</p>
         </div>
   
         <!-- Action Buttons -->

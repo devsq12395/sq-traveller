@@ -7,8 +7,8 @@
       <hr class="my-2" />
       <div class="text-sm text-gray-600 text-left mt-4">
         <p>Number of Days: {{ numberOfDays }}</p>
-        <p>Total Budget: {{ totalBudget }}</p>
-        <p>Created by: {{ createdBy }}</p>
+        <p>Total Budget: ${{ totalBudget }}</p>
+        <p>Created by: <a :href="`https://goagenda.net/user/${createdBy}`" class="text-blue-500 underline">{{ createdBy }}</a></p>
       </div>
       <div class="flex items-center mt-2">
         <span class="text-sm text-gray-600 mr-2">Ratings: {{ ratingsCount }}</span>

@@ -25,14 +25,14 @@
 
             <!-- Itinerary Description Field -->
             <div class="grid grid-cols-3 items-start gap-2">
-              <label for="description" class="text-gray-700 font-semibold text-left">Description: <span class="text-gray-500">({{ itinerary.description.length }}/500)</span></label>
+              <label for="description" class="text-gray-700 font-semibold text-left">Short Description: <span class="text-gray-500">({{ itinerary.description.length }}/200)</span></label>
               <textarea
                 id="description"
                 v-model="itinerary.description"
                 placeholder="Itinerary Description"
                 required
                 class="col-span-2 p-2 border border-gray-300 rounded"
-                maxlength="500"
+                maxlength="200"
               ></textarea>
             </div>
 

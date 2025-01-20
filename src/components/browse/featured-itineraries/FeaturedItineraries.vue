@@ -1,9 +1,9 @@
 <template>
-  <div class="featured-itineraries flex flex-col items-center my-5">
-    <h2 class="text-lg font-bold mb-3">Featured Itineraries</h2>
+  <div class="bg-blue-100 rounded-lg shadow flex flex-col items-center my-5 w-1/3 max-w-1/3 p-3" style="height: 400px;">
+    <h2 class="text-2xl mt-2 font-bold mb-3">Featured Itineraries</h2>
 
     <div v-if="loading" class="loading-state">
-      <p>Loading public itineraries...</p>
+      <p>Loading featured itineraries...</p>
     </div>
     <div v-else-if="error" class="error-state">
       <p>{{ error }}</p>
