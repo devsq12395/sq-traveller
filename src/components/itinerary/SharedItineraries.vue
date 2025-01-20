@@ -17,6 +17,9 @@
         </button>
       </div>
     </div>
+
+    <hr class="my-4 border-t border-gray-400" />
+
     <div v-if="loading" class="text-center py-4">
       <p>Loading public itineraries...</p>
     </div>
@@ -59,7 +62,7 @@
   </div>
   <div v-else class="p-4 bg-blue-100 rounded-lg shadow">
     <div class="mb-4">
-      <h2 class="text-2xl font-bold">Shared Itineraries</h2>
+      <h2 class="text-2xl font-bold">Public Itineraries</h2>
     </div>
     <div class="flex items-center mb-4">
       <input
@@ -75,6 +78,9 @@
         </svg>
       </button>
     </div>
+
+    <hr class="my-4 border-t border-gray-400" />
+    
     <div v-if="loading" class="text-center py-4">
       <p>Loading shared itineraries...</p>
     </div>

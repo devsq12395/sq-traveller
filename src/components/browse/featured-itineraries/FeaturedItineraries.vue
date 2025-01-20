@@ -1,6 +1,8 @@
 <template>
-  <div class="bg-blue-100 rounded-lg shadow flex flex-col items-center my-5 w-1/3 max-w-1/3 p-3" style="height: 400px;">
-    <h2 class="text-2xl mt-2 font-bold mb-3">Featured Itineraries</h2>
+  <div class="bg-blue-100 rounded-lg shadow flex flex-col items-center" :style="{ height: '600px', maxHeight: '600px', width: '520px', maxWidth: '520px'}">
+    <h2 class="text-2xl mt-4 font-bold">Featured Itineraries</h2>
+
+    <hr class="w-[90%] border-t border-gray-400 my-4" />
 
     <div v-if="loading" class="loading-state">
       <p>Loading featured itineraries...</p>
@@ -13,7 +15,9 @@
     </div>
     <div v-else>
       <FeaturedItinerary :itinerary="currentItinerary" />
-      <div class="pagination flex items-center mt-3">
+
+      <!-- Pagination -->
+      <div class="pagination flex items-center justify-center mt-3">
         <button @click="prevItinerary" class="bg-white border rounded-full p-2 mx-2 shadow hover:bg-gray-100">&lt;</button>
         <span v-for="(dot, index) in itineraries" :key="index" :class="{'text-black text-lg': index === currentIndex, 'text-gray-400': index !== currentIndex}">
           •

@@ -5,17 +5,13 @@
       <button
         v-if="isLoggedIn"
         @click="showCreatePopup = true"
-        class="p-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+        class="p-3 bg-green-500 text-white rounded hover:bg-blue-600"
       >
         Create an Itinerary
       </button>
     </div>
 
-    <CreateItineraryPopup 
-      v-if="showCreatePopup" 
-      @close="closePopup" 
-      @refresh="loadItineraries" 
-    />
+    <hr class="my-4 border-t border-gray-400" />
 
     <div v-if="!isLoggedIn" class="text-gray-500">Log in to view your itineraries.</div>
     <div v-else-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
@@ -51,6 +47,12 @@
         </button>
       </div>
     </div>
+
+    <CreateItineraryPopup 
+      v-if="showCreatePopup" 
+      @close="closePopup" 
+      @refresh="loadItineraries" 
+    />
   </div>
   <div v-else :class="{'overflow-hidden': showCreatePopup}" class="bg-blue-100 rounded-lg shadow-lg p-6 w-full md:w-3/4 mx-auto">
     <div class="flex justify-between items-center mb-4">
@@ -63,11 +65,7 @@
       </button>
     </div>
 
-    <CreateItineraryPopup 
-      v-if="showCreatePopup" 
-      @close="closePopup" 
-      @refresh="loadItineraries" 
-    />
+    <hr class="my-4 border-t border-gray-400" />
 
     <div v-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
     <div v-else>
@@ -101,6 +99,12 @@
           Next
         </button>
       </div>
+
+      <CreateItineraryPopup 
+        v-if="showCreatePopup" 
+        @close="closePopup" 
+        @refresh="loadItineraries" 
+      />
     </div>
   </div>
 </template>

@@ -1,59 +1,67 @@
 <template>
   <div v-if="isDesktop" class="w-full min-h-screen">
     <div class="relative h-screen w-full">
-      <!-- Adjusted Central Box -->
-      <div class="bg-white p-10 rounded shadow-lg w-[1000px] absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
-        <!-- Logo -->
-        <div class="flex justify-center w-full">
-          <img 
-            src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
-            alt="Logo" 
-            class="h-20 mb-5"
-          />
-        </div>
-        
-        <!-- Subtitles -->
-        <div  class="flex flex-col gap-2 text-5xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
-              style="font-family: 'Raleway', sans-serif; font-weight: 200;" :class="{'opacity-100': subtitleVisible}">
-          <p>Create Informative Itineraries</p>
-          <p>in just a few clicks</p>
+      <!-- Opening Screen Contents -->
+      <div>
+        <!-- Adjusted Central Box -->
+        <div class="bg-white p-10 rounded shadow-lg w-[1000px] absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
+          <!-- Logo -->
+          <div class="flex justify-center w-full">
+            <img 
+              src="https://res.cloudinary.com/dkloacrmg/image/upload/v1733400223/sq-traveller/gfuwhjlzhajskvizkufl.png" 
+              alt="Logo" 
+              class="h-20 mb-5"
+            />
+          </div>
+          
+          <!-- Subtitles -->
+          <div  class="flex flex-col gap-2 text-5xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
+                style="font-family: 'Raleway', sans-serif; font-weight: 200;" :class="{'opacity-100': subtitleVisible}">
+            <p>Create Informative Itineraries</p>
+            <p>in just a few clicks</p>
+          </div>
+
+          <hr class="my-6 w-full border-gray-300 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}" />
+
+          <!-- Bullet Points -->
+          <ul class="text-base text-xl text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+            <li class="flex items-center mb-2">
+              <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+              Clean, Simple and Efficient Itinerary Planner
+            </li>
+            <li class="flex items-center mb-2">
+              <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+              Plan out your trip budget
+            </li>
+            <li class="flex items-center mb-2">
+              <i class="material-icons text-blue-500 mr-2">play_arrow</i>
+              Browse other users' itineraries
+            </li>
+          </ul>
+          
+          <div class="flex justify-center w-full transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+            <button 
+              v-if="!profile" 
+              @click="handleLogin" 
+              class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg"
+            >
+              Login / Sign up
+            </button>
+            <router-link 
+              v-else 
+              to="/dashboard" 
+              class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg"
+            >
+              Go To Dashboard
+            </router-link>
+          </div>
         </div>
 
-        <hr class="my-6 w-full border-gray-300 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}" />
-
-        <!-- Bullet Points -->
-        <ul class="text-base text-xl text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
-          <li class="flex items-center mb-2">
-            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
-            Clean, Simple and Efficient Itinerary Planner
-          </li>
-          <li class="flex items-center mb-2">
-            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
-            Plan out your trip budget
-          </li>
-          <li class="flex items-center mb-2">
-            <i class="material-icons text-blue-500 mr-2">play_arrow</i>
-            Browse other users' itineraries
-          </li>
-        </ul>
-        
-        <div class="flex justify-center w-full transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
-          <button 
-            v-if="!profile" 
-            @click="handleLogin" 
-            class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg"
-          >
-            Login / Sign up
-          </button>
-          <router-link 
-            v-else 
-            to="/dashboard" 
-            class="bg-blue-500 text-white px-6 py-3 rounded hover:shadow-lg"
-          >
-            Go To Dashboard
-          </router-link>
-        </div>
+        <!-- Featured Itineraries -->
+        <FeaturedItineraries />
       </div>
+
+      <!-- Background Image -->
       <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg'); filter: brightness(0.8);"></div>
     </div>
     <hr class="w-full border-gray-300 my-6" />
@@ -90,7 +98,7 @@
           </li>
           <li class="flex items-center mb-2">
             <i class="material-icons text-blue-500 mr-2">play_arrow</i>
-            Plan out your trip budget
+            Plan out your trip details (budget, activities, noted, etc.)
           </li>
           <li class="flex items-center mb-2">
             <i class="material-icons text-blue-500 mr-2">play_arrow</i>
@@ -121,7 +129,8 @@
 </template>
 
 <script>
-import SharedItineraries from '@/components/itinerary/SharedItineraries.vue'
+import SharedItineraries from '@/components/itinerary/SharedItineraries.vue';
+import FeaturedItineraries from '@/components/browse/featured-itineraries/FeaturedItineraries.vue';
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { getProfileData } from '@/helpers/authService';
 import { useUser, setLoginPopupShow } from '@/context/UserContext';
@@ -129,7 +138,8 @@ import { useUser, setLoginPopupShow } from '@/context/UserContext';
 export default {
   name: 'HomePage',
   components: {
-    SharedItineraries
+    SharedItineraries,
+    FeaturedItineraries
   },
   setup() {
     const profile = ref(null);

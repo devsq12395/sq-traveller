@@ -4,18 +4,15 @@
         <!-- Header Section -->
         <div class="flex justify-between items-center pb-4 border-b border-gray-300">
           <div>
-            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+            <h1 class="text-3xl font-bold text-gray-800">Browse Itineraries</h1>
           </div>
         </div>
 
-        <!-- Featured Itineraries Section -->
-        <div class="pb-6">
+        <div class="flex gap-6">
           <FeaturedItineraries />
-        </div>
-  
-        <!-- Public Itineraries Section -->
-        <div class="pb-6">
-          <SharedItineraries />
+          <div :style="{height: '600px', maxHeight: '600px'}">
+            <SharedItineraries />
+          </div>
         </div>
       </div>
     </div>

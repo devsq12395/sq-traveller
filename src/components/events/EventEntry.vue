@@ -129,7 +129,7 @@
 
           <!-- Short Description -->
           <div class="text-left">
-            <p class="text-m text-gray-700 truncate">{{ short_description || 'asdasd' }}</p>
+            <p class="text-m text-gray-700 truncate">{{ short_description }}</p>
           </div>
         </div>
       </div>
