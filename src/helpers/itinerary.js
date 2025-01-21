@@ -468,7 +468,12 @@ export async function getAllsharedItinerariesOfUser(userId) {
       };
     }));
 
-    return { data: adjustedData, error: null };
+    // Filter out itineraries where itinerary_privacy is not 'shared'
+    const filteredData = adjustedData.filter(itinerary => {
+      console.log('Privacy:', itinerary.itinerary_privacy.privacy);
+      return itinerary.itinerary_privacy.privacy === 'shared';
+    });
+    return { data: filteredData, error: null };
   } catch (error) {
     console.error('Unexpected error fetching public itineraries:', error);
     return { error };

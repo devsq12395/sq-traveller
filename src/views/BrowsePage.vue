@@ -8,11 +8,14 @@
           </div>
         </div>
 
+        <!-- First Section -->
         <div class="flex gap-6">
           <FeaturedItineraries />
-          <div :style="{height: '600px', maxHeight: '600px'}">
-            <SharedItineraries />
-          </div>
+        </div>
+
+        <!-- Second Section -->
+        <div>
+          <SharedItineraries />
         </div>
       </div>
     </div>

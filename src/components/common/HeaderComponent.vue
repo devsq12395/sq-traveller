@@ -1,5 +1,5 @@
 <template>
-  <header v-if="isDesktop" class="fixed w-screen bg-blue-200 shadow-md z-40 max-w-screen">
+  <header v-if="isDesktop" class="fixed w-screen bg-blue-100 shadow-md z-40 max-w-screen">
     <div class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
         <!-- Logo -->

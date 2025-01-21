@@ -1,6 +1,8 @@
 <template>
-  <div v-if="isDesktop" @click="goToItinerary" class="w-60 bg-white shadow-md rounded-lg overflow-hidden cursor-pointer hover:bg-gray-100 m-1">
-    <img :src="img_url" alt="Itinerary Thumbnail" class="w-full h-40 object-cover" />
+  <div v-if="isDesktop" @click="goToItinerary" class="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer hover:bg-gray-100 m-1">
+    <img :src="img_url" alt="Itinerary Thumbnail" class="w-full object-cover aspect-[4/3]" />
+
+    <!-- Text Section -->
     <div class="p-2">
       <h2 class="text-lg font-bold truncate">{{ name }}</h2>
       <p class="text-gray-600 text-sm truncate">{{ description }}</p>

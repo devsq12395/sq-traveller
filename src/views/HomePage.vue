@@ -2,9 +2,9 @@
   <div v-if="isDesktop" class="w-full min-h-screen">
     <div class="relative h-screen w-full">
       <!-- Opening Screen Contents -->
-      <div>
+      <div class="flex justify-center items-center h-full">
         <!-- Adjusted Central Box -->
-        <div class="bg-white p-10 rounded shadow-lg w-[1000px] absolute top-1/4 left-1/4 transform -translate-y-1/4 bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0" :class="{'opacity-100': boxVisible}">
+        <div class="bg-white p-10 rounded shadow-lg w-[600px] bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0 mr-10" :class="{'opacity-100': boxVisible}">
           <!-- Logo -->
           <div class="flex justify-center w-full">
             <img 
@@ -58,7 +58,9 @@
         </div>
 
         <!-- Featured Itineraries -->
-        <FeaturedItineraries />
+        <div class="z-40">
+          <FeaturedItineraries />
+        </div>
       </div>
 
       <!-- Background Image -->
