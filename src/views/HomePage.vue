@@ -1,10 +1,13 @@
 <template>
   <div v-if="isDesktop" class="w-full min-h-screen">
-    <div class="relative h-screen w-full">
+    <div class="relative w-full">
       <!-- Opening Screen Contents -->
-      <div class="flex justify-center items-center h-full">
-        <!-- Adjusted Central Box -->
-        <div class="bg-white p-10 rounded shadow-lg w-[600px] bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-1000 opacity-0 mr-10" :class="{'opacity-100': boxVisible}">
+      <div class="flex justify-center items-center pt-20">
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center h-[2/3]" style="background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg'); filter: brightness(0.8);"></div>
+
+        <!-- Central Box -->
+        <div class="bg-white p-10 rounded shadow-lg w-2/3 bg-opacity-95 shadow-xl flex flex-col items-start z-30 transition-opacity duration-500 opacity-0 mr-10 mt-20 mb-20" :class="{'opacity-100': boxVisible}">
           <!-- Logo -->
           <div class="flex justify-center w-full">
             <img 
@@ -15,7 +18,7 @@
           </div>
           
           <!-- Subtitles -->
-          <div  class="flex flex-col gap-2 text-5xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-1000 opacity-0 delay-500" 
+          <div  class="flex flex-col gap-2 text-5xl font-bold text-gray-800 mb-4 text-left transition-opacity duration-500 opacity-0 delay-500" 
                 style="font-family: 'Raleway', sans-serif; font-weight: 200;" :class="{'opacity-100': subtitleVisible}">
             <p>Create Informative Itineraries</p>
             <p>in just a few clicks</p>
@@ -24,7 +27,7 @@
           <hr class="my-6 w-full border-gray-300 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}" />
 
           <!-- Bullet Points -->
-          <ul class="text-base text-xl text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-1000 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
+          <ul class="text-base text-xl text-gray-600 mb-6 text-left list-none pl-8 transition-opacity duration-500 opacity-0 delay-1000" :class="{'opacity-100': restVisible}">
             <li class="flex items-center mb-2">
               <i class="material-icons text-blue-500 mr-2">play_arrow</i>
               Clean, Simple and Efficient Itinerary Planner
@@ -56,18 +59,15 @@
             </router-link>
           </div>
         </div>
-
-        <!-- Featured Itineraries -->
-        <div class="z-40">
-          <FeaturedItineraries />
-        </div>
       </div>
-
-      <!-- Background Image -->
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg'); filter: brightness(0.8);"></div>
     </div>
     <hr class="w-full border-gray-300 my-6" />
-    <SharedItineraries />
+
+    <!-- Bottom Section -->
+    <div class="flex justify-between items-center mb-4 gap-0 px-6">
+      <FeaturedItineraries />
+      <SharedItineraries />
+    </div>
   </div>
   <div v-else class="w-full min-h-screen">
     <div class="relative h-screen w-full">

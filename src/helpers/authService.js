@@ -148,7 +148,7 @@ export async function getProfileData() {
 // Login with Google
 export async function loginWithGoogle() {
   try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { data: authResponse, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo:
@@ -163,36 +163,62 @@ export async function loginWithGoogle() {
       return { error };
     }
 
+    console.log(`authResponse: ${JSON.stringify(authResponse)}`);
+
+    // Fetch authenticated user information
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error('Error fetching session:', sessionError.message);
+      return { error: sessionError };
+    }
+
+    const user = sessionData.session?.user;
+    if (!user) {
+      console.error('No authenticated user found.');
+      return { error: { message: 'No authenticated user found.' } };
+    }
+
+    console.log(`Authenticated user: ${JSON.stringify(user)}`);
+
     // Fetch user profile from Supabase
     const { data: profile, error: profileError } = await supabase
       .from('profile')
-      .select('username','avatar_url','banner_url','bio')
-      .eq('user_id', data.user.id)
+      .select('username', 'avatar_url', 'banner_url', 'bio')
+      .eq('user_id', user.id) // Use the correct user ID from the authenticated session
       .single();
 
     if (profileError) {
-      return profileError;
+      console.error('Error fetching profile:', profileError.message);
+      return { error: profileError };
     }
 
-    console.log (`profile data: ${JSON.stringify(profile)}`);
+    console.log(`Profile data: ${JSON.stringify(profile)}`);
 
     // Set user data in context and local storage
-    setUser({
-      username: profile.username,
-      email: data.user.email,
-      user_id: data.user.id,
-      avatar_url: data.user.avatar_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984918/sq-traveller/d1smxewhudxzqaw2v0br.png',
-      banner_url: data.user.banner_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984919/sq-traveller/fee8n8wqws5ly6rvtkt6.jpg',
-      bio:data.user.bio
-    });
+    try {
+      setUser({
+        username: profile.username,
+        email: user.email,
+        user_id: user.id,
+        avatar_url:
+          profile.avatar_url ||
+          'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984918/sq-traveller/d1smxewhudxzqaw2v0br.png',
+        banner_url:
+          profile.banner_url ||
+          'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984919/sq-traveller/fee8n8wqws5ly6rvtkt6.jpg',
+        bio: profile.bio,
+      });
+    } catch (error) {
+      console.error('Error setting user data:', error);
+    }
 
-    // The data object will contain the redirect URL to the Google login page
-    return { data };
+    return { user };
   } catch (err) {
     console.error('Unexpected error during Google login:', err.message);
     return { error: { message: 'Unexpected error occurred during Google login.' } };
   }
 }
+
 
 // Login with Facebook
 export async function loginWithFacebook() {

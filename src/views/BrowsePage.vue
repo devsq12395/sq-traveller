@@ -8,14 +8,9 @@
           </div>
         </div>
 
-        <!-- First Section -->
-        <div class="flex gap-6">
-          <FeaturedItineraries />
-        </div>
-
-        <!-- Second Section -->
-        <div>
-          <SharedItineraries />
+        <div class="flex justify-between items-center mb-4 gap-0 px-6">
+            <FeaturedItineraries />
+            <SharedItineraries />
         </div>
       </div>
     </div>

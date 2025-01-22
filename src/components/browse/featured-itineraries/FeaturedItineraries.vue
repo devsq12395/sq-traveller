@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-blue-100 rounded-lg shadow flex flex-col items-center z-40" :style="{ height: '600px', maxHeight: '600px', width: '520px', maxWidth: '520px'}">
+  <div class="bg-blue-100 rounded-lg shadow flex flex-col items-center z-20 w-[25%] min-w-[25%] h-[700px] min-h-[700px]">
     <h2 class="text-2xl mt-4 font-bold">Featured Itineraries</h2>
 
     <hr class="w-[90%] border-t border-gray-400 my-4" />

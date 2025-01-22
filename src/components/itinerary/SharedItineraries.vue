@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDesktop" class="p-4 bg-blue-100 rounded-lg shadow">
+  <div v-if="isDesktop" class="p-4 bg-blue-100 rounded-lg shadow w-[73%] min-w-[73%] h-[700px] min-h-[700px]">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Public Itineraries</h2>
       <div class="flex items-center">
@@ -30,7 +30,7 @@
       <p>No public itineraries available.</p>
     </div>
     <div v-else>
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
+      <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         <SharedItinerariesEntry
           v-for="itinerary in itineraries"
           :key="itinerary.id"
@@ -39,7 +39,7 @@
       </div>
       
       <!-- Pagination Controls -->
-      <div class="mt-6 flex justify-center items-center space-x-2">
+      <div class="mt-1 flex justify-center items-center space-x-2">
         <button 
           type="button"
           @click="changePage(currentPage - 1)"
@@ -80,7 +80,7 @@
     </div>
 
     <hr class="my-4 border-t border-gray-400" />
-    
+
     <div v-if="loading" class="text-center py-4">
       <p>Loading shared itineraries...</p>
     </div>
@@ -133,6 +133,9 @@ export default {
   name: 'SharedItineraries',
   components: {
     SharedItinerariesEntry
+  },
+  props: {
+    numOfRows: { type: Number, required: true }
   },
   setup() {
     const itineraries = ref([]);

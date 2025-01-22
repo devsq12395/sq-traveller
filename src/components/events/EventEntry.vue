@@ -51,23 +51,21 @@
     <!-- Event Buttons -->
     <div class="flex justify-between items-center mt-3">
       <!-- Arrow Button -->
-      <div class="arrow-container bg-blue-400 flex justify-center mt-3">
-        <button @click="toggleInfo" class="arrow-button bg-blue-400 text-white hover:text-gray-300 w-full rounded-full text-lg">
-          <span v-if="!isExpanded">▼ More Details</span>
-          <span v-else>▲ More Details</span>
-        </button>
-      </div>
+      <button @click="toggleInfo" class="text-gray-600 hover:text-gray-500 underline cursor-pointer bg-blue-200 p-1 rounded">
+        <span v-if="!isExpanded">▼ More Details</span>
+        <span v-else>▲ More Details</span>
+      </button>
 
       <div v-if="isOwner" class="flex space-x-4">
         <button 
           @click="showEditEventPopup = true" 
-          class="p-2 px-4 bg-blue-500 text-white rounded shadow"
+          class="px-2 bg-blue-500 text-white rounded shadow"
         >
           Edit Details
         </button>
         <button 
           @click="confirmDelete" 
-          class="p-2 px-4 bg-red-500 text-white rounded shadow"
+          class="px-2 py-1 bg-red-500 text-white rounded shadow"
         >
           Delete Event
         </button>
@@ -294,18 +292,5 @@ export default {
 .event-info {
   overflow: hidden;
   height: 0;
-}
-
-.arrow-container {
-  width: 25%;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.arrow-button {
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 </style>
