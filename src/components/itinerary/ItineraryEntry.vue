@@ -63,7 +63,7 @@ export default {
     },
   },
   created() {
-    console.log('ItineraryEntry img_url:', this.img_url);
+    
   },
 };
 </script>

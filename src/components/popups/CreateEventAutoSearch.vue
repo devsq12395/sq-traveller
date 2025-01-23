@@ -59,7 +59,6 @@ export default {
     const fetchSuggestions = async () => {
       if (searchInput.value.length > 0) {
         suggestions.value = await fetchAutocompleteSuggestions(searchInput.value);
-        console.log('Suggestions:', suggestions.value);
       } else {
         suggestions.value = [];
       }

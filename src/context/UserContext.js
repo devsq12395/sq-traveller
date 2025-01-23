@@ -129,9 +129,7 @@ export function useLoading() {
 }
 
 export function setLoginPopupShow(show) {
-  console.log('Setting login popup show to:', show);
   loginPopupState.isLoginPopupShow = show;
-  console.log('Current loginPopupState:', loginPopupState);
 }
 
 export function useLoginPopup() {

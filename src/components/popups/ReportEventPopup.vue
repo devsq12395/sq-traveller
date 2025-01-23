@@ -52,7 +52,6 @@ export default {
     const user = useUser();
 
     const handleReportEvent = async () => {
-        console.log (user);
       if (!user.username) {
         alert('You must be logged in to report an event.');
         return;

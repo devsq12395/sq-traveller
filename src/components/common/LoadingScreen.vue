@@ -11,7 +11,6 @@ export default {
   name: 'LoadingScreen',
   setup() {
     const loadingState = useLoading();
-    console.log (`loading state: ${loadingState.isLoading}`);
     return { isLoading: loadingState.isLoading };
   },
 };

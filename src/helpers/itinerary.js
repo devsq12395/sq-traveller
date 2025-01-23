@@ -43,7 +43,6 @@ export async function fetchItinerary(itineraryId, currentUserId) {
   }
 
   try {
-    console.log('Fetching itinerary with ID:', itineraryId, 'for user:', currentUserId);
 
     const { data: privacyData, error: privacyError } = await fetchItineraryPrivacy(itineraryId);
 
@@ -53,7 +52,6 @@ export async function fetchItinerary(itineraryId, currentUserId) {
     }
 
     const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
-    console.log('Privacy data:', privacy);
 
     // Fetch the itinerary details
     const { data: itinerary, error: itineraryError } = await supabase
@@ -72,18 +70,13 @@ export async function fetchItinerary(itineraryId, currentUserId) {
     }
 
     if (!itinerary) {
-      console.log('No itinerary found with ID:', itineraryId);
       return { error: 'Itinerary not found' };
     }
 
-    console.log('Raw itinerary data:', itinerary);
-
     const isOwner = currentUserId ? itinerary.user_id === currentUserId : false;
-    console.log('Is owner check:', { currentUserId, itineraryUserId: itinerary.user_id, isOwner });
 
     // If private and not owner or not logged in, deny access
     if (privacy === 'private' && (!currentUserId || !isOwner)) {
-      console.log('Access denied: private itinerary, user not owner');
       return { error: 'This itinerary is private', isPrivate: true };
     }
 
@@ -119,7 +112,6 @@ export async function fetchItineraryWithCreator(itineraryId) {
     }
 
     const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
-    console.log('Privacy data:', privacy);
 
     const { data, error } = await supabase
       .from('itinerary')
@@ -181,7 +173,6 @@ export async function fetchItineraryPrivacy(itineraryId) {
 
     // If no privacy setting exists, create one with default 'private' setting
     if (!data || data.length === 0) {
-      console.log('Creating default privacy setting for itineraryId:', itineraryId);
       const { data: existingData, error: existingError } = await supabase
         .from('itinerary_privacy')
         .select('privacy')
@@ -215,7 +206,6 @@ export async function fetchItineraryPrivacy(itineraryId) {
           return { error: insertError };
         }
       } else {
-        console.log('Privacy setting already exists for itineraryId:', itineraryId);
         return { data: existingData[0] };
       }
     }
@@ -254,7 +244,6 @@ export async function createItinerary(userId, name, description, days) {
 
 // Save the image URL to the itinerary_img table
 export async function saveItineraryImage(itineraryId, imgUrl) {
-  console.log('Saving image with itineraryId:', itineraryId, 'and imgUrl:', imgUrl);
   try {
     const { data, error } = await supabase
       .from('itinerary_img')
@@ -470,7 +459,6 @@ export async function getAllsharedItinerariesOfUser(userId) {
 
     // Filter out itineraries where itinerary_privacy is not 'shared'
     const filteredData = adjustedData.filter(itinerary => {
-      console.log('Privacy:', itinerary.itinerary_privacy.privacy);
       return itinerary.itinerary_privacy.privacy === 'shared';
     });
     return { data: filteredData, error: null };

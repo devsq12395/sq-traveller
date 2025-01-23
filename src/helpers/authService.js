@@ -131,7 +131,6 @@ export async function getProfileData() {
 
     profile.avatar_url = profile.avatar_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984918/sq-traveller/d1smxewhudxzqaw2v0br.png';
     profile.banner_url = profile.banner_url || 'https://res.cloudinary.com/dkloacrmg/image/upload/v1735984919/sq-traveller/fee8n8wqws5ly6rvtkt6.jpg';
-    console.log (`profile data: ${JSON.stringify(profile)}`);
 
     if (error) {
       console.error('Error fetching profile:', error);
@@ -148,7 +147,7 @@ export async function getProfileData() {
 // Login with Google
 export async function loginWithGoogle() {
   try {
-    const { data: authResponse, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo:
@@ -163,8 +162,6 @@ export async function loginWithGoogle() {
       return { error };
     }
 
-    console.log(`authResponse: ${JSON.stringify(authResponse)}`);
-
     // Fetch authenticated user information
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) {
@@ -178,8 +175,6 @@ export async function loginWithGoogle() {
       return { error: { message: 'No authenticated user found.' } };
     }
 
-    console.log(`Authenticated user: ${JSON.stringify(user)}`);
-
     // Fetch user profile from Supabase
     const { data: profile, error: profileError } = await supabase
       .from('profile')
@@ -191,8 +186,6 @@ export async function loginWithGoogle() {
       console.error('Error fetching profile:', profileError.message);
       return { error: profileError };
     }
-
-    console.log(`Profile data: ${JSON.stringify(profile)}`);
 
     // Set user data in context and local storage
     try {
@@ -316,7 +309,6 @@ export async function createProfile(username) {
       return { success: false, error: profileError };
     }
 
-    console.log('Profile created successfully:', profile);
     return { success: true, profile, error: null };
   } catch (err) {
     console.error('Unexpected error in createProfile:', err.message);

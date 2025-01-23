@@ -58,6 +58,7 @@
             @select-event="$emit('select-event', $event)"
             @edit-event="$emit('edit-event', $event)"
             @delete-event="$emit('delete-event', $event)"
+            @refresh="$emit('refresh')"
           />
         </div>
       </div>
@@ -147,6 +148,7 @@
             @select-event="$emit('select-event', $event)"
             @edit-event="$emit('edit-event', $event)"
             @delete-event="$emit('delete-event', $event)"
+            @refresh="$emit('refresh')"
           />
         </div>
       </div>

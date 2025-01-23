@@ -202,7 +202,6 @@ export default {
 
     const handleCreateItinerary = async () => {
       try {
-        console.log (user);
         const { data, error } = await createItinerary(
           user.user_id,
           itinerary.value.name,
@@ -229,7 +228,6 @@ export default {
         if (data && imageUrl.value) {
           try {
             await saveItineraryImage(data[0].id, imageUrl.value);
-            console.log('Image saved successfully');
           } catch (imgError) {
             console.error('Error saving itinerary image:', imgError);
           }
@@ -247,7 +245,6 @@ export default {
     };
 
     const setImageURL = (url) => {
-      console.log ('Image URL:', url);
       imageUrl.value = url;
     };
 

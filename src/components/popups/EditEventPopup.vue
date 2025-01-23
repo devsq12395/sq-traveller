@@ -289,7 +289,6 @@ export default {
 
         const response = await axios.post(cloudinaryUrl, formData);
         imageUrl.value = response.data.secure_url;
-        console.log("Image uploaded successfully:", imageUrl.value);
       } catch (error) {
         console.error("Error uploading image:", error);
       }
@@ -297,9 +296,6 @@ export default {
 
     const handleEditEvent = async (e) => {
       e.preventDefault();
-      console.log('handleEditEvent called');
-      console.log('Current event data:', event.value);
-      console.log('Event ID:', props.eventId);
       
       try {
         const eventData = {
@@ -312,24 +308,20 @@ export default {
           time_end: event.value.time_end
         };
 
-        console.log('Sending event data:', eventData);
         const { error } = await updateEvent(props.eventId, eventData);
-        if (error) console.log('Update response error:', error);
+        if (error) console.error('Update response error:', error);
 
         if (!error) {
           // If there's a new image URL, save it
           if (imageUrl.value && imageUrl.value !== event.value.img_url) {
             try {
               await saveEventImage(props.eventId, imageUrl.value);
-              console.log("Event image updated successfully");
             } catch (imgError) {
               console.error("Error updating event image:", imgError);
             }
           }
-          console.log('Event updated successfully, emitting refresh');
-          emit('refresh');
-          emit('eventUpdated');
           refreshItinerary();
+          emit('refresh');
           closePopup();
         } else {
           console.error('Error updating event:', error.message);

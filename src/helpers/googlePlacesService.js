@@ -12,7 +12,6 @@ export const fetchPlaceDetails = async (placeId) => {
       key: API_KEY,
     },
   });
-  console.log('Place Details Response:', response.data.result); // Log the response
   return response.data.result; // Ensure this contains a `photos` array
 };
 
@@ -21,7 +20,6 @@ export const fetchPlacePhotos = async (photoReference) => {
   try {
     const endpoint = `${PROXY_URL}/place/photo`;
     const url = `${endpoint}?maxwidth=400&photoreference=${photoReference}`;
-    console.log("Fetching photo URL:", url); // Log the URL
     return url;
   } catch (error) {
     console.error("Failed to fetch photo URL:", error.message); // Log the error

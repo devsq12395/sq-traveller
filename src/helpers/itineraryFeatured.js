@@ -15,7 +15,6 @@ async function getAllFeaturedItineraries() {
                 console.error(`Error fetching complete data for itinerary ID ${itinerary.id}:`, error);
                 return null;
             }
-            console.log('Complete data fetched for itinerary:', completeData);
 
             return completeData;
         }));

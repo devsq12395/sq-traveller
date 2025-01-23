@@ -30,8 +30,6 @@
           @go-to-settings="goToSettings"
           @go-to-dashboard="goToDashboard"
           @select-event="selectEvent"
-          @edit-event="editEvent"
-          @delete-event="deleteEvent"
           @show-create-event="showCreateEventPopup = true"
           @show-report-event="showReportEventPopup = true"
           @refresh="loadEvents"
@@ -83,9 +81,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUser, setLoading, setEventId, refreshItinerary, useItinerary } from '../context/UserContext';
+import { useUser, setEventId, refreshItinerary } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
@@ -116,7 +114,6 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const user = useUser();
-    const itineraryContext = useItinerary();
     const itineraryId = route.params.id;
     const itineraryName = ref('');
     const itineraryDescription = ref('');
@@ -202,6 +199,7 @@ export default {
       }
 
       refreshItinerary();
+      refreshEventsGroupedByDay();
     };
 
     const checkWindowSize = () => {
@@ -209,18 +207,18 @@ export default {
     };
 
     onMounted(() => {
-      setLoading(true); // Show loading on start
+      //setLoading(true); // Show loading on start
       loadItinerary().then(() => {
         // Only load events if itinerary is not private
         if (!isPrivate.value) {
           loadEvents().finally(() => {
-            setLoading(false); // Hide loading after everything is loaded
+            //setLoading(false); // Hide loading after everything is loaded
           });
         } else {
-          setLoading(false); // Hide loading if itinerary is private (no events to load)
+          //setLoading(false); // Hide loading if itinerary is private (no events to load)
         }
       }).catch(() => {
-        setLoading(false); // Hide loading if there's an error
+        //setLoading(false); // Hide loading if there's an error
       });
       window.addEventListener('resize', checkWindowSize);
     });
@@ -250,14 +248,6 @@ export default {
       router.push(`/itinerary/${route.params.id}/settings`);
     };
 
-    const editEvent = (eventId) => {
-      console.log('Edit event:', eventId);
-    };
-
-    const deleteEvent = (eventId) => {
-      console.log('Delete event:', eventId);
-    };
-
     const eventsGroupedByDay = computed(() => {
       return refreshEventsGroupedByDay();
     });
@@ -282,12 +272,6 @@ export default {
       // Then sort days numerically
       return Object.values(grouped).sort((a, b) => a[0].day - b[0].day);
     };
-
-    watch(itineraryContext.lastRefresh, (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        refreshEventsGroupedByDay();
-      }
-    });
 
     const selectedEvent = computed(() =>
       events.value.find((event) => event.id === selectedEventId.value)
@@ -316,8 +300,6 @@ export default {
       goToSettings,
       isOwner,
       isPrivate,
-      editEvent,
-      deleteEvent,
       createdBy,
       isDesktop,
       refreshEventsGroupedByDay
@@ -325,7 +307,6 @@ export default {
   },
   methods: {
     handleEventUpdate() {
-      console.log('Event updated');
       this.loadEvents();
     }
   }

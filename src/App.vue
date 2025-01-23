@@ -29,10 +29,8 @@ export default {
     provide('user', useUser());
 
     const loginPopupState = useLoginPopup();
-    console.log('Initial loginPopupState:', loginPopupState);
 
     const closeLoginPopup = () => {
-      console.log('Closing login popup');
       setLoginPopupShow(false);
     };
 

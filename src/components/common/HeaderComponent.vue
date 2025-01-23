@@ -151,7 +151,6 @@ export default {
           router.push('/set-username'); // Redirect to SetUsernamePage if no profile
         } else {
           const { data: getUser } = await supabase.auth.getUser();
-          console.log ('Current user:', getUser);
           profile.value = await getProfileData();
 
           setUser({

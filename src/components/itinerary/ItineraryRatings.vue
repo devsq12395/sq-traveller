@@ -75,7 +75,6 @@ export default {
     const userRating = ref(null);
 
     const loadRatings = async () => {
-      console.log('Loading ratings for itinerary ID:', props.itineraryId);
       const { data, error } = await fetchRatings(props.itineraryId);
       if (!error) {
         ratings.value = data;

@@ -103,7 +103,6 @@ export default {
       if (newValue) {
         eventId.value = eventPopupsState.eventId;
         fetchEvent(eventId.value).then(event => {
-          console.log (event.data);
           eventImage.value = event.data.img_url;
           eventDesc.value = event.data.description;
           eventLocation.value = event.data.location;

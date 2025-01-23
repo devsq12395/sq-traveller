@@ -28,7 +28,6 @@ export default {
     result: {
       immediate: true,
       async handler(newResult) {
-        console.log('New result:', newResult);
         if (newResult.place_id) {
           try {
             const placeDetails = await fetchPlaceDetails(newResult.place_id);
@@ -66,11 +65,9 @@ export default {
       });
     },
     selectResult() {
-      console.log('Selected result:', this.result);
       this.setLocation(this.result.description);
       this.$emit('complete-location', this.result.description);
       if (this.imageUrl) {
-        console.log('Selected image URL:', this.imageUrl);
         this.setImageURL(this.imageUrl);
       }
     },

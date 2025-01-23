@@ -37,7 +37,6 @@ export default {
 
     const loadActivities = async () => {
       const { data } = await fetchEventTodos(props.eventId);
-      console.log ('refreshing activities...');
       activities.value = data;
     };
 
@@ -61,7 +60,6 @@ export default {
     }, { immediate: true });
 
     watch(() => props.lastRefresh, (newVal, oldVal) => {
-      console.log('lastRefresh changed:', newVal);
       if (newVal !== oldVal) {
         loadActivities();
       }

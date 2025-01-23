@@ -78,7 +78,6 @@
       :eventId="eventId" 
       @close="showEditEventPopup = false"
       @refresh="$emit('refresh')" 
-      @eventUpdated="$emit('eventUpdated')"
     />
 
     <!-- Delete Event Popup -->
@@ -179,8 +178,7 @@
       v-if="showEditEventPopup" 
       :eventId="eventId" 
       @close="showEditEventPopup = false"
-      @refresh="$emit('refresh')" 
-      @eventUpdated="$emit('eventUpdated')"
+      @refresh="$emit('refresh')"
     />
   </div>
 </template>
@@ -277,7 +275,7 @@ export default {
       showEventInfoPopup
     };
   },
-  emits: ['select-event', 'refresh', 'eventUpdated'],
+  emits: ['select-event', 'refresh'],
   methods: {
     formatTime(time) {
       if (!time) return 'N/A';

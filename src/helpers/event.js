@@ -132,14 +132,12 @@ export async function saveEventImage(eventId, imgUrl) {
 
     let result;
     if (existingImage) {
-      console.log (`existingImage: ${JSON.stringify(existingImage)}`);
       // Update the existing image
       result = await supabase
         .from('event_img')
         .update({ img_url: imgUrl })
         .eq('id', existingImage.id);
     } else {
-      console.log ('no existing image');
       // Insert a new image
       result = await supabase
         .from('event_img')
