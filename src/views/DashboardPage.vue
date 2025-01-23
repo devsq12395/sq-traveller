@@ -12,11 +12,6 @@
       <div class="border-b border-gray-300 pb-6">
         <ItinerariesList ref="itinerariesListRef" />
       </div>
-
-      <!-- Shared Itineraries Section -->
-      <div class="pb-6">
-        <SharedItineraries />
-      </div>
     </div>
   </div>
 </template>
@@ -24,14 +19,12 @@
 <script>
 import { ref, watch } from 'vue';
 import ItinerariesList from '../components/itinerary/ItinerariesList.vue';
-import SharedItineraries from '../components/itinerary/SharedItineraries.vue';
 import { useUser } from '../context/UserContext';
 
 export default {
   name: 'DashboardPage',
   components: {
     ItinerariesList,
-    SharedItineraries,
   },
   setup() {
     const itinerariesListRef = ref(null);

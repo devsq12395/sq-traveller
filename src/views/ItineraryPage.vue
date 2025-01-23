@@ -83,9 +83,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUser, setLoading, setEventId, refreshItinerary } from '../context/UserContext';
+import { useUser, setLoading, setEventId, refreshItinerary, useItinerary } from '../context/UserContext';
 import { supabase } from '../helpers/supabaseClient';
 import { fetchItinerary } from '../helpers/itinerary';
 import { fetchItineraryEvents } from '../helpers/event';
@@ -116,6 +116,7 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const user = useUser();
+    const itineraryContext = useItinerary();
     const itineraryId = route.params.id;
     const itineraryName = ref('');
     const itineraryDescription = ref('');
@@ -137,11 +138,8 @@ export default {
     // Check authentication and get current user
     const checkAuth = async () => {
       const { data: { user: authUser } } = await supabase.auth.getUser();
-      console.log('Current auth user:', authUser);
-      console.log('Current user context:', user);
       
       if (authUser && authUser.id !== user.user_id) {
-        console.log('User context needs update. Auth user ID:', authUser.id);
         // Update user context if needed
         const { data: profile } = await supabase
           .from('profile')
@@ -150,7 +148,6 @@ export default {
           .single();
         
         if (profile) {
-          console.log('Updating user context with profile:', profile);
           user.setUser({
             username: profile.username,
             email: authUser.email,
@@ -164,14 +161,10 @@ export default {
     // Fetch itinerary details and events
     const loadItinerary = async () => {
       const currentUserId = await checkAuth();
-      console.log('Loading itinerary with user ID:', currentUserId);
       const response = await fetchItinerary(itineraryId, currentUserId);
-      console.log('Fetch itinerary response:', response);
       
       if (response.error) {
-        console.log('Error response:', response.error);
         if (response.isPrivate) {
-          console.log('Itinerary is private - blocking access');
           isPrivate.value = true;
           // Clear any existing data
           itineraryName.value = '';
@@ -186,8 +179,6 @@ export default {
       }
 
       const { data } = response;
-      console.log('Itinerary loaded:', data);
-      console.log('Is owner:', data.isOwner);
       
       itineraryData.value = data;
       itineraryName.value = data.name;
@@ -199,8 +190,7 @@ export default {
 
     const loadEvents = async () => {
       // Don't load events if itinerary is private
-      if (isPrivate.value) {
-        console.log('Not loading events - itinerary is private');
+      if (isPrivate.value) { 
         return;
       }
       
@@ -211,7 +201,6 @@ export default {
         console.error('Error fetching events:', error.message);
       }
 
-      console.log ('refreshing...');
       refreshItinerary();
     };
 
@@ -270,14 +259,16 @@ export default {
     };
 
     const eventsGroupedByDay = computed(() => {
+      return refreshEventsGroupedByDay();
+    });
+
+    const refreshEventsGroupedByDay = () => {
       const grouped = events.value.reduce((acc, event) => {
         const dayKey = event.day;
         if (!acc[dayKey]) acc[dayKey] = [];
         acc[dayKey].push(event);
         return acc;
       }, {});
-
-      console.log('Events grouped by day:', grouped);
 
       // First sort events within each day by time_start
       Object.values(grouped).forEach(dayEvents => {
@@ -290,6 +281,12 @@ export default {
 
       // Then sort days numerically
       return Object.values(grouped).sort((a, b) => a[0].day - b[0].day);
+    };
+
+    watch(itineraryContext.lastRefresh, (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        refreshEventsGroupedByDay();
+      }
     });
 
     const selectedEvent = computed(() =>
@@ -322,7 +319,8 @@ export default {
       editEvent,
       deleteEvent,
       createdBy,
-      isDesktop
+      isDesktop,
+      refreshEventsGroupedByDay
     };
   },
   methods: {

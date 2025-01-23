@@ -159,6 +159,7 @@ import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { updateEvent, saveEventImage, fetchEvent } from '../../helpers/event';
 import { defaultImages } from '../../helpers/globalVariables';
 import { fetchAutocompleteSuggestions, fetchPlacePhotos } from '@/helpers/googlePlacesService';
+import { refreshItinerary } from '../../context/UserContext';
 import CreateEventAutoSearch from './CreateEventAutoSearch.vue';
 import CreateEventManualInput from './CreateEventManualInput.vue';
 import axios from 'axios';
@@ -328,6 +329,7 @@ export default {
           console.log('Event updated successfully, emitting refresh');
           emit('refresh');
           emit('eventUpdated');
+          refreshItinerary();
           closePopup();
         } else {
           console.error('Error updating event:', error.message);

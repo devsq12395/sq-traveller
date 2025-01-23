@@ -97,17 +97,28 @@ export default {
   components: {
     EventEntry
   },
+  props: {
+    eventsGroupedByDay: { type: Array, required: true },
+    selectedEventId: { type: String, default: null },
+    isOwner: { type: Boolean, default: false },
+    itineraryDays: { type: Number, required: true }
+  },
   setup(props){
     const { eventsGroupedByDay, itineraryDays } = toRefs(props);
     const isDesktop = ref(window.innerWidth >= 640);
     const currentPage = ref(1);
     const paginatedEvents = ref([]);
-    const totalPages = ref(0);
+    const totalPages = ref(itineraryDays.value);
 
     watch([eventsGroupedByDay, itineraryDays], () => {
+      reloadEvents();
+    });
+
+    const reloadEvents = () => {
       paginatedEvents.value = [];
-      
-      while (paginatedEvents.value.length < totalPages.value) {
+      totalPages.value = itineraryDays.value;
+
+      while (paginatedEvents.value.length < itineraryDays.value) {
         paginatedEvents.value.push([]);
       }
 
@@ -118,8 +129,7 @@ export default {
           }
         });
       });
-      totalPages.value = itineraryDays.value;
-    });
+    };
 
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
@@ -137,6 +147,7 @@ export default {
     onMounted(() => {
       window.addEventListener('resize', checkWindowSize);
       checkWindowSize();
+      reloadEvents();
     });
     onUnmounted(() => {
       window.removeEventListener('resize', checkWindowSize);
@@ -148,50 +159,14 @@ export default {
       currentPage,
       totalPages,
       nextPage,
-      prevPage
+      prevPage,
+      reloadEvents
     }
   },
-  
-  props: {
-    eventsGroupedByDay: {
-      type: Array,
-      required: true
-    },
-    selectedEventId: {
-      type: String,
-      default: null
-    },
-    isOwner: {
-      type: Boolean,
-      default: false
-    },
-    itineraryDays: {
-      type: Number,
-      required: true
-    }
-  }
 };
 </script>
 
 <style>
-.pagination-controls {
-  display: flex;
-  justify-content: center;
-  margin: 10px 0;
-}
-.pagination-controls button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.pagination-controls button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
 .day-buttons {
   display: flex;
   justify-content: center;

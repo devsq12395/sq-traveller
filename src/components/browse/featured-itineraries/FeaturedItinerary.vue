@@ -1,11 +1,14 @@
 <template>
-  <div class="featured-itinerary flex flex-col items-center cursor-pointer rounded-lg shadow" :style="{ height: '460px', maxHeight: '460px', width: '500px', maxWidth: '500px', backgroundImage: `url(${itinerary.img_url})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
-    <div class="flex-1 p-5 text-left bg-white bg-opacity-75 p-4 w-full" style="margin-top: 60%;">
-      <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ itinerary.name }}</h2>
-      <ul class="list-none p-0">
-        <li class="text-sm text-gray-700 mb-1"><strong>Created by:</strong> {{ itinerary.profiles.username }}</li>
-      </ul>
-      <p class="text-sm text-gray-600 mb-4">{{ itinerary.description.length > 150 ? itinerary.description.substring(0, 45) + '...' : itinerary.description }}</p>
+  <div @click="navigateToItinerary" class="bg-purple-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+    <img :src="itinerary.img_url" :alt="itinerary.name" class="w-full object-cover aspect-[4/3]" />
+
+    <!-- Text Section -->
+    <div class="p-4">
+      <h3 class="text-xl font-semibold mb-2">{{ itinerary.name }}</h3>
+      <p class="text-gray-600 mb-2">{{ itinerary.description }}</p>
+      <div class="flex justify-between items-center text-sm text-gray-500">
+        <span>By {{ itinerary.profiles.username }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +21,11 @@ export default {
       default: () => ({}),
     },
   },
+  methods: {
+    navigateToItinerary() {
+      this.$router.push(`/itinerary/${this.itinerary.id}`);
+    },
+  }
 };
 </script>
 

@@ -14,7 +14,9 @@
       <p>No featured itineraries available.</p>
     </div>
     <div v-else>
-      <FeaturedItinerary :itinerary="currentItinerary" />
+      <div class="w-full min-w-full max-w-full">
+        <FeaturedItinerary :itinerary="currentItinerary" />
+      </div>
 
       <!-- Pagination -->
       <div class="pagination flex items-center justify-center mt-3">

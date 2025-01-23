@@ -9,7 +9,7 @@
     </div>
     <div class="flex justify-center items-center mt-4 space-x-4">
       <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-blue-500 text-white rounded">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <span>Page {{ currentPage }} of {{ totalPages < 1 ? 1 : totalPages }}</span>
       <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 bg-blue-500 text-white rounded">Next</button>
     </div>
   </div>
@@ -36,7 +36,7 @@
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-4">
       <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-blue-500 text-white rounded">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <span>Page {{ currentPage }} of {{ totalPages < 1 ? 1 : totalPages }}</span>
       <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 bg-blue-500 text-white rounded">Next</button>
     </div>
   </div>
