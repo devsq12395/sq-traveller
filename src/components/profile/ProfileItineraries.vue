@@ -1,9 +1,9 @@
 <template>
   <!-- Desktop View -->
   <div v-if="isDesktop" class="profile-itineraries rounded-lg w-full p-5 flex-wrap">
-    <h2 class="text-4xl font-bold mb-4 text-left p-5">{{user.username}}'s Public Itineraries</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
-      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id" class="flex-1 max-w-[21%] box-border">
+    <h2 class="text-3xl mb-4 text-left p-5">{{user.username}}'s Public Itineraries</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id" class="flex-1 box-border">
         <SharedItinerariesEntry :itinerary="itinerary" class="h-full"/>
       </div>
     </div>
