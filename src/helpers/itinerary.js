@@ -445,8 +445,13 @@ export async function getAllsharedItinerariesOfUser(userId) {
       return { error };
     }
 
+    // Filter out itineraries where itinerary_privacy is not 'shared'
+    const filteredData = data.filter(itinerary => {
+      return itinerary.itinerary_privacy.some(priv => priv.privacy === 'shared');
+    });
+
     // Adjust time fields and handle nested itinerary_img data
-    const adjustedData = await Promise.all(data.map(async itinerary => {
+    const adjustedData = await Promise.all(filteredData.map(async itinerary => {
       // Access the first img_url from the itinerary_img array or use the placeholder
       const img_url = itinerary.itinerary_img && itinerary.itinerary_img.length > 0 ? itinerary.itinerary_img[0].img_url : 'https://via.placeholder.com/150';
       const averageRating = await fetchAverageRating(itinerary.id);
@@ -457,11 +462,7 @@ export async function getAllsharedItinerariesOfUser(userId) {
       };
     }));
 
-    // Filter out itineraries where itinerary_privacy is not 'shared'
-    const filteredData = adjustedData.filter(itinerary => {
-      return itinerary.itinerary_privacy.privacy === 'shared';
-    });
-    return { data: filteredData, error: null };
+    return { data: adjustedData, error: null };
   } catch (error) {
     console.error('Unexpected error fetching public itineraries:', error);
     return { error };

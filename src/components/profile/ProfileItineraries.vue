@@ -1,9 +1,9 @@
 <template>
   <!-- Desktop View -->
-  <div v-if="isDesktop" class="profile-itineraries rounded-lg w-full p-5">
+  <div v-if="isDesktop" class="profile-itineraries rounded-lg w-full p-5 flex-wrap">
     <h2 class="text-4xl font-bold mb-4 text-left p-5">{{user.username}}'s Public Itineraries</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
-      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id">
+      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id" class="flex-1 max-w-[21%] box-border">
         <SharedItinerariesEntry :itinerary="itinerary" class="h-full"/>
       </div>
     </div>
@@ -15,7 +15,7 @@
   </div>
 
   <!-- Mobile View -->
-  <div v-else class="profile-itineraries rounded-lg w-full p-5">
+  <div v-else class="profile-itineraries rounded-lg w-full p-5 flex-wrap">
     <h2 class="text-xl font-bold mb-4 text-left">{{user.username}}'s Public Itineraries</h2>
     <hr class="border-t border-gray-300 my-4">
 
@@ -28,7 +28,7 @@
 
     <!-- Itinerary Entries -->
     <div class="grid grid-cols-1 gap-4 mb-4">
-      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id">
+      <div v-for="itinerary in paginatedItineraries" :key="itinerary.id" class="flex-1 max-w-[21%] box-border">
         <SharedItinerariesEntry :itinerary="itinerary" class="h-full"/>
       </div>
     </div>
@@ -105,11 +105,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.profile-itineraries .flex-wrap > div {
-  flex: 1 0 21%; /* Adjust the percentage as needed for spacing */
-  max-width: 21%;
-  box-sizing: border-box;
-}
-</style>

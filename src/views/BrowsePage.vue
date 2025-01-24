@@ -10,7 +10,9 @@
 
         <div class="flex justify-between items-center mb-4 gap-0 px-6">
             <FeaturedItineraries />
-            <SharedItineraries />
+            <SharedItineraries 
+              :numOfRows="3"
+            />
         </div>
       </div>
     </div>
