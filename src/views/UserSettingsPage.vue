@@ -11,9 +11,37 @@
         <h1 class="text-3xl font-bold">User Settings</h1>
       </div>
 
-      <!-- Settings content will go here -->
-      <div class="space-y-6">
-        <p class="text-gray-600">Settings content coming soon...</p>
+      <div class="settings-page mx-auto p-6 max-w-4xl">
+        <h1 class="text-3xl font-bold mb-6">User Settings</h1>
+
+        <div class="space-y-6">
+          <!-- Change Username -->
+          <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-2">Change Username</h2>
+            <input type="text" placeholder="Enter new username" class="w-full p-2 border border-gray-300 rounded" />
+            <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Username</button>
+          </div>
+
+          <!-- Change Avatar -->
+          <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-2">Change Avatar</h2>
+            <div class="flex items-center space-x-4">
+              <img src="https://via.placeholder.com/100" alt="Current Avatar" class="w-24 h-24 rounded-full" />
+              <input type="file" class="border border-gray-300 rounded" />
+            </div>
+            <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload Avatar</button>
+          </div>
+
+          <!-- Change Banner -->
+          <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-2">Change Banner</h2>
+            <div class="flex items-center space-x-4">
+              <img src="https://via.placeholder.com/300x100" alt="Current Banner" class="w-full h-24 object-cover rounded" />
+              <input type="file" class="border border-gray-300 rounded" />
+            </div>
+            <button class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload Banner</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -37,3 +65,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.settings-page {
+  background-color: #f7fafc;
+  min-height: 100vh;
+}
+</style>
