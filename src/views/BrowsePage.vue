@@ -8,10 +8,10 @@
           </div>
         </div>
 
-        <div class="flex justify-between items-center mb-4 gap-0 px-6">
+        <div class="flex justify-between mb-4 gap-0 px-6">
             <FeaturedItineraries />
             <SharedItineraries 
-              :boxHeight="2700"
+              :numOfRows="4"
             />
         </div>
       </div>

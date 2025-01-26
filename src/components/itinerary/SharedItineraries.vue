@@ -2,7 +2,7 @@
   <div
     v-if="isDesktop"
     class="p-4 bg-blue-100 rounded-lg shadow gap-2"
-    :style="{ height: `${boxHeight}px`, minHeight: `${boxHeight}px`, width: '73%', minWidth: '73%' }"
+    :style="{ width: '73%', minWidth: '73%' }"
   >
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Public Itineraries</h2>
@@ -35,33 +35,31 @@
     </div>
     <div v-else class="flex flex-col space-y-4 gap-4">
       <!-- Pagination Controls -->
-      <div class="mt-1 flex justify-center items-center space-x-2">
-        <button 
-          type="button"
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button 
-          type="button"
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="changePage(currentPage - 1)" 
+        @next-page="changePage(currentPage + 1)"
+      />
 
-      <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 grid-rows-{{ numOfRows }} gap-4 mb-4">
+      <div 
+        class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4" 
+        :style="{ gridTemplateRows: `repeat(${numOfRows}, minmax(0, 1fr))` }"
+      >
         <SharedItinerariesEntry
           v-for="itinerary in itineraries"
           :key="itinerary.id"
           :itinerary="itinerary"
         />
       </div>
+
+      <!-- Pagination Controls -->
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="changePage(currentPage - 1)" 
+        @next-page="changePage(currentPage + 1)"
+      />
     </div>
   </div>
   <div v-else class="p-4 bg-blue-100 rounded-lg shadow">
@@ -95,6 +93,14 @@
       <p>No shared itineraries available.</p>
     </div>
     <div v-else>
+      <!-- Pagination Controls -->
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="changePage(currentPage - 1)" 
+        @next-page="changePage(currentPage + 1)"
+      />
+
       <div class="flex flex-col space-y-4 mb-4">
         <SharedItinerariesEntry
           v-for="itinerary in itineraries"
@@ -104,25 +110,12 @@
       </div>
       
       <!-- Pagination Controls -->
-      <div class="mt-6 flex justify-center items-center space-x-2">
-        <button 
-          type="button"
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button 
-          type="button"
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="changePage(currentPage - 1)" 
+        @next-page="changePage(currentPage + 1)"
+      />
     </div>
   </div>
 </template>
@@ -132,14 +125,16 @@ import { ref, onMounted } from 'vue';
 import SharedItinerariesEntry from './SharedItinerariesEntry.vue';
 import { fetchSharedItineraries, searchItineraries } from '../../helpers/itinerary';
 import { fetchAverageRating } from '../../helpers/itineraryRatings';
+import PaginationControl from '../common/PaginationControl.vue';
 
 export default {
   name: 'SharedItineraries',
   components: {
-    SharedItinerariesEntry
+    SharedItinerariesEntry,
+    PaginationControl
   },
   props: {
-    boxHeight: { type: Number, required: true }
+    numOfRows: { type: String, required: true }
   },
   setup() {
     const itineraries = ref([]);

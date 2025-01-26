@@ -64,10 +64,10 @@
     <hr class="w-full border-gray-300 my-6" />
 
     <!-- Bottom Section -->
-    <div class="flex justify-between items-center mb-4 gap-0 px-6">
+    <div class="flex justify-between items-stretch mb-4 gap-0 px-6">
       <FeaturedItineraries />
       <SharedItineraries 
-        :boxHeight="700"
+        :numOfRows="1"
       />
     </div>
   </div>
@@ -128,7 +128,12 @@
       <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://res.cloudinary.com/dkloacrmg/image/upload/v1733373304/sq-traveller/tbein3lvceghcxauhhvu.jpg'); filter: brightness(0.8);"></div>
     </div>
     <hr class="w-full border-gray-300 my-6" />
-    <SharedItineraries />
+
+    <div class="flex flex-col mb-4 gap-0 px-6 gap-4">
+      <FeaturedItineraries :widthPercentage="'100%'" />
+      <hr class="w-full border-gray-300 my-6" />
+      <SharedItineraries />
+    </div>
   </div>
 </template>
 

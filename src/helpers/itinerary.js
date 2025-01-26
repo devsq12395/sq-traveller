@@ -319,6 +319,26 @@ export async function updateItineraryPrivacy(itineraryId, privacy) {
   }
 }
 
+// Edit an existing itinerary
+export async function editItinerary(itineraryId, details) {
+  if (!itineraryId) {
+    console.error('Itinerary ID is null or undefined');
+    return { error: 'Itinerary ID is required to edit the itinerary.' };
+  }
+
+  const { data, error } = await supabase
+    .from('itinerary')
+    .update(details)
+    .eq('id', itineraryId);
+
+  if (error) {
+    console.error('Error editing itinerary:', error.message);
+    return { error: 'Failed to edit itinerary', status: 500 };
+  }
+
+  return { data };
+}
+
 // Fetch shared itineraries
 export async function fetchSharedItineraries({ page = 1, pageSize = 12 } = {}) {
   try {

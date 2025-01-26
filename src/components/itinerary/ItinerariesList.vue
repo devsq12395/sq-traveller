@@ -15,8 +15,17 @@
 
     <div v-if="!isLoggedIn" class="text-gray-500">Log in to view your itineraries.</div>
     <div v-else-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
-    <div v-else>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+    <div v-else class="flex flex-col space-y-4 gap-4">
+      <!-- Pagination -->
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="currentPage--" 
+        @next-page="currentPage++"
+      />
+
+      <!-- Main Body -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 grid-rows-4 gap-2">
         <ItineraryEntry
           v-for="itinerary in paginatedItineraries"
           :key="itinerary.id"
@@ -29,23 +38,12 @@
       </div>
       
       <!-- Pagination -->
-      <div class="mt-6 flex justify-center items-center space-x-2">
-        <button 
-          @click="currentPage--" 
-          :disabled="currentPage === 1"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button 
-          @click="currentPage++" 
-          :disabled="currentPage >= totalPages"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="currentPage--" 
+        @next-page="currentPage++"
+      />
     </div>
 
     <CreateItineraryPopup 
@@ -69,6 +67,15 @@
 
     <div v-if="itineraries.length === 0" class="text-gray-500">No itineraries found.</div>
     <div v-else>
+      <!-- Pagination -->
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="currentPage--" 
+        @next-page="currentPage++"
+      />
+
+      <!-- Main Body -->
       <div class="flex flex-col space-y-4">
         <ItineraryEntry
           v-for="itinerary in paginatedItineraries"
@@ -82,23 +89,12 @@
       </div>
       
       <!-- Pagination -->
-      <div class="mt-6 flex justify-center items-center space-x-2">
-        <button 
-          @click="currentPage--" 
-          :disabled="currentPage === 1"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span class="mx-2">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button 
-          @click="currentPage++" 
-          :disabled="currentPage >= totalPages"
-          class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      <PaginationControl 
+        :currentPage="currentPage" 
+        :maxPage="totalPages" 
+        @previous-page="currentPage--" 
+        @next-page="currentPage++"
+      />
 
       <CreateItineraryPopup 
         v-if="showCreatePopup" 
@@ -115,18 +111,20 @@ import ItineraryEntry from './ItineraryEntry.vue';
 import CreateItineraryPopup from '../popups/CreateItineraryPopup.vue';
 import { useUser } from '../../context/UserContext';
 import { fetchItineraries } from '../../helpers/itinerary';
+import PaginationControl from '../common/PaginationControl.vue';
 
 export default {
   name: 'ItinerariesList',
   components: {
     ItineraryEntry,
     CreateItineraryPopup,
+    PaginationControl
   },
   setup() {
     const itineraries = ref([]);
     const showCreatePopup = ref(false);
     const currentPage = ref(1);
-    const itemsPerPage = 6; // Number of items to show per page
+    const itemsPerPage = 18; // Number of items to show per page
     const user = useUser();
     const isLoggedIn = ref(false);
     const windowWidth = ref(window.innerWidth);
