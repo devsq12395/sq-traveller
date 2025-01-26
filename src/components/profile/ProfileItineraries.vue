@@ -16,7 +16,7 @@
 
   <!-- Mobile View -->
   <div v-else class="profile-itineraries rounded-lg w-full p-5 flex-wrap">
-    <h2 class="text-xl font-bold mb-4 text-left">{{user.username}}'s Public Itineraries</h2>
+    <h2 v-if="user.username" class="text-xl font-bold mb-4 text-left">{{user.username}}'s Public Itineraries</h2>
     <hr class="border-t border-gray-300 my-4">
 
     <!-- Pagination Controls -->

@@ -1,5 +1,9 @@
 <template>
-  <div v-if="isDesktop" class="p-4 bg-blue-100 rounded-lg shadow w-[73%] min-w-[73%] h-[700px] min-h-[700px]">
+  <div
+    v-if="isDesktop"
+    class="p-4 bg-blue-100 rounded-lg shadow gap-2"
+    :style="{ height: `${boxHeight}px`, minHeight: `${boxHeight}px`, width: '73%', minWidth: '73%' }"
+  >
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Public Itineraries</h2>
       <div class="flex items-center">
@@ -29,15 +33,7 @@
     <div v-else-if="itineraries.length === 0" class="text-center py-4 text-gray-600">
       <p>No public itineraries available.</p>
     </div>
-    <div v-else>
-      <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-        <SharedItinerariesEntry
-          v-for="itinerary in itineraries"
-          :key="itinerary.id"
-          :itinerary="itinerary"
-        />
-      </div>
-      
+    <div v-else class="flex flex-col space-y-4 gap-4">
       <!-- Pagination Controls -->
       <div class="mt-1 flex justify-center items-center space-x-2">
         <button 
@@ -57,6 +53,14 @@
         >
           Next
         </button>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 grid-rows-{{ numOfRows }} gap-4 mb-4">
+        <SharedItinerariesEntry
+          v-for="itinerary in itineraries"
+          :key="itinerary.id"
+          :itinerary="itinerary"
+        />
       </div>
     </div>
   </div>
@@ -135,7 +139,7 @@ export default {
     SharedItinerariesEntry
   },
   props: {
-    numOfRows: { type: Number, required: true }
+    boxHeight: { type: Number, required: true }
   },
   setup() {
     const itineraries = ref([]);

@@ -11,7 +11,7 @@
         <div class="flex justify-between items-center mb-4 gap-0 px-6">
             <FeaturedItineraries />
             <SharedItineraries 
-              :numOfRows="3"
+              :boxHeight="2700"
             />
         </div>
       </div>

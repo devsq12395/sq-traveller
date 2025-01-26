@@ -19,7 +19,12 @@ export async function fetchItineraries(user_id) {
 
   if (error) {
     console.error('Error fetching itineraries:', error.message);
-    return { error };
+    return { error: 'Itineraries not found', status: 404 };
+  }
+
+  if (data.length === 0) {
+    console.error('No itineraries found for the user:', user_id);
+    return { error: 'Itineraries not found', status: 404 };
   }
 
   // Adjust time fields and handle nested itinerary_img data
@@ -48,13 +53,13 @@ export async function fetchItinerary(itineraryId, currentUserId) {
 
     if (privacyError) {
       console.error('Error fetching privacy setting:', privacyError.message);
-      return { error: privacyError };
+      return { error: 'Itinerary not found', status: 404 };
     }
 
     const privacy = privacyData?.privacy || 'private'; // Default to private if none exists
 
     // Fetch the itinerary details
-    const { data: itinerary, error: itineraryError } = await supabase
+    const { data: itineraryData, error: itineraryError } = await supabase
       .from('itinerary')
       .select(`
         *,
@@ -66,12 +71,15 @@ export async function fetchItinerary(itineraryId, currentUserId) {
 
     if (itineraryError) {
       console.error('Error fetching itinerary:', itineraryError.message);
-      return { error: itineraryError };
+      return { error: 'Itinerary not found', status: 404 };
     }
 
-    if (!itinerary) {
-      return { error: 'Itinerary not found' };
+    if (!itineraryData || itineraryData.length === 0) {
+      console.error('Itinerary not found:', itineraryId);
+      return { error: 'Itinerary not found', status: 404 };
     }
+
+    const itinerary = itineraryData;
 
     const isOwner = currentUserId ? itinerary.user_id === currentUserId : false;
 
@@ -92,7 +100,7 @@ export async function fetchItinerary(itineraryId, currentUserId) {
     return { data: formattedData };
   } catch (error) {
     console.error('Error in fetchItinerary:', error.message);
-    return { error: error.message };
+    return { error: 'Itinerary not found', status: 404 };
   }
 }
 

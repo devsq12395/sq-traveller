@@ -1,12 +1,13 @@
 <template>
   <div class="itinerary-container flex flex-col min-h-screen min-w-screen pt-20 bg-gray-500">
     <LoadingScreen />
-    <template v-if="isPrivate">
+    <template v-if="itineraryFetchError">
       <div class="flex flex-col items-center justify-center p-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Private Itinerary</h2>
-        <p class="text-gray-600">This itinerary is private or does not exist.</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ itineraryFetchError.title }}</h2>
+        <p class="text-gray-600">{{ itineraryFetchError.message }}</p>
       </div>
     </template>
+
     <template v-else>
       <div :class="isDesktop ? 'flex space-x-4 pt-10' : 'flex flex-col'" class="justify-center w-full">
         <ItineraryHeadline
@@ -128,7 +129,7 @@ export default {
     const showCreateBudgetPopup = ref(false);
     const showSettingsPopup = ref(false);
     const isOwner = ref(false);
-    const isPrivate = ref(false);
+    const itineraryFetchError = ref(null);
     const createdBy = ref('');
     const isDesktop = ref(window.innerWidth >= 640);
 
@@ -160,9 +161,20 @@ export default {
       const currentUserId = await checkAuth();
       const response = await fetchItinerary(itineraryId, currentUserId);
       
+      if (response.status === 404) {
+        itineraryFetchError.value = {
+          title: 'Itinerary Not Found',
+          message: 'The itinerary you are looking for does not exist or has been removed.',
+        };
+        return;
+      }
       if (response.error) {
         if (response.isPrivate) {
-          isPrivate.value = true;
+          itineraryFetchError.value = {
+            title: 'Private Itinerary',
+            message: 'This itinerary is private or does not exist.',
+          };
+
           // Clear any existing data
           itineraryName.value = '';
           itineraryDescription.value = '';
@@ -187,7 +199,7 @@ export default {
 
     const loadEvents = async () => {
       // Don't load events if itinerary is private
-      if (isPrivate.value) { 
+      if (itineraryFetchError.value) { 
         return;
       }
       
@@ -210,7 +222,7 @@ export default {
       //setLoading(true); // Show loading on start
       loadItinerary().then(() => {
         // Only load events if itinerary is not private
-        if (!isPrivate.value) {
+        if (!itineraryFetchError.value) {
           loadEvents().finally(() => {
             //setLoading(false); // Hide loading after everything is loaded
           });
@@ -299,10 +311,10 @@ export default {
       goToDashboard,
       goToSettings,
       isOwner,
-      isPrivate,
       createdBy,
       isDesktop,
-      refreshEventsGroupedByDay
+      refreshEventsGroupedByDay,
+      itineraryFetchError
     };
   },
   methods: {

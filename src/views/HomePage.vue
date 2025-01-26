@@ -66,7 +66,9 @@
     <!-- Bottom Section -->
     <div class="flex justify-between items-center mb-4 gap-0 px-6">
       <FeaturedItineraries />
-      <SharedItineraries />
+      <SharedItineraries 
+        :boxHeight="700"
+      />
     </div>
   </div>
   <div v-else class="w-full min-h-screen">
