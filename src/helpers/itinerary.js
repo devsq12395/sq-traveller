@@ -268,6 +268,24 @@ export async function saveItineraryImage(itineraryId, imgUrl) {
   }
 }
 
+// Update the image URL for an existing itinerary in the itinerary_img table
+export async function updateItineraryImage(itineraryId, imgUrl) {
+  try {
+    const { data, error } = await supabase
+      .from('itinerary_img')
+      .update({
+        img_url: imgUrl,
+      })
+      .eq('itinerary_id', itineraryId);
+
+    if (error) throw error;
+    return { data };
+  } catch (error) {
+    console.error('Error updating itinerary image:', error.message);
+    return { error };
+  }
+}
+
 // Update privacy setting for an itinerary
 export async function updateItineraryPrivacy(itineraryId, privacy) {
   if (!itineraryId) {

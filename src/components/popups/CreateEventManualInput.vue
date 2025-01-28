@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-3 items-start gap-2 mt-4">
+    <div v-if="hasLocation" class="grid grid-cols-3 items-start gap-2 mt-4">
       <label for="location" class="text-gray-700 font-semibold text-left">
         Location:
       </label>
@@ -15,7 +15,7 @@
       />
     </div>
     <div class="space-y-4">
-      <label class="block text-gray-700 font-semibold text-left mb-2">Event Image</label>
+      <label class="block text-gray-700 font-semibold text-left mb-2">Image</label>
       <!-- Default Images Grid -->
       <div class="grid grid-cols-3 gap-2">
         <div
@@ -75,6 +75,7 @@ export default {
   props: {
     setLocation: Function,
     setImageURL: Function,
+    hasLocation: { type: Boolean, default: true }
   },
   data() {
     return {

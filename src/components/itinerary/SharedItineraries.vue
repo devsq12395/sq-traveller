@@ -101,7 +101,7 @@
         @next-page="changePage(currentPage + 1)"
       />
 
-      <div class="flex flex-col space-y-4 mb-4">
+      <div class="flex flex-col space-y-4 my-4">
         <SharedItinerariesEntry
           v-for="itinerary in itineraries"
           :key="itinerary.id"

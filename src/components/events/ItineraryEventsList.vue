@@ -1,7 +1,7 @@
 <template>
   <div v-if="isDesktop" class="flex-1 overflow-y-auto p-4 bg-blue-100">
-    <div class="day-buttons">
-      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+    <div class="flex justify-center my-2 flex-wrap">
+      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="['mx-1 my-1 px-2 border border-gray-300 rounded cursor-pointer', currentPage === index + 1 ? 'bg-blue-200 text-black' : 'bg-gray-100']">
         Day {{ index + 1 }}
       </button>
     </div>
@@ -37,15 +37,15 @@
         </div>
       </div>
     </div>
-    <div class="day-buttons">
-      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+    <div class="flex justify-center my-2 flex-wrap">
+      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="['mx-1 my-1 px-2 border border-gray-300 rounded cursor-pointer', currentPage === index + 1 ? 'bg-blue-200 text-black' : 'bg-gray-100']">
         Day {{ index + 1 }}
       </button>
     </div>
   </div>
   <div v-else class="flex-1 overflow-y-auto bg-blue-100 w-full">
-    <div class="day-buttons">
-      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+    <div class="flex justify-center my-2 flex-wrap">
+      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="['mx-1 my-1 px-2 border border-gray-300 rounded cursor-pointer', currentPage === index + 1 ? 'bg-blue-200 text-black' : 'bg-gray-100']">
         Day {{ index + 1 }}
       </button>
     </div>
@@ -53,7 +53,7 @@
       v-for="(dayEvents, index) in paginatedEvents"
       :key="index"
     >
-      <div v-if="currentPage === index + 1" class="mb-6 bg-blue-50 rounded-lg shadow p-4">
+      <div v-if="currentPage === index + 1" class="mb-6 bg-blue-50 rounded-lg shadow py-4 px-2">
         <h2 class="text-3xl font-bold mb-2 text-left">
           Day {{ index + 1 }}
         </h2>
@@ -80,8 +80,8 @@
         </div>
       </div>
     </div>
-    <div class="day-buttons">
-      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="{'active': currentPage === index + 1}">
+    <div class="flex justify-center my-2 flex-wrap">
+      <button v-for="(dayEvents, index) in paginatedEvents" :key="index" @click="currentPage = index + 1" :class="['mx-1 my-1 px-2 border border-gray-300 rounded cursor-pointer', currentPage === index + 1 ? 'bg-blue-200 text-black' : 'bg-gray-100']">
         Day {{ index + 1 }}
       </button>
     </div>
@@ -165,24 +165,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.day-buttons {
-  display: flex;
-  justify-content: center;
-  margin: 10px 0;
-  flex-wrap: wrap;
-}
-.day-buttons button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  background-color: #f0f0f0;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.day-buttons button.active {
-  background-color: #007BFF;
-  color: white;
-}
-</style>

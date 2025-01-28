@@ -78,6 +78,19 @@
         <li>If you have any questions about these Terms of Service, please contact us at: Email: seasonquest.mail@gmail.com</li>
       </ul>
     </div>
+
+    <!-- Credits Section -->
+    <div class="bg-white rounded-lg shadow-lg w-[80%] p-8 mt-4">
+      <h3 class="text-2xl font-bold text-left mb-4 text-gray-800">Credits</h3>
+      <ul class="text-left text-gray-700 list-disc list-inside space-y-2">
+        <li>
+          Free background image - Designed by Freepik: <a href="https://www.freepik.com/free-photo/female-tourists-hand-have-happy-travel-map_3953424.htm#from_view=detail_alsolike" class="text-blue-500 hover:underline">Link here</a>
+        </li>
+        <li>
+          Free default banner - Designed by Freepik: <a href="https://www.pexels.com/photo/forest-on-rock-formations-in-valley-26771351/" class="text-blue-500 hover:underline">Link here</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

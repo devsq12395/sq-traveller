@@ -51,13 +51,13 @@
             <div v-if="isMenuOpen && profile" 
               class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
             >
-              <router-link 
+              <!-- <router-link 
                 to="/settings"
                 class="block w-full text-left px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
                 @click="isMenuOpen = false"
               >
                 Settings
-              </router-link>
+              </router-link> -->
               <button 
                 @click="handleLogout"
                 class="block w-full text-left px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
@@ -106,9 +106,9 @@
                   </button>
                 </div>
                 <div v-else class="flex flex-col p-4 space-y-2">
-                  <button @click="handleSettings" class="text-xl text-gray-600 hover:text-gray-800">
+                  <!-- <button @click="handleSettings" class="text-xl text-gray-600 hover:text-gray-800">
                     Settings
-                  </button>
+                  </button> -->
                   <button @click="handleLogout" class="text-xl text-gray-600 hover:text-gray-800">
                     Logout
                   </button>
@@ -144,6 +144,7 @@ export default {
     const updateProfile = async () => {
       if (route.name !== 'SetUsernamePage') {
         const { hasProfile, error } = await getUserHasProfile();
+        let hasUserLogin = false;
 
         if (error) {
           console.error('Error checking user profile:', error.message);
@@ -159,6 +160,17 @@ export default {
             user_id: getUser.user.id,
             avatar_url: profile.value.avatar_url,
             bio: profile.value.bio
+          });
+          hasUserLogin = true;
+        }
+
+        if (!hasUserLogin) {
+          setUser({
+            username: '',
+            email: '',
+            user_id: '',
+            avatar_url: '',
+            bio: ''
           });
         }
       }

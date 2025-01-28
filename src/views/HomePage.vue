@@ -129,7 +129,7 @@
     </div>
     <hr class="w-full border-gray-300 my-6" />
 
-    <div class="flex flex-col mb-4 gap-0 px-6 gap-4">
+    <div class="flex flex-col items-stretch mb-4 gap-0 px-2 gap-4">
       <FeaturedItineraries :widthPercentage="'100%'" />
       <hr class="w-full border-gray-300 my-6" />
       <SharedItineraries />

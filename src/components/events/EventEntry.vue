@@ -97,7 +97,7 @@
       </button>
     </div>
   </div>
-  <div v-else class="bg-blue-100 p-4 rounded-lg shadow-lg w-full mt-4">
+  <div v-else class="bg-blue-100 py-4 px-2 rounded-lg shadow-lg w-full mt-4">
     <div class="grid grid-cols-1 gap-4 items-stretch">
       <!-- Image on Top -->
       <div class="h-48 rounded-lg overflow-hidden bg-gray-200">
@@ -126,7 +126,7 @@
 
           <!-- Short Description -->
           <div class="text-left">
-            <p class="text-m text-gray-700 truncate">{{ short_description }}</p>
+            <p class="text-m text-gray-700">{{ short_description }}</p>
           </div>
         </div>
       </div>
@@ -135,22 +135,21 @@
     <div class="flex-col mt-4">
       <button 
         @click="showEventInfoPopup(eventId)" 
-        class="p-3 px-6 bg-orange-400 text-white rounded shadow text-sm"
+        class="px-6 py-2 bg-orange-400 text-white rounded shadow text-sm"
       >
         View Event Details
       </button>
 
-      <div v-if="isOwner" class="flex space-x-4 mt-4">
+      <div v-if="isOwner" class="flex justify-center space-x-4 mt-4">
         <button 
           @click="showEditEventPopup = true" 
-          class="p-2 px-4 bg-green-500 text-white rounded shadow text-xs"
-          style="margin-right: 16px;"
+          class="px-4 py-1 bg-green-500 text-white rounded shadow text-sm"
         >
           Edit Details
         </button>
         <button 
           @click="confirmDelete" 
-          class="p-2 px-4 bg-red-500 text-white rounded shadow text-xs"
+          class="px-4 py-1 bg-red-500 text-white rounded shadow text-sm"
         >
           Delete Event
         </button>

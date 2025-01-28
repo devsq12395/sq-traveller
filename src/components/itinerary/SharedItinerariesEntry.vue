@@ -29,8 +29,8 @@
       </div>
     </div>
   </div>
-  <div v-else @click="navigateToItinerary" class="bg-purple-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer flex-col p-4">
-    <img :src="itinerary.img_url" :alt="itinerary.name" class="w-full object-cover rounded-md mb-4" />
+  <div v-else @click="navigateToItinerary" class="bg-purple-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer flex-col py-4 px-2">
+    <img :src="itinerary.img_url" :alt="itinerary.name" class="w-full object-cover rounded-md mb-2" />
     <div class="p-2 mb-4">
       <h3 class="text-lg font-semibold">{{ itinerary.name }}</h3>
       <p class="text-gray-600 text-sm">{{ itinerary.description }}</p>

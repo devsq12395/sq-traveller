@@ -1,10 +1,13 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-    <div class="bg-white p-6 rounded shadow-lg w-[900px]">
+  <div :class="{'fixed inset-0 flex justify-center bg-gray-900 bg-opacity-50 z-50': true, 'items-center': isDesktop, 'overflow-y-auto items-stretch h-screen': !isDesktop}">
+    <div :class="{'bg-white p-6 rounded shadow-lg w-[900px]': true, 'h-full overflow-y-auto': !isDesktop}">
       <h2 class="text-2xl font-bold mb-4">Create an Itinerary</h2>
+
+      <div class="border-b border-gray-400 mb-6"></div>
+
       <form @submit.prevent="handleCreateItinerary" class="space-y-6">
         <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
-        <div :class="{'flex gap-6 relative': isDesktop, 'block': !isDesktop}">
+        <div :class="{'flex gap-6 relative': isDesktop, 'block overflow-y-auto': !isDesktop}">
           <!-- Left Side: Itinerary Details -->
           <div class="w-full md:w-1/2 flex flex-col gap-4">
             <h3 class="text-lg font-semibold">Itinerary Details</h3>
@@ -89,6 +92,7 @@
                 <CreateEventManualInput
                   :setLocation="setLocation"
                   :setImageURL="setImageURL"
+                  :hasLocation="false"
                 />
               </div>
           </div>
@@ -273,10 +277,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.bg-gray-900 {
-  z-index: 50;
-}
-/* Additional styles if needed */
-</style>

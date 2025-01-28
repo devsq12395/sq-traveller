@@ -1,10 +1,11 @@
 <template>
   <div v-if="showPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-70">
     <div class="bg-white rounded-lg shadow-xl w-full" style="height: calc(100vh - 5vh); margin-top: 10vh; position: relative; bottom: 0;">
-      <!-- Close Button -->
-      <button @click="closePopup" class="absolute top-12 left-4 text-gray-500 hover:text-gray-700 z-10 bg-white bg-opacity-25 rounded-full w-5 h-5 flex items-center justify-center">
+      <!-- Close Button, commented out for now -->
+      <!-- <button @click="closePopup" class="absolute top-12 left-4 text-gray-500 hover:text-gray-700 z-10 bg-white bg-opacity-25 rounded-full w-5 h-5 flex items-center justify-center">
         <span class="text-2xl">&times;</span>
-      </button>
+      </button> -->
+
       <!-- Image and Event Name -->
       <div class="overflow-auto h-full">
         <div class="bg-purple-100 rounded bg-opacity-75">
@@ -16,6 +17,12 @@
             <p class="text-sm text-gray-500 text-left">{{ eventTime }}</p>
           </div>
         </div>
+
+        <!-- Back Button -->
+        <button @click="closePopup" class="mt-4 m-2 text-gray-500 hover:text-gray-700 z-10 bg-gray-200 rounded px-3 py-1 flex items-center justify-center">
+          <span class="text-sm">← Back</span>
+        </button>
+
 
         <!-- Tabs Section -->
         <div class="overflow-x-auto">

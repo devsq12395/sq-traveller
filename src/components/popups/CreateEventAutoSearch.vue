@@ -35,6 +35,9 @@
           @complete-location="completeLocation"
         />
       </div>
+      <div v-else>
+        <p class="text-gray-600">Type in a location to get suggestions.</p>
+      </div>
     </div>
   </div>
 </template>

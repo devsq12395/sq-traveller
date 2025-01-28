@@ -33,13 +33,15 @@
           @select-event="selectEvent"
           @show-create-event="showCreateEventPopup = true"
           @show-report-event="showReportEventPopup = true"
+          @show-edit-itinerary="showEditItineraryPopup = true"
           @refresh="loadEvents"
           class="w-full"
         />
       </div>
+    </template>
 
-      <!-- Create Event Popup -->
-      <CreateEventPopup
+    <!-- Create Event Popup -->
+    <CreateEventPopup
         v-if="showCreateEventPopup"
         :itineraryId="itineraryId"
         :itineraryData="itineraryData"
@@ -77,7 +79,14 @@
         :isOwner="isOwner"
         @close="showEventInfoPopup = false"
       />
-    </template>
+
+      <!-- Edit Itinerary Popup -->
+      <EditItineraryPopup
+        v-if="showEditItineraryPopup"
+        :itineraryId="itineraryId"
+        @close="showEditItineraryPopup = false"
+        @refresh="refreshPage"
+      />
   </div>
 </template>
 
@@ -97,6 +106,7 @@ import CreateBudgetPopup from '../components/popups/CreateBudgetPopup.vue';
 import LoadingScreen from '../components/common/LoadingScreen.vue';
 import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
 import EventInfoPopup from '@/components/events/EventInfoPopup.vue';
+import EditItineraryPopup from '@/components/popups/EditItineraryPopup.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -109,7 +119,8 @@ export default {
     CreateBudgetPopup,
     LoadingScreen,
     ItineraryHeadline,
-    EventInfoPopup
+    EventInfoPopup,
+    EditItineraryPopup
   },
   setup() {
     const route = useRoute();
@@ -128,6 +139,7 @@ export default {
     const showCreateTodoPopup = ref(false);
     const showCreateBudgetPopup = ref(false);
     const showSettingsPopup = ref(false);
+    const showEditItineraryPopup = ref(false);
     const isOwner = ref(false);
     const itineraryFetchError = ref(null);
     const createdBy = ref('');
@@ -260,6 +272,11 @@ export default {
       router.push(`/itinerary/${route.params.id}/settings`);
     };
 
+    const goToEditItinerary = () => {
+      showEditItineraryPopup.value = false;
+      router.push(`/itinerary/${route.params.id}/settings`);
+    };
+
     const eventsGroupedByDay = computed(() => {
       return refreshEventsGroupedByDay();
     });
@@ -314,12 +331,17 @@ export default {
       createdBy,
       isDesktop,
       refreshEventsGroupedByDay,
-      itineraryFetchError
+      itineraryFetchError,
+      goToEditItinerary,
+      showEditItineraryPopup
     };
   },
   methods: {
     handleEventUpdate() {
       this.loadEvents();
+    },
+    refreshPage() {
+      window.location.reload();
     }
   }
 };

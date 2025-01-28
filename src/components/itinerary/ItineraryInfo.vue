@@ -3,13 +3,25 @@
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
       <!-- Buttons Container -->
       <div class="flex justify-between space-x-4 mt-6">
-        <button
-          @click="goToDashboard"
-          class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-        >
-          ← Back to Dashboard
-        </button>
-        <div v-if="isOwner">
+        <!-- Left Side -->
+        <div class="flex items-end gap-4">
+          <button
+            @click="goToDashboard"
+            class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+          >
+            ← Back
+          </button>
+          <button
+            v-if="isOwner"
+            @click="$emit('show-edit-itinerary')"
+            class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Edit Itinerary
+          </button>
+        </div>
+
+        <!-- Right Side -->
+        <div v-if="isOwner" class="flex items-end gap-4">
           <button
             @click="$emit('show-create-event')"
             class="p-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -17,7 +29,7 @@
             Create Event
           </button>
         </div>
-        <div v-else>
+        <div v-else class="flex items-end gap-4">
           <button
             @click="$emit('show-report-event')"
             class="p-2 bg-red-500 text-white rounded hover:bg-red-600"
@@ -92,28 +104,42 @@
     <!-- Add itinerary image and description -->
     <div class="p-4 border-b border-gray-300 flex-shrink-0">
       <!-- Buttons Container -->
-      <div v-if="isOwner" class="flex justify-between space-x-4 mt-6">
-        <button
-          @click="goToDashboard"
-          class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-        >
-          ← Back to Dashboard
-        </button>
-        <div v-if="isOwner">
+      <div class="flex justify-between space-x-4 mt-6">
+        <!-- Left Side -->
+        <div class="flex items-end gap-4">
           <button
-            @click="$emit('show-create-event')"
-            class="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+            @click="goToDashboard"
+            class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
           >
-            Create Event
+            ← Back
+          </button>
+          <button
+            v-if="isOwner"
+            @click="$emit('show-edit-itinerary')"
+            class="p-2 bg-blue-500 text-white rounded hover:bg-green-600"
+          >
+            Edit Itinerary
           </button>
         </div>
-        <div v-else>
-          <button
-            @click="$emit('show-report-event')"
-            class="p-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Report Event
-          </button>
+
+        <!-- Right Side -->
+        <div class="flex items-end gap-4">
+          <div v-if="isOwner">
+            <button
+              @click="$emit('show-create-event')"
+              class="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Create Event
+            </button>
+          </div>
+          <div v-else>
+            <button
+              @click="$emit('show-report-event')"
+              class="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Report Event
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -139,7 +165,7 @@
     <div class="flex-1 overflow-y-auto">
       <!-- Details Tab -->
       <div v-if="activeTab === 'details'" class="h-full">
-        <div class="p-4">
+        <div class="py-4 px-0">
           <ItineraryEventsList
             :eventsGroupedByDay="eventsGroupedByDay"
             :selectedEventId="selectedEventId"
