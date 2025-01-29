@@ -6,4 +6,16 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 const app = createApp(App);
 app.use(router);
+
+// Warn handler
+app.config.warnHandler = () => {
+  // Invalid Prop
+  //if (msg.includes('Invalid prop')) {
+    //return;
+  //}
+
+  // console.warn(`[Vue warn]: ${msg}${trace}`);
+  return;
+};
+
 app.mount('#app');

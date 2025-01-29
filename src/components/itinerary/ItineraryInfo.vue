@@ -18,6 +18,13 @@
           >
             Edit Itinerary
           </button>
+          <button
+            v-if="isOwner"
+            class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
+          >
+            <span class="material-icons mr-2">share</span>
+            Share
+          </button>
         </div>
 
         <!-- Right Side -->
@@ -106,7 +113,7 @@
       <!-- Buttons Container -->
       <div class="flex justify-between space-x-4 mt-6">
         <!-- Left Side -->
-        <div class="flex items-end gap-4">
+        <div class="flex items-stretch gap-4 text-sm">
           <button
             @click="goToDashboard"
             class="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
@@ -116,14 +123,21 @@
           <button
             v-if="isOwner"
             @click="$emit('show-edit-itinerary')"
-            class="p-2 bg-blue-500 text-white rounded hover:bg-green-600"
+            class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Edit Itinerary
+          </button>
+          <button
+            v-if="isOwner"
+            class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
+          >
+            <span class="material-icons">share</span>
+            Share
           </button>
         </div>
 
         <!-- Right Side -->
-        <div class="flex items-end gap-4">
+        <div class="flex items-stretch gap-4 text-sm">
           <div v-if="isOwner">
             <button
               @click="$emit('show-create-event')"
