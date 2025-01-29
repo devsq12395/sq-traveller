@@ -20,6 +20,7 @@
           </button>
           <button
             v-if="isOwner"
+            @click="$emit('show-share')"
             class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
           >
             <span class="material-icons mr-2">share</span>
@@ -101,8 +102,7 @@
       <div v-if="activeTab === 'settings' && isOwner" class="h-full">
         <ItinerarySettings
           :privacySetting="privacySetting"
-          @update:privacySetting="privacySetting = $event"
-          @update-privacy="updatePrivacy"
+          :updatePrivacy="updatePrivacy"
         />
       </div>
     </div>
@@ -129,6 +129,7 @@
           </button>
           <button
             v-if="isOwner"
+            @click="$emit('show-share')"
             class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
           >
             <span class="material-icons">share</span>
@@ -212,8 +213,7 @@
       <div v-if="activeTab === 'settings' && isOwner" class="h-full">
         <ItinerarySettings
           :privacySetting="privacySetting"
-          @update:privacySetting="privacySetting = $event"
-          @update-privacy="updatePrivacy"
+          :updatePrivacy="updatePrivacy"
         />
       </div>
     </div>
@@ -301,8 +301,8 @@ export default {
         this.privacySetting = data.privacy;
       }
     },
-    async updatePrivacy() {
-      const { error } = await updateItineraryPrivacy(this.itineraryId, this.privacySetting);
+    async updatePrivacy(newPrivacySetting) {
+      const { error } = await updateItineraryPrivacy(this.itineraryId, newPrivacySetting);
       if (error) {
         console.error('Failed to update privacy settings:', error);
       }

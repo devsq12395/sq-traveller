@@ -34,6 +34,7 @@
           @show-create-event="showCreateEventPopup = true"
           @show-report-event="showReportEventPopup = true"
           @show-edit-itinerary="showEditItineraryPopup = true"
+          @show-share="showSharePopup = true"
           @refresh="loadEvents"
           class="w-full"
         />
@@ -42,51 +43,58 @@
 
     <!-- Create Event Popup -->
     <CreateEventPopup
-        v-if="showCreateEventPopup"
-        :itineraryId="itineraryId"
-        :itineraryData="itineraryData"
-        @close="closeCreateEventPopup"
-        @refresh="loadEvents"
-      />
+      v-if="showCreateEventPopup"
+      :itineraryId="itineraryId"
+      :itineraryData="itineraryData"
+      @close="closeCreateEventPopup"
+      @refresh="loadEvents"
+    />
 
-      <!-- Report Event Popup -->
-      <ReportEventPopup
-        v-if="showReportEventPopup"
-        :itineraryId="itineraryId"
-        @close="closeReportEventPopup"
-        @refresh="loadEvents"
-      />
+    <!-- Report Event Popup -->
+    <ReportEventPopup
+      v-if="showReportEventPopup"
+      :itineraryId="itineraryId"
+      @close="closeReportEventPopup"
+      @refresh="loadEvents"
+    />
 
-      <!-- Create Notes Popup -->
-      <CreateNotePopup
-        @refresh="loadEvents"
-      />
+    <!-- Create Notes Popup -->
+    <CreateNotePopup
+      @refresh="loadEvents"
+    />
 
-      <!-- Create Todo Popup -->
-      <CreateTodoPopup
-        @refresh="loadEvents"
-      />
+    <!-- Create Todo Popup -->
+    <CreateTodoPopup
+      @refresh="loadEvents"
+    />
 
-      <!-- Create Budget Popup -->
-      <CreateBudgetPopup
-        @refresh="loadEvents"
-      />
+    <!-- Create Budget Popup -->
+    <CreateBudgetPopup
+      @refresh="loadEvents"
+    />
 
-      <!-- Event Info Popup -->
-      <EventInfoPopup
-        v-if="!isDesktop"
-        :eventId="selectedEventId"
-        :isOwner="isOwner"
-        @close="showEventInfoPopup = false"
-      />
+    <!-- Event Info Popup -->
+    <EventInfoPopup
+      v-if="!isDesktop"
+      :eventId="selectedEventId"
+      :isOwner="isOwner"
+      @close="showEventInfoPopup = false"
+    />
 
-      <!-- Edit Itinerary Popup -->
-      <EditItineraryPopup
-        v-if="showEditItineraryPopup"
-        :itineraryId="itineraryId"
-        @close="showEditItineraryPopup = false"
-        @refresh="refreshPage"
-      />
+    <!-- Edit Itinerary Popup -->
+    <EditItineraryPopup
+      v-if="showEditItineraryPopup"
+      :itineraryId="itineraryId"
+      @close="showEditItineraryPopup = false"
+      @refresh="refreshPage"
+    />
+
+    <!-- Share Itinerary Popup -->
+    <SharePopup
+      v-if="showSharePopup"
+      :itineraryId="itineraryId"
+      @close="showSharePopup = false"
+    />
   </div>
 </template>
 
@@ -107,6 +115,7 @@ import LoadingScreen from '../components/common/LoadingScreen.vue';
 import ItineraryHeadline from '../components/itinerary/ItineraryHeadline.vue';
 import EventInfoPopup from '@/components/events/EventInfoPopup.vue';
 import EditItineraryPopup from '@/components/popups/EditItineraryPopup.vue';
+import SharePopup from '@/components/popups/SharePopup.vue';
 
 export default {
   name: 'ItineraryPage',
@@ -120,7 +129,8 @@ export default {
     LoadingScreen,
     ItineraryHeadline,
     EventInfoPopup,
-    EditItineraryPopup
+    EditItineraryPopup,
+    SharePopup
   },
   setup() {
     const route = useRoute();
@@ -140,6 +150,7 @@ export default {
     const showCreateBudgetPopup = ref(false);
     const showSettingsPopup = ref(false);
     const showEditItineraryPopup = ref(false);
+    const showSharePopup = ref(false);
     const isOwner = ref(false);
     const itineraryFetchError = ref(null);
     const createdBy = ref('');
@@ -333,7 +344,8 @@ export default {
       refreshEventsGroupedByDay,
       itineraryFetchError,
       goToEditItinerary,
-      showEditItineraryPopup
+      showEditItineraryPopup,
+      showSharePopup
     };
   },
   methods: {
