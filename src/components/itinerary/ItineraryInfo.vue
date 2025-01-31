@@ -13,19 +13,29 @@
           </button>
           <button
             v-if="isOwner"
-            @click="$emit('show-edit-itinerary')"
-            class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Edit Itinerary
-          </button>
-          <button
-            v-if="isOwner"
             @click="$emit('show-share')"
             class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
           >
             <span class="material-icons mr-2">share</span>
             Share
           </button>
+          <div class="relative">
+            <button
+              v-if="isOwner"
+              @click="toggleDropdown"
+              class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
+            >
+              <span class="material-icons">more_vert</span>
+            </button>
+            <div v-if="dropdownVisible" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+              <button
+                @click="$emit('show-edit-itinerary')"
+                class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Edit Itinerary
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Right Side -->
@@ -122,19 +132,28 @@
           </button>
           <button
             v-if="isOwner"
-            @click="$emit('show-edit-itinerary')"
-            class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Edit Itinerary
-          </button>
-          <button
-            v-if="isOwner"
-            @click="$emit('show-share')"
             class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
           >
-            <span class="material-icons">share</span>
+            <span class="material-icons mr-2">share</span>
             Share
           </button>
+          <div class="relative">
+            <button
+              v-if="isOwner"
+              @click="toggleDropdown"
+              class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
+            >
+              <span class="material-icons">more_vert</span>
+            </button>
+            <div v-if="dropdownVisible" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+              <button
+                @click="$emit('show-edit-itinerary')"
+                class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Edit Itinerary
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Right Side -->
@@ -253,9 +272,16 @@ export default {
   setup(){
     const windowWidth = ref(window.innerWidth);
     const isDesktop = computed(() => windowWidth.value >= 768);
+    const dropdownVisible = ref(false);
+
+    const toggleDropdown = () => {
+      dropdownVisible.value = !dropdownVisible.value;
+    };
 
     return {
-      isDesktop
+      isDesktop,
+      dropdownVisible,
+      toggleDropdown,
     }
   },
   data() {

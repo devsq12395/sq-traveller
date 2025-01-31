@@ -279,7 +279,10 @@ export default {
     formatTime(time) {
       if (!time) return 'N/A';
       const [hour, minute] = time.split(':');
-      return `${hour}:${minute}`;
+      const hourInt = parseInt(hour, 10);
+      const period = hourInt >= 12 ? 'PM' : 'AM';
+      const hour12 = hourInt % 12 || 12; // Convert 0 to 12 for midnight
+      return `${hour12}:${minute} ${period}`;
     }
   }
 };

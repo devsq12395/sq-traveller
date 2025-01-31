@@ -62,10 +62,11 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { fetchItineraryWithCreator } from '../../helpers/itinerary';
 import { fetchRatings } from '../../helpers/itineraryRatings';
 import { calculateTotalBudget } from '@/helpers/budgets';
+import { useItinerary } from '../../context/UserContext';
 
 export default {
   name: 'ItineraryHeadline',
@@ -78,50 +79,58 @@ export default {
     title: String,
     description: String,
   },
-  data() {
-    return {
-      numberOfDays: 0,
-      createdBy: '',
-      itineraryImgUrl: '',
-      averageRating: 0,
-      ratingsCount: 0,
-      totalBudget: 0
-    }
-  },
-  setup() {
+  setup(props) {
     const isDesktop = ref(window.innerWidth >= 640);
+    const numberOfDays = ref(0);
+    const createdBy = ref('');
+    const itineraryImgUrl = ref('');
+    const totalBudget = ref(0);
+    const averageRating = ref(0);
+    const ratingsCount = ref(0);
+    const itineraryContext = useItinerary();
+
+    const refreshData = async () => {
+      const { data } = await fetchItineraryWithCreator(props.itineraryId);
+      if (data) {
+        numberOfDays.value = data.days;
+        createdBy.value = data.creatorName;
+        itineraryImgUrl.value = data.img_url;
+        const budgetData = await calculateTotalBudget(props.itineraryId);
+        if (!budgetData.error) {
+          totalBudget.value = budgetData.total;
+        }
+      }
+      const ratingsData = await fetchRatings(props.itineraryId);
+      if (ratingsData.data) {
+        const total = ratingsData.data.reduce((sum, rating) => sum + rating.rating, 0);
+        averageRating.value = ratingsData.data.length > 0 ? total / ratingsData.data.length : 0;
+        ratingsCount.value = ratingsData.data.length;
+      }
+    };
 
     const checkWindowSize = () => {
       isDesktop.value = window.innerWidth >= 640;
     };
-    onMounted(() => {
-      window.addEventListener('resize', checkWindowSize);
-    });
+
+    window.addEventListener('resize', checkWindowSize);
+
     onUnmounted(() => {
       window.removeEventListener('resize', checkWindowSize);
     });
 
+    watch(() => itineraryContext.lastRefresh, refreshData);
+
+    onMounted(refreshData);
+
     return {
-      isDesktop
-    }
-  },
-  async created() {
-    const { data } = await fetchItineraryWithCreator(this.itineraryId);
-    if (data) {
-      this.numberOfDays = data.days;
-      this.createdBy = data.creatorName;
-      this.itineraryImgUrl = data.img_url;
-      const budgetData = await calculateTotalBudget(this.itineraryId);
-      if (!budgetData.error) {
-        this.totalBudget = budgetData.total;
-      }
-    }
-    const ratingsData = await fetchRatings(this.itineraryId);
-    if (ratingsData.data) {
-      const total = ratingsData.data.reduce((sum, rating) => sum + rating.rating, 0);
-      this.averageRating = ratingsData.data.length > 0 ? total / ratingsData.data.length : 0;
-      this.ratingsCount = ratingsData.data.length;
-    }
+      isDesktop,
+      numberOfDays,
+      createdBy,
+      itineraryImgUrl,
+      totalBudget,
+      averageRating,
+      ratingsCount
+    };
   }
 }
 </script>

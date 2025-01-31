@@ -8,17 +8,17 @@
         </router-link>
 
         <!-- Navigation Links -->
-        <nav class="flex-1 flex justify-center space-x-4 w-1/2 h-full">
-          <router-link to="/" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
+        <nav class="flex-1 flex justify-center items-end space-x-4 w-1/2 h-full">
+          <router-link to="/" class="w-1/5 h-full flex items-end justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
             Home
           </router-link>
-          <router-link to="/browse" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
+          <router-link to="/browse" class="w-1/5 h-full flex items-end justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
             Browse
           </router-link>
-          <router-link to="/dashboard" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
+          <router-link to="/dashboard" class="w-1/5 h-full flex items-end justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
             Create
           </router-link>
-          <router-link to="/about" class="w-1/5 h-full flex items-center justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
+          <router-link to="/about" class="w-1/5 h-full flex items-end justify-center text-xl text-gray-600 hover:text-gray-800 px-3 py-2 rounded-lg transition-colors nav-link">
             About
           </router-link>
         </nav>
