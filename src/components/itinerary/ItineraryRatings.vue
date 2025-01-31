@@ -46,7 +46,10 @@
     </div>
 
     <!-- Ratings List -->
-    <ItineraryRating :ratings="ratings" :currentUser="userState" />
+    <ItineraryRating 
+      :ratings="ratings" 
+      :currentUser="userState" 
+    />
   </div>
 </template>
 
