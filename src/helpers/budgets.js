@@ -28,6 +28,20 @@ export async function addBudget(eventId, budgetName, budgetPrice) {
   return { data };
 }
 
+// Delete a budget item
+export async function deleteBudget(budgetId) {
+  const { error } = await supabase
+    .from('budget')
+    .delete()
+    .eq('id', budgetId);
+
+  if (error) {
+    console.error('Error deleting budget item:', error.message);
+    return { error };
+  }
+  return { success: true };
+}
+
 // Calculate total budget for all events in an itinerary
 export async function calculateTotalBudget(itineraryId) {
   const { data: events, error: eventsError } = await fetchItineraryEvents(itineraryId);

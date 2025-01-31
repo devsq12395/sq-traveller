@@ -6,6 +6,9 @@
     </div>
     <ul>
       <li v-for="activity in activities" :key="activity.id" class="flex items-center">
+        <button v-if="isOwner" @click="removeActivity(activity.id)" class="p-1 text-red-500 rounded mr-2">
+          <span class="material-icons">delete</span>
+        </button>
         <span>- {{ activity.todo }}</span>
       </li>
     </ul>
@@ -15,7 +18,7 @@
 <script>
 import { ref, onMounted, watch } from 'vue';
 import { updateActivityStatus } from '../../helpers/activities';
-import { fetchEventTodos, addTodo } from '../../helpers/todo';
+import { fetchEventTodos, addTodo, deleteTodo } from '../../helpers/todo';
 import { useItinerary } from '../../context/UserContext';
 
 export default {
@@ -42,6 +45,15 @@ export default {
 
     const updateActivity = async (activity) => {
       await updateActivityStatus(activity.id, activity.is_checked);
+    };
+
+    const removeActivity = async (todoId) => {
+      const { error } = await deleteTodo(todoId);
+      if (!error) {
+        loadActivities(); // Refresh the list after deletion
+      } else {
+        console.error('Error deleting todo');
+      }
     };
 
     const addNewTodo = async (todoContent) => {
@@ -71,6 +83,7 @@ export default {
       activities,
       updateActivity,
       addNewTodo,
+      removeActivity
     };
   },
 };

@@ -40,3 +40,17 @@ export async function addActivity(eventId, activityName) {
   }
   return { data };
 }
+
+// Delete an activity
+export async function deleteActivity(activityId) {
+  const { error } = await supabase
+    .from('activities')
+    .delete()
+    .eq('id', activityId);
+
+  if (error) {
+    console.error('Error deleting activity:', error.message);
+    return { error };
+  }
+  return { success: true };
+}

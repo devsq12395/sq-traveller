@@ -26,3 +26,17 @@ export async function addTodo(eventId, todoContent) {
   }
   return { data };
 }
+
+// Delete a todo
+export async function deleteTodo(todoId) {
+  const { error } = await supabase
+    .from('todos')
+    .delete()
+    .eq('id', todoId);
+
+  if (error) {
+    console.error('Error deleting todo:', error.message);
+    return { error };
+  }
+  return { success: true };
+}

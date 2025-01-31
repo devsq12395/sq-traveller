@@ -26,3 +26,17 @@ export async function addNote(eventId, noteContent) {
   }
   return { data };
 }
+
+// Delete a note
+export async function deleteNote(noteId) {
+  const { error } = await supabase
+    .from('notes')
+    .delete()
+    .eq('id', noteId);
+
+  if (error) {
+    console.error('Error deleting note:', error.message);
+    return { error };
+  }
+  return { success: true };
+}

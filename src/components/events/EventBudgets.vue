@@ -6,7 +6,12 @@
     </div>
     <ul>
       <li v-for="budget in budgets" :key="budget.id" class="flex justify-between">
-        <span>{{ budget.budget_name }}</span>
+        <div class="flex items-start">
+          <button v-if="isOwner" @click="removeBudget(budget.id)" class="p-1 text-red-500 rounded mr-2">
+            <span class="material-icons">delete</span>
+          </button>
+          <span>{{ budget.budget_name }}</span>
+        </div>
         <span>${{ budget.budget_price.toFixed(2) }}</span>
       </li>
     </ul>
@@ -20,7 +25,7 @@
 
 <script>
 import { ref, watch, onMounted, computed } from 'vue';
-import { fetchEventBudgets } from '../../helpers/budgets';
+import { fetchEventBudgets, deleteBudget } from '../../helpers/budgets';
 import { useItinerary } from '../../context/UserContext';
 
 export default {
@@ -46,6 +51,15 @@ export default {
 
     const totalBudget = computed(() => budgets.value.reduce((acc, budget) => acc + budget.budget_price, 0));
 
+    const removeBudget = async (budgetId) => {
+      const { error } = await deleteBudget(budgetId);
+      if (!error) {
+        loadBudgets(); // Refresh the list after deletion
+      } else {
+        console.error('Error deleting budget item');
+      }
+    };
+
     onMounted(loadBudgets);
 
     watch(() => itineraryState.lastRefresh, (newVal, oldVal) => {
@@ -56,9 +70,10 @@ export default {
 
     return {
       budgets,
-      totalBudget
+      totalBudget,
+      removeBudget
     };
-  },
+  }
 };
 </script>
 
