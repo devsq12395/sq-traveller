@@ -3,9 +3,14 @@ import App from './App.vue';
 import router from './router';
 import './assets/tailwind.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import VueGtag from "vue-gtag";
 
 const app = createApp(App);
 app.use(router);
+
+app.use(VueGtag, {
+  config: { id: "G-LTDB4LD7ZG" }
+}, router);
 
 // Warn handler
 app.config.warnHandler = () => {

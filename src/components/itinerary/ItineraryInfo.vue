@@ -12,7 +12,6 @@
             ← Back
           </button>
           <button
-            v-if="isOwner"
             @click="$emit('show-share')"
             class="p-2 bg-gray-100 text-blue-500 border border-blue-500 rounded hover:bg-blue-200 flex items-center"
           >

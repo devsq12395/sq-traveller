@@ -146,10 +146,10 @@ export default {
       }
 
       const { data, error } = await fetchItineraries(user.user_id);
+      isLoggedIn.value = true;
 
       if (!error) {
         itineraries.value = data;
-        isLoggedIn.value = true;
       } else {
         console.error('Error fetching itineraries:', error.message);
       }
