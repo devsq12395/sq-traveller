@@ -210,7 +210,7 @@ export default {
   },
   setup(props, {emit}) {
     const infoSprouting = ref(null);
-    const isExpanded = ref(false);
+    const isExpanded = ref(true);
     const showEditEventPopup = ref(false);
     const showDeleteConfirm = ref(false);
 
@@ -253,7 +253,7 @@ export default {
 
     onMounted(() => {
       if (!infoSprouting.value) return;
-      infoSprouting.value.style.height = '0px';
+      infoSprouting.value.style.height = 'auto';
       window.addEventListener('resize', checkWindowSize);
       checkWindowSize();
     });
@@ -291,6 +291,6 @@ export default {
 <style scoped>
 .event-info {
   overflow: hidden;
-  height: 0;
+  height: auto;
 }
 </style>

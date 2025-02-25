@@ -275,7 +275,11 @@ export default {
     };
 
     const goToDashboard = () => {
-      router.push('/dashboard');
+      if (document.referrer && (document.referrer.includes('localhost') || document.referrer.includes('goagenda'))) {
+        router.back();
+      } else {
+        router.push('/dashboard');
+      }
     };
 
     const goToSettings = () => {
